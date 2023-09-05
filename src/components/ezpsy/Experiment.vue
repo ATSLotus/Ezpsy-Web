@@ -4,7 +4,7 @@
     import BLK from "blockly"
     import { onMounted, reactive, onBeforeUnmount } from 'vue';
     import initBlockly from '@/assets/ezpsy/initBlockly';
-    import { showMsg } from "@/assets/utils/popup";
+    import { showMsg, showImg } from "@/assets/utils/popup";
 
     const tempConsoleWarn = console.warn
     const tempConsoleLog = console.log
@@ -58,8 +58,6 @@
                 data.Blockly.Xml.domToText(
                     data.Blockly.Xml.workspaceToDom(data.workspace as BLK.WorkspaceSvg)
                 )
-            // log.info("JS", data.code)
-            // log.info("Xml", data.xml)
         })
     }
 
@@ -97,6 +95,10 @@
         }
     }
 
+    const showKeyCode = () => {
+        showImg("image/ezpsy/keycode.png")
+    }
+
     onBeforeUnmount(async () => {
         const isFullScreen = !!(document.fullscreenElement)
         if(isFullScreen)
@@ -116,7 +118,7 @@
                 <button type="button" class="btn">
                     <img src="image/ezpsy/icons/save.svg">保存
                 </button>
-                <button type="button" class="btn">
+                <button type="button" class="btn" @click="showKeyCode">
                     <img src="image/ezpsy/icons/keycode.svg">keycode
                 </button>
                 <button type="button" class="btn">

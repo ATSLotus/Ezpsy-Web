@@ -11,6 +11,11 @@
     height: auto;
 }
 
+.ats-img-popup {
+    width: 1200px;
+    height: auto;
+}
+
 // tip
 .ats-tip-popup {
     padding: 0;
@@ -51,46 +56,46 @@
     font-size: 18px;
     width: 60px;
     height: 35px;
-    border: 2px solid;
+    border: 2px solid !important;
     box-sizing: border-box;
     margin: 0;
     padding: 0;;
-    background: #000000;
-    color: #ffffff;
-    border-color: #000000 ;
+    background: #005795 !important;
+    color: #ffffff !important;
+    border-color: #005795  !important;
 }
 
 .ats-confirm-button:focus {
-    box-shadow: none;
+    box-shadow: none !important;
 }
 
 .ats-confirm-button:hover {
-    background: #ffffff;
-    color: #000000;
-    border-color: #000000;
+    background: #ffffff !important;
+    color: #005795 !important;
+    border-color: #005795 !important;
 }
 
 .ats-cancel-button {
     font-size: 18px;
     width: 60px;
     height: 35px;
-    border: 2px solid;
+    border: 2px solid !important;
     box-sizing: border-box;
     margin: 0;
     padding: 0;;
-    background: #888888;
-    color: #ffffff;
-    border-color: #888888 ;
+    background: #888888 !important;
+    color: #ffffff !important;
+    border-color: #888888 !important;
 }
 
 .ats-cancel-button:focus {
-    box-shadow: none;
+    box-shadow: none !important;
 }
 
 .ats-cancel-button:hover {
-    background: #ffffff;
-    color: #888888;
-    border-color: #888888;
+    background: #ffffff !important;
+    color: #888888 !important;
+    border-color: #888888 !important;
 }
 
 $ATS-Loader-box-size: 40px;

@@ -170,11 +170,32 @@ const showMsg = (title: string, Msg: string) => {
                 text-align: start;
             ">${Msg}</div>
         `,
-        showConfirmButton: true,
-        confirmButtonText: "关闭",
+        showConfirmButton: false,
+        showCancelButton: true,
+        cancelButtonText: "关闭",
         customClass: {
             container: "ats_container",
             popup: "ats-msg-popup",
+            htmlContainer: "ats-tip-htmlContainer",
+            closeButton: "ats-close-button",
+            actions: "ats-actions",
+            confirmButton: "ats-confirm-button",
+            cancelButton: "ats-cancel-button"
+        }
+    })
+}
+
+const showImg = (img: string) => {
+    Swal.fire({
+        html: `
+            <img style="width: 100%;" src="${img}" />
+        `,
+        showConfirmButton: false,
+        showCancelButton: true,
+        cancelButtonText: "关闭",
+        customClass: {
+            container: "ats_container",
+            popup: "ats-img-popup",
             htmlContainer: "ats-tip-htmlContainer",
             closeButton: "ats-close-button",
             actions: "ats-actions",
@@ -189,5 +210,6 @@ export {
     showloading,
     hideLoading,
     closePopup,
-    showMsg
+    showMsg,
+    showImg
 }
