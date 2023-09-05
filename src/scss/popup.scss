@@ -1,0 +1,555 @@
+.ats-tip-popup {
+    width: 400px;
+    height: auto;
+}
+.ats-input-popup {
+    width: 400px;
+    height: auto;
+}
+.ats-msg-popup {
+    width: 800px;
+    height: auto;
+}
+
+// tip
+.ats-tip-popup {
+    padding: 0;
+    padding: 10px 0;
+}
+.ats-tip-htmlContainer{
+    margin: 0;
+    overflow: visible;
+}
+
+// input
+.ats-input-popup {
+    padding: 0;
+    padding: 10px 0;
+}
+.ats-input-htmlContainer{
+    margin: 0;
+    overflow: visible;
+}
+.ats-close-button {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.ats-close-button:focus {
+    box-shadow: none;
+}
+
+.ats-actions {
+    width: 150px;
+    justify-content: space-around;
+    z-index: 0;
+    margin-top: 15px;
+}
+
+.ats-confirm-button {
+    font-size: 18px;
+    width: 60px;
+    height: 35px;
+    border: 2px solid;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;;
+    background: #000000;
+    color: #ffffff;
+    border-color: #000000 ;
+}
+
+.ats-confirm-button:focus {
+    box-shadow: none;
+}
+
+.ats-confirm-button:hover {
+    background: #ffffff;
+    color: #000000;
+    border-color: #000000;
+}
+
+.ats-cancel-button {
+    font-size: 18px;
+    width: 60px;
+    height: 35px;
+    border: 2px solid;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;;
+    background: #888888;
+    color: #ffffff;
+    border-color: #888888 ;
+}
+
+.ats-cancel-button:focus {
+    box-shadow: none;
+}
+
+.ats-cancel-button:hover {
+    background: #ffffff;
+    color: #888888;
+    border-color: #888888;
+}
+
+$ATS-Loader-box-size: 40px;
+$ATS-Loader-circle-size: calc(0.8 * $ATS-Loader-box-size);
+$ATS-Loader-item-size: 0.1 * $ATS-Loader-box-size;
+$ATS-Loader-item-deg: 45deg;
+$ATS-Loader-radius: 0.5 * $ATS-Loader-circle-size;
+
+// $ATS-Loader-time: 2s;
+// $ATS-Loader-halfTrans: $ATS-Loader-radius - $ATS-Loader-item-size/2;
+
+// loader
+.ats-loader-popup {
+    padding: 0;
+    // background: none;
+    width: $ATS-Loader-box-size;
+    height: $ATS-Loader-box-size;
+}
+.ats-loader-htmlContainer{
+    width: $ATS-Loader-box-size;
+    height: $ATS-Loader-box-size;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    // background: none;
+    .ats-loader {
+        width: $ATS-Loader-circle-size;
+        height: $ATS-Loader-circle-size;
+        // border-radius: 50%;
+        // border: 1px solid red;
+        // box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .ats-loader-item {
+            width: $ATS-Loader-item-size;
+            height: $ATS-Loader-item-size;
+            border-radius: 50%;
+            background: #2988e6;
+            position: absolute;
+            box-sizing: border-box;
+        }
+    }
+    .ats-loader-0 {
+        // animation: circleRotate $ATS-Loader-time infinite linear;
+        animation: circleRotate var(--time) infinite linear;
+        .ats-loader-item {
+            transform-origin: center center;
+        }
+        .ats-loader-item0 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+            );
+        }
+        .ats-loader-item1 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(1*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(1*$ATS-Loader-item-deg))
+            );
+        }
+        .ats-loader-item2 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(2*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(2*$ATS-Loader-item-deg))
+            );
+        }
+        .ats-loader-item3 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(3*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(3*$ATS-Loader-item-deg))
+            );
+        }
+        .ats-loader-item4 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(4*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(4*$ATS-Loader-item-deg))
+            );
+        }
+        .ats-loader-item5 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(5*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(5*$ATS-Loader-item-deg))
+            );
+        }
+        .ats-loader-item6 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(6*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(6*$ATS-Loader-item-deg))
+            );
+        }
+        .ats-loader-item7 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(7*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(7*$ATS-Loader-item-deg))
+            );
+        }
+    }
+    .ats-loader-1 {
+        .ats-loader-item0 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+            );
+        }
+        .ats-loader-item1 {
+            animation: firstDot-1 var(--time) infinite linear;
+        }
+        .ats-loader-item2 {
+            animation: secondDot-1 var(--time) infinite linear;
+        }
+        .ats-loader-item3 {
+            animation: thirdDot-1 var(--time) infinite linear;
+        }
+        .ats-loader-item4 {
+            animation: fourthDot-1 var(--time) infinite linear;
+        }
+        .ats-loader-item5 {
+            animation: fifthDot-1 var(--time) infinite linear;
+        }
+        .ats-loader-item6 {
+            animation: sixthDot-1 var(--time) infinite linear;
+        }
+        .ats-loader-item7 {
+            animation: seventhDot-1 var(--time) infinite linear;
+        }
+    }
+    .ats-loader-2 {
+        .ats-loader-item0 {
+            transform: translate(
+                calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+                calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+            );
+        }
+        .ats-loader-item1 {
+            animation: firstDot-2 var(--time) infinite linear;
+        }
+        .ats-loader-item2 {
+            animation: secondDot-2 var(--time) infinite linear;
+        }
+        .ats-loader-item3 {
+            animation: thirdDot-2 var(--time) infinite linear;
+        }
+        .ats-loader-item4 {
+            animation: fourthDot-2 var(--time) infinite linear;
+        }
+        .ats-loader-item5 {
+            animation: fifthDot-2 var(--time) infinite linear;
+        }
+        .ats-loader-item6 {
+            animation: sixthDot-2 var(--time) infinite linear;
+        }
+        .ats-loader-item7 {
+            animation: seventhDot-2 var(--time) infinite linear;
+        }
+    }
+}
+
+@keyframes circleRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes firstDot-1 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    10%, 20%, 30%, 40%, 50%, 60%, 70% {
+        transform: rotate(45deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes secondDot-1 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    20%, 30%, 40%, 50%, 60%, 70% {
+        transform: rotate(90deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes thirdDot-1 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    30%, 40%, 50%, 60%, 70% {
+        transform: rotate(135deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes fourthDot-1 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    40%, 50%, 60%, 70% {
+        transform: rotate(180deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes fifthDot-1 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    50%, 60%, 70% {
+        transform: rotate(225deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes sixthDot-1 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    60%, 70% {
+        transform: rotate(270deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes seventhDot-1 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    70% {
+        transform: rotate(315deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes firstDot-2 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    7%, 14%, 28%, 35%, 42%, 49%, 56% {
+        transform: rotate(45deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes secondDot-2 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    14%, 28%, 35%, 42%, 49%, 56%, 63% {
+        transform: rotate(90deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes thirdDot-2 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    28%, 35%, 42%, 49%, 56%, 63%, 70% {
+        transform: rotate(135deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes fourthDot-2 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    35%, 42%, 49%, 56%, 63%, 70%, 77%  {
+        transform: rotate(180deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes fifthDot-2 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    42%, 49%, 56%, 63%, 70%, 77%, 84% {
+        transform: rotate(225deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes sixthDot-2 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    49%, 56%, 63%, 70%, 77%, 84%, 91% {
+        transform: rotate(270deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}
+
+@keyframes seventhDot-2 {
+    0% {
+        transform: rotate(0deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    56%, 63%, 70%, 77%, 84%, 91%, 98% {
+        transform: rotate(315deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+    100% {
+        transform: rotate(360deg) translate(
+            calc($ATS-Loader-radius*sin(0*$ATS-Loader-item-deg)), 
+            calc(-1 * $ATS-Loader-radius*cos(0*$ATS-Loader-item-deg))
+        );
+    }
+}

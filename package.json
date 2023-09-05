@@ -1,0 +1,35 @@
+{
+  "name": "ezpsy-web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development vite --host",
+    "dev:pure": "cross-env NODE_ENV=production vite  --host",
+    "build:test": "vue-tsc --noEmit && cross-env NODE_ENV=development vite build",
+    "postbuild:test": "node script/zip.js",
+    "build": "node script/transImage.js && vue-tsc --noEmit && cross-env NODE_ENV=production vite build",
+    "postbuild": "node script/zip.js",
+    "preview": "vite preview",
+    "start": "node script/server.js"
+  },
+  "dependencies": {
+    "blockly": "^10.1.3",
+    "fs": "^0.0.1-security",
+    "loglevel": "^1.8.1",
+    "pinia": "^2.1.6",
+    "sweetalert2": "^11.7.27",
+    "vue": "^3.2.47",
+    "vue-router": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.9",
+    "@vitejs/plugin-vue": "^4.1.0",
+    "cross-env": "^7.0.3",
+    "sass": "^1.66.1",
+    "sass-loader": "^13.3.2",
+    "typescript": "^5.2.2",
+    "vite": "^4.2.0",
+    "vue-tsc": "^1.2.0"
+  }
+}

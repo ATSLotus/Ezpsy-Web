@@ -1,0 +1,99 @@
+<script setup lang="ts">
+    import log from "@/assets/utils/log"
+    import EzpsyMenu from "@/components/ezpsy/Menu.vue";
+    import { onMounted, reactive, watch, shallowRef } from "vue";
+    import { useRoute } from 'vue-router';
+    import router from "@/router/router";
+    import Production from "@/components/ezpsy/Production.vue"
+    import Image from "@/components/ezpsy/Image.vue"
+    import Codes from "@/components/ezpsy/Codes.vue"
+    import Datas from "@/components/ezpsy/Datas.vue"
+    import { EzpsyMenuStore } from "@/store/store";
+    import Experiment from "@/components/ezpsy/Experiment.vue";
+
+    const route = useRoute()
+
+    const data = reactive({
+        store: EzpsyMenuStore(),
+        currentMenu: "",
+    })
+
+    const menus = shallowRef([
+        { key: "production", component: Production, icon: 'fa-file-code',title: '个人项目', isSelected: true },
+        { key: "image", component: Image, icon: 'fa-image',title: '图床图片', isSelected: false }, 
+        { key: "experiment", component: Experiment, icon: 'fa-file-excel',title: '实验编辑', isSelected: false },
+        { key: "codes", component: Codes, icon: 'fa-list',title: '实验列表', isSelected: false },
+        { key: "datas", component: Datas, icon: 'fa-file-excel',title: '实验数据', isSelected: false }
+    ])
+
+    data.store.set(menus.value)
+
+    onMounted(async () => {
+        if(!route.query?.menu) {
+            router.push({
+                query: { ...route.query, menu: "production" }
+            })
+        }
+        data.currentMenu = route.query.menu as string
+    })
+
+    watch(router.currentRoute, () => {
+        data.currentMenu = route.query?.menu as string
+    })
+    
+    
+</script>
+
+<template>
+    <div class="console">
+        <EzpsyMenu></EzpsyMenu>
+        <div class="content-box">
+            <div class="header"></div>
+            <div
+                class="box"
+                v-for="item in menus"
+                v-show="item.key === data.currentMenu"
+            >
+                <component
+                    v-if="item.key === data.currentMenu"
+                    :is="item.component"
+                    class="content"
+                ></component>
+            </div>
+        </div>
+        
+    </div>
+</template>
+
+<style scoped lang="scss">
+    @import "@/scss/ezpsy-menu.scss";
+    @import "@/scss/app.scss";
+    .console {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        .content-box {
+            width: calc(100% - $EzpsyMenuWidth);
+            height: 100%;
+            .header {
+                width: 100%;
+                height: 60px;
+            }
+            .box {
+                width: 100%;
+                height: calc(100% - 60px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #f4f8fa;
+                .content {
+                    width: 90%;
+                    height: 90%;
+                    background-color: white;
+                }
+            }
+            
+        }
+        
+    }
+</style>

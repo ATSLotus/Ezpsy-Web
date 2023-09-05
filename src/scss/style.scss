@@ -1,0 +1,10 @@
+@import "./app.scss";
+
+body {
+    margin: 0;
+}
+
+#app {
+    width: $APPWidth;
+    margin: auto;
+}

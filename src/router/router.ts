@@ -1,0 +1,74 @@
+import {createRouter, createWebHistory, createWebHashHistory} from 'vue-router'
+
+const getRouters = (): Array<Object> => {
+    // @ts-ignore
+    const routersOBJ = env.routers
+    const routers = new Array()
+    routers.push({
+        path: `/`,
+        name: `default`,
+        component: () => import(`@/pages/index/index.vue`),
+        meta: {
+            title: 'Ezpsy: Index',
+        } 
+    })
+    Object.keys(routersOBJ).forEach(key => {
+        const obj = routersOBJ[key]
+        obj.forEach((name: string) => {
+            routers.push({
+                path: `/${key}/${name}`,
+                name: `${name}`,
+                component: () => import(`@/pages/${key}/${name}.vue`),
+                meta: {
+                    title: 'Ezpsy: ' + name
+                }
+            })
+        })
+    })
+    return routers
+}
+
+const router = createRouter({
+    history: createWebHashHistory(),
+    // history: createWebHistory(),
+    // @ts-ignore
+    routes: getRouters()
+})
+
+router.beforeEach((to, from, next) => {
+    // const target = to.path.split('/')[1]
+    // closePopup()
+    // if(target === '' || router.hasRoute(target)) {
+    //     if(to.meta.title) {
+    //         document.title = `${to.meta.title}`
+    //     }
+    //     next()
+    // } else {
+    //     tipPopup("warn", {
+    //         title: "访问失败",
+    //         tips: `/${target} 页面不存在!`,
+    //         closeTip: '-- 请点击空白处返回上一页 --'
+    //     }).then(() => {
+    //         next(from.path === '/' ? '/index' : from.path)
+    //     })
+    // }
+    next()
+})
+
+router.afterEach((to, from) => {
+    
+})
+
+// const oldBack = router.back
+
+// router.back = () => {
+//     // log.info(router.options.history.state)
+//     // if(router.options.history.state.back) 
+//     //     oldBack()
+//     // else 
+//     //     router.push({
+//     //         path: '/index'
+//     //     })
+// }
+
+export default router
