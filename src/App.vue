@@ -5,7 +5,7 @@
 
 <template>
 	<div id="root">
-        <router-view></router-view>
+        <router-view class="content"></router-view>
 	</div>
 </template>
 
@@ -13,6 +13,9 @@
 	#root {
 		width: 100%;
 		height: 100vh;
-		
+		.content {
+			width: 100%;
+			height: 100%;
+		}
 	}
 </style>
