@@ -1,24 +1,26 @@
 <script setup lang="ts">
     import log from '@/assets/utils/log'
-    import agc from '@/assets/agc/agc'
-    import { PhoneAuth } from "ezpsy-server"
+    import router from '@/router/router';
     import { reactive } from 'vue';
     import { tipPopup } from '@/assets/utils/popup';
-    import router from '@/router/router';
- 
-    const auth = agc.getAuth("Ezpsy_Auth") as PhoneAuth
+    import { getVerifyCode, registerAuth } from '@/assets/index/auth'
 
     const data = reactive({
-        isUsePassWord: true,
-        phone: "",
+        phone: "17305558177",
         code: "",
+        password: "st132622",
+        passwordConfirm: "st132622",
         validateText: "获取验证码",
         codetips: "",
+        passwordtips: "",
         allowSubmit: false,
-        allowGetCode: false,
+        allowGetCode: true,
+        validateIsTrue: true,
         phoneIsTrue: true,
-        codeIsTrue: true,
-        passwordIsShow: false
+        passwordIsTrue: true,
+        confirmIsTrue: true,
+        passwordIsShow0: false,
+        passwordIsShow1: false
     })
 
     const validateP = () => {
@@ -35,69 +37,74 @@
 
     const validatePhone = () => {
         data.phoneIsTrue = validateP()
-        if(!data.isUsePassWord && data.phoneIsTrue) {
+        if(data.phoneIsTrue) {
             data.allowGetCode = true
         }
     }
 
     const validateC = () => {
         data.codetips = "" 
-        if(data.isUsePassWord) {
-            if(data.code.length < 8) 
-                data.codetips += "密码必须至少八个字符 "
-            else if(data.code.length > 16) 
-                data.codetips += "密码不得超过十六个字符 "
-            let no_char = false
-            if(!data.code.match(/[a-zA-Z]/)) {
-                no_char = true
-                if(data.codetips === "")
-                    data.codetips += "密码必须包含字母 "
-                else
-                    data.codetips += "且必须包含字母 "
-            }
-            if(!data.code.match(/[0-9]/)) {
-                if(data.codetips === "")
-                    data.codetips += "密码必须包含数字"
-                else if(no_char) 
-                    data.codetips += "数字"
-                else
-                    data.codetips += "且必须包含数字"
-            }
-            return data.codetips === ""
-        } else {
-            if(data.code.length === 0)
-                data.codetips = "验证码不能为空"
-            else if(data.code.length !== 6) 
-                data.codetips = "验证码应为6位"
-            return data.code.length === 6
-        }
+        if(data.code.length === 0)
+            data.codetips = "验证码不能为空"
+        else if(data.code.length !== 6) 
+            data.codetips = "验证码应为6位"
+        return data.code.length === 6
     }
 
     const validateCodeValue = (event: Event) => {
-        if(!data.isUsePassWord) {
-            const char = (event as InputEvent).data
-            if(char && !/[0-9]/.test(char)) {
-                event.preventDefault()
-            }
+        const char = (event as InputEvent).data
+        if(char && !/[0-9]/.test(char)) {
+            event.preventDefault()
         }
     }
 
     const validateCode = () => {
-        data.codeIsTrue = validateC()
+        data.validateIsTrue = validateC()
+    }
+
+    const validatePsd = () => {
+        data.passwordtips = ""
+        if(data.password.length < 8) 
+            data.passwordtips += "密码必须至少八个字符 "
+        else if(data.password.length > 16) 
+            data.passwordtips += "密码不得超过十六个字符 "
+        let no_char = false
+        if(!data.password.match(/[a-zA-Z]/)) {
+            no_char = true
+            if(data.passwordtips === "")
+                data.passwordtips += "密码必须包含字母 "
+            else
+                data.passwordtips += "且必须包含字母 "
+        }
+        if(!data.password.match(/[0-9]/)) {
+            if(data.passwordtips === "")
+                data.passwordtips += "密码必须包含数字"
+            else if(no_char) 
+                data.passwordtips += "数字"
+            else
+                data.passwordtips += "且必须包含数字"
+        }
+        return data.passwordtips === ""
+    }
+
+    const validatePassword = () => {
+        data.passwordIsTrue = validatePsd()
+    }
+
+    const validateConfirmPsd = () => {
+        return data.password === data.passwordConfirm
+    }
+
+    const validateConfirmPassword = () => {
+        data.confirmIsTrue = validateConfirmPsd()
     }
 
     const jugeCanSubmit = () => {
-        data.allowSubmit = validateP() && validateC()
-    }
-
-    const changeMethod = () => {
-        data.code = ""
-        data.codeIsTrue = true
-        data.isUsePassWord = !data.isUsePassWord
+        data.allowSubmit = validateP() && validateC() && validatePsd() && validateConfirmPsd()
     }
 
     const getValidateCode = async () => {
-        const res = await auth.getVerifyCode({
+        const res = await getVerifyCode({
             countryCode: "86",
             phone: data.phone,
             model: 0,
@@ -105,47 +112,54 @@
         })
         if(res.isSuccess) {
             let i = 60
+            data.validateText = `${i}s 后重新获取`
             const timer = setInterval(() => {
-                data.validateText = `${i}s 后重新获取`
                 if(i === 0) {
                     data.validateText = '获取验证码'
                     clearInterval(timer)
                 }
                 i--
+                data.validateText = `${i}s 后重新获取`
             }, 1000)
         } else {
             tipPopup("error", {
                 title: "获取失败",
-                tips: "获取验证码失败, 请检查网络情况",
+                tips: "请一分钟后尝试",
                 isUseConfirm: true
             })
         }
     }
-    
+
+    const register = async () => {
+        const res = await registerAuth
+    }
+
     const login = () => {
-        log.info("TEST")
-    }
-
-    const register = () => {
-        router.push("/index/register")
-    }
-
-    const forget = () => {
-
+        router.push("/index/login")
     }
     
 </script>
 
 <template>
     <div>
-        <div class="login">
-            <form class="form" @submit="login">
+        <div class="register">
+            <div class="registerHeader">
+                <div style="font-size: 24px;">Ezpsy 账号注册</div>
+                <div style="font-size: 14px;margin-top: 10px;white-space: pre-wrap">
+                    已有账号, 
+                    <span 
+                        style="color: #007dff;cursor: pointer;"
+                        @click="login"
+                    > 去登录></span>
+                </div>
+            </div>
+            <form class="form" @submit="register">
                 <div v-if="!data.phoneIsTrue" class="Error">
                     <img src="image/index/auth/warn.svg" width="12" height="12" >
                     <span style="margin-left: 5px;">手机号码格式不正确</span>
                 </div>
                 <div 
-                    class="phone" 
+                    class="phone"
                     :style="
                         !data.phoneIsTrue ? '' : 'margin-top: 20px'
                     "
@@ -153,53 +167,36 @@
                     <input
                         id="test"
                         type="text"
-                        class="input "
+                        class="input"
                         placeholder="手机号"
                         v-model="data.phone"
-                        @change="validatePhone" 
                         @beforeinput="validatePhoneValue"
                         @input="jugeCanSubmit"
+                        @change="validatePhone" 
                     />
                 </div>
-                <div v-if="!data.codeIsTrue" class="Error">
+                <div v-if="!data.validateIsTrue" class="Error">
                     <img src="image/index/auth/warn.svg" width="12" height="12" >
-                    <span style="margin-left: 5px;">
-                        {{ data.codetips }}
-                    </span>
+                    <span style="margin-left: 5px;">{{ data.codetips }}</span>
                 </div>
                 <div 
-                    class="code" 
+                    class="code"
                     :style="
-                        !data.codeIsTrue ? '' : 'margin-top: 20px'
+                        !data.validateIsTrue ? '' : 'margin-top: 20px'
                     "
                 >
                     <div class="codeInput">
                         <input 
-                            :type="
-                                data.isUsePassWord ? 
-                                !data.passwordIsShow ? 'password' : 'text' 
-                                : 'text'"
-                            class="input"
-                            :class="data.isUsePassWord ? 'inputPassword' : 'inputCode'"
-                            :placeholder="data.isUsePassWord ? '密码' : '验证码'" 
+                            type="text"
+                            class="input inputCode"
+                            placeholder="验证码" 
                             v-model="data.code"
-                            @change="validateCode"
                             @beforeinput="validateCodeValue"
                             @input="jugeCanSubmit"
+                            @change="validateCode"
                         />
-                        <div 
-                            class="showPassword"
-                            :style="
-                                data.passwordIsShow ? 
-                                'background-image: url(image/index/auth/eye.svg)' : 
-                                'background-image: url(image/index/auth/eye-slash.svg)'
-                            "
-                            @click="data.passwordIsShow = !data.passwordIsShow"
-                            v-if="data.isUsePassWord"
-                        ></div>
                         <span
                             class="validate"
-                            v-if="!data.isUsePassWord" 
                             :style="
                                 data.allowGetCode ? 
                                 'cursor: pointer' : 
@@ -208,8 +205,69 @@
                             @click="getValidateCode"
                         >{{ data.validateText }}</span>
                     </div>
-                    <div class="changeMethod" @click="changeMethod">
-                        {{ data.isUsePassWord ? "短信验证码登录" : "密码登录" }}
+                </div>
+                <div v-if="!data.passwordIsTrue" class="Error">
+                    <img src="image/index/auth/warn.svg" width="12" height="12" >
+                    <span style="margin-left: 5px;">
+                        密码必须至少八个字符且包含字母和数字
+                    </span>
+                </div>
+                <div 
+                    class="code"
+                    :style="
+                        !data.passwordIsTrue ? '' : 'margin-top: 20px'
+                    "
+                >
+                    <div class="codeInput">
+                        <input 
+                            :type="!data.passwordIsShow0 ? 'password' : 'text'"
+                            class="input inputPassword"
+                            placeholder="密码" 
+                            v-model="data.password"
+                            @input="jugeCanSubmit"
+                            @change="validatePassword"
+                        />
+                        <div 
+                            class="showPassword"
+                            :style="
+                                data.passwordIsShow0 ? 
+                                'background-image: url(image/index/auth/eye.svg)' : 
+                                'background-image: url(image/index/auth/eye-slash.svg)'
+                            "
+                            @click="data.passwordIsShow0 = !data.passwordIsShow0"
+                        ></div>
+                    </div>
+                </div>
+                <div v-if="!data.confirmIsTrue" class="Error">
+                    <img src="image/index/auth/warn.svg" width="12" height="12" >
+                    <span style="margin-left: 5px;">
+                        前后密码不一致
+                    </span>
+                </div>
+                <div 
+                    class="code"
+                    :style="
+                        !data.confirmIsTrue ? '' : 'margin-top: 20px'
+                    "
+                >
+                    <div class="codeInput">
+                        <input 
+                            :type="!data.passwordIsShow1 ? 'password' : 'text'"
+                            class="input inputPassword"
+                            placeholder="确认密码" 
+                            v-model="data.passwordConfirm"
+                            @input="jugeCanSubmit"
+                            @change="validateConfirmPassword"
+                        />
+                        <div 
+                            class="showPassword"
+                            :style="
+                                data.passwordIsShow1 ? 
+                                'background-image: url(image/index/auth/eye.svg)' : 
+                                'background-image: url(image/index/auth/eye-slash.svg)'
+                            "
+                            @click="data.passwordIsShow1 = !data.passwordIsShow1"
+                        ></div>
                     </div>
                 </div>
                 <input
@@ -220,13 +278,9 @@
                         'opacity: 0.5;cursor: not-allowed'
                     "
                     class="submit" 
-                    value="登录"
+                    value="注册"
                     :disabled="!data.allowSubmit"
                 />
-                <div v-if="data.isUsePassWord" class="question">
-                    <div @click="register">注册</div>
-                    <div @click="forget">忘记密码</div>
-                </div>
             </form>
         </div>
     </div>
@@ -234,14 +288,18 @@
 
 <style scoped lang="scss">
     $InputWidth: 300px; $InputHeight: 48px;
-    $CodeHeight: 80px;
-
-    .login{
+    $CodeHeight: 48px;
+    .register{
         width: 100%;
         height: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        .registerHeader {
+            width: $InputWidth;
+            text-align: center;
+        }
         .form {
             // width: 360px;
             // height: 400px;
@@ -272,18 +330,19 @@
             }
             .code {
                 width: $InputWidth;
-                height: $CodeHeight;
+                // height: $CodeHeight;
+                // margin-top: 20px;
                 .codeInput {
                     width: 100%;
                     height: $InputHeight;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    .inputPassword {
+                    .inputCode {
                         border-top-right-radius: 0;
                         border-bottom-right-radius: 0;
                     }
-                    .inputCode {
+                    .inputPassword {
                         border-top-right-radius: 0;
                         border-bottom-right-radius: 0;
                     }
@@ -319,13 +378,6 @@
                         align-items: center;
                     }
                 }
-                .changeMethod {
-                    width: fit-content;
-                    color: #007dff;
-                    font-size: 12px;
-                    margin-top: 0.5 * ($CodeHeight - $InputHeight - 12px);
-                    cursor: pointer;
-                }
             }
             .submit {
                 width: $InputWidth;
@@ -336,8 +388,7 @@
                 outline: none;
                 border: none;
                 background: #ca141d;
-                margin-top: 10px;
-                text-align: center;
+                margin-top: 20px;
             }
             .question {
                 width: $InputWidth;
