@@ -20,6 +20,9 @@
 
     const validateP = () => {
         const reg = /^1(3[0-9]|4[01456879]|5[0-35-9]|6[2567]|7[0-8]|8[0-9]|9[0-35-9])\d{8}$/
+        if(!data.isUsePassWord && reg.test(data.phone)) {
+            data.allowGetCode = true
+        }
         return reg.test(data.phone)
     }
 
@@ -32,9 +35,6 @@
 
     const validatePhone = () => {
         data.phoneIsTrue = validateP()
-        if(!data.isUsePassWord && data.phoneIsTrue) {
-            data.allowGetCode = true
-        }
     }
 
     const validateC = () => {
@@ -91,6 +91,7 @@
         data.code = ""
         data.codeIsTrue = true
         data.isUsePassWord = !data.isUsePassWord
+        jugeCanSubmit()
     }
 
     const getValidateCode = async () => {
@@ -138,6 +139,8 @@
             tipPopup("success", {
                 title: "登录成功",
                 timer: 1000
+            }).then(() => {
+                router.push("/ezpsy/console")
             })
         } else {
             tipPopup("error", {
