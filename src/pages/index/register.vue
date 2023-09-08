@@ -6,11 +6,11 @@
     import { getVerifyCode, registerAuth } from '@/assets/index/auth'
 
     const data = reactive({
-        phone: "17305558177",
+        phone: "",
         code: "",
-        password: "st132622",
-        passwordConfirm: "st132622",
-        validateText: "获取验证码",
+        password: "",
+        passwordConfirm: "",
+        validateText: "",
         codetips: "",
         passwordtips: "",
         allowSubmit: false,

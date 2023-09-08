@@ -3,6 +3,11 @@ import { PhoneAuth } from "ezpsy-server"
 
 const auth = agc.getAuth("Ezpsy_Auth") as PhoneAuth
 
+const getCurrentUser = async () => {
+    const user = await auth.getUserInfo()
+    return user
+}
+
 const getVerifyCode = async (opts: Parameters<typeof auth.getVerifyCode>[0]) => {
     const res = await auth.getVerifyCode(opts)
     return res
@@ -24,6 +29,7 @@ const loginByCode = async (opts: Parameters<typeof auth.loginByVerifyCode>[0]) =
 }
 
 export {
+    getCurrentUser,
     getVerifyCode,
     registerAuth,
     loginByPsd,

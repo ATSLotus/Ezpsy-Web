@@ -1,12 +1,9 @@
 <script setup lang="ts">
     import log from '@/assets/utils/log'
-    import agc from '@/assets/agc/agc'
-    import { PhoneAuth } from "ezpsy-server"
-    import { reactive } from 'vue';
+    import { onBeforeMount, reactive } from 'vue';
     import { tipPopup } from '@/assets/utils/popup';
     import router from '@/router/router';
- 
-    const auth = agc.getAuth("Ezpsy_Auth") as PhoneAuth
+    import { getCurrentUser, getVerifyCode, loginByCode, loginByPsd } from '@/assets/index/auth';
 
     const data = reactive({
         isUsePassWord: true,
@@ -97,7 +94,7 @@
     }
 
     const getValidateCode = async () => {
-        const res = await auth.getVerifyCode({
+        const res = await getVerifyCode({
             countryCode: "86",
             phone: data.phone,
             model: 0,
@@ -105,25 +102,49 @@
         })
         if(res.isSuccess) {
             let i = 60
+            data.validateText = `${i}s 后重新获取`
             const timer = setInterval(() => {
-                data.validateText = `${i}s 后重新获取`
                 if(i === 0) {
                     data.validateText = '获取验证码'
                     clearInterval(timer)
                 }
                 i--
+                data.validateText = `${i}s 后重新获取`
             }, 1000)
         } else {
             tipPopup("error", {
                 title: "获取失败",
-                tips: "获取验证码失败, 请检查网络情况",
+                tips: "请一分钟后尝试",
                 isUseConfirm: true
             })
         }
     }
     
-    const login = () => {
-        log.info("TEST")
+    const login = async () => {
+        let res = {} as Awaited<ReturnType<typeof loginByPsd>>
+        if(data.isUsePassWord)
+            res = await loginByPsd({
+                countryCode: "86",
+                phoneNumber: data.phone,
+                password: data.code
+            })
+        else
+            res = await loginByCode({
+                countryCode: "86",
+                phoneNumber: data.phone,
+                verifyCode: data.code
+            })
+        if(res.isSuccess) {
+            tipPopup("success", {
+                title: "登录成功",
+                timer: 1000
+            })
+        } else {
+            tipPopup("error", {
+                title: "登录失败",
+                tips: `${data.isUsePassWord ? '账号密码错误' : '验证码错误'}`
+            })
+        }
     }
 
     const register = () => {
@@ -131,14 +152,24 @@
     }
 
     const forget = () => {
-
+        router.push("/index/resetPSD")
     }
+
+    onBeforeMount(async () => {
+        const user = await getCurrentUser()
+        if(user.isSuccess) {
+            router.push("/ezpsy/console")
+        }
+    })
     
 </script>
 
 <template>
     <div>
         <div class="login">
+            <div class="loginHeader">
+                <div style="font-size: 24px;">Ezpsy 账号登录</div>
+            </div>
             <form class="form" @submit="login">
                 <div v-if="!data.phoneIsTrue" class="Error">
                     <img src="image/index/auth/warn.svg" width="12" height="12" >
@@ -240,8 +271,13 @@
         width: 100%;
         height: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        .registerHeader {
+            width: $InputWidth;
+            text-align: center;
+        }
         .form {
             // width: 360px;
             // height: 400px;

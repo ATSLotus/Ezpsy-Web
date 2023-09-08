@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import log from "@/assets/utils/log"
     import EzpsyMenu from "@/components/ezpsy/Menu.vue";
-    import { onMounted, reactive, watch, shallowRef } from "vue";
+    import { onMounted, reactive, watch, shallowRef, onBeforeMount } from "vue";
     import { useRoute } from 'vue-router';
     import router from "@/router/router";
     import Production from "@/components/ezpsy/Production.vue"
@@ -10,6 +10,7 @@
     import Datas from "@/components/ezpsy/Datas.vue"
     import { EzpsyMenuStore } from "@/store/store";
     import Experiment from "@/components/ezpsy/Experiment.vue";
+    import { getCurrentUser } from "@/assets/index/auth";
 
     const route = useRoute()
 
@@ -27,6 +28,13 @@
     ])
 
     data.store.set(menus.value)
+
+    onBeforeMount(async () => {
+        const user = await getCurrentUser()
+        if(!user.isSuccess) {
+            router.push("/index/login")
+        }
+    })
 
     onMounted(async () => {
         if(!route.query?.menu) {
