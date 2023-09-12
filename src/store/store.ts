@@ -23,3 +23,33 @@ export const EzpsyMenuStore = defineStore({
         }
     }
 })
+
+export const ScriptsStore = defineStore({
+    id: "script",
+    state: () => ({
+        scripts: new Set<HTMLScriptElement>()
+    }),
+    getters: {
+        getScripts: (state) => state.scripts
+    },
+    actions: {
+        set(script: HTMLScriptElement) {
+            this.scripts.add(script)
+        }
+    }
+})
+
+export const UserStore = defineStore({
+    id: "user",
+    state: () => ({
+        user: new Object()
+    }),
+    getters: {
+        getUser: (state) => state.user
+    },
+    actions: {
+        set(user: Object) {
+            this.user = user
+        }
+    }
+})

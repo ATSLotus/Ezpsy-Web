@@ -1,4 +1,6 @@
 import Swal from "sweetalert2"
+import ATSSelectElement from "../elem/atsselect"
+import uuid from "./uuid"
 
 interface POPUP {
     title?: string
@@ -205,11 +207,309 @@ const showImg = (img: string) => {
     })
 }
 
+const showProgress = (percent: number) => {
+    const html = `
+        <div style="" >文件上传中</div>
+        <div style="
+            width: 90%;
+            height: 40px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        ">
+            <div style="
+                width: 80%;
+                height: 20px;
+                border: 1px solid #ccc;
+            ">
+                <div id="ezPopup_bar" style="
+                    width: ${percent}%;
+                    height: 20px;
+                    background: #2988e6;
+                    transition: width .5s;
+                "></div>
+            </div>
+            <div style="
+                transition: content .5s;
+            " id="ezPopup_percent" >${percent}</div>
+        </div>
+    `
+    if(
+        Swal.isVisible() && 
+        document.getElementById("ezPopup_bar") &&
+        document.getElementById("ezPopup_percent")
+    ) {
+        (document.getElementById("ezPopup_bar") as HTMLElement).style.width = `${percent}%`;
+        (document.getElementById("ezPopup_percent") as HTMLElement).innerText = `${percent}%`;
+    } else {
+        Swal.fire({
+            html,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            customClass: {
+                container: "ats_container",
+                popup: "ats-tip-popup",
+                htmlContainer: "ats-tip-htmlContainer",
+                closeButton: "ats-close-button",
+                actions: "ats-actions",
+                confirmButton: "ats-confirm-button",
+                cancelButton: "ats-cancel-button"
+            }
+        })
+    }
+}
+
+type inputTypes = "input" | "multiline" | "checkbox" | "select"
+interface inputObject {
+    type: inputTypes
+    props: {
+        [key: string]: any
+    }
+}
+interface domIndex {
+    type: inputTypes
+    id: string
+}
+interface inputOptions {
+    storageId?: string
+    title: string
+    html: Array<inputObject>
+    preConfirm: (getValue: () => Array<boolean|string>) => () => any
+}
+
+const inputPopup = (opts: inputOptions) => {
+    let storage = new Array<string|boolean>()
+    if(opts.storageId) {
+        const st = localStorage.getItem(opts.storageId)
+        if(st) 
+            storage = JSON.parse(st) as Array<string|boolean>
+    }
+    const ids = new Array<domIndex>()
+    let html = ``
+    html += `
+        <style>
+            .ats-multiline {
+                font-size: 14px;
+                width: 75%;
+                outline: none;
+                min-height: 80px;
+                line-height: 40px;
+                max-height: 200px;
+                overflow: auto;
+                text-align: left;
+                padding: 0;
+                border: 1px solid #cccccc;
+                border-radius: 5px;
+                padding: 0 0.8em;
+                box-sizing: border-box;
+                color: #000000;
+                cursor: text;
+            }
+            .ats-multiline:empty:before {
+                content: attr(placeholder);
+                display: block;
+                width: 100%;
+                height: 40px;
+                line-height: 40px;
+                color: #888888;
+            }
+        </style>
+    `
+    html += `<div>${opts.title}</div>\n`
+    opts.html.forEach((obj, i) => {
+        const id = "input_" + uuid.getUuid()
+        const v = storage[i]
+        switch(obj.type) {
+            case "input": {
+                const title = obj.props.title ? obj.props.title : ""
+                const placeholder = obj.props.placeholder ? obj.props.placeholder : "请输入内容"
+                const defaultValue = obj.props.default ? `${obj.props.default}` : ""
+                html += `
+                    <div style="
+                        width: 90%;
+                        position: relative;
+                        display: flex;
+                        margin-left: 5%;
+                        align-items: center;
+                        margin-top: 15px;
+                    ">
+                        <div style="
+                            font-size: 14px;
+                            height: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: left;
+                            width: 15%;
+                            flex-shrink: 1;
+                            flex-grow: 1;
+                        ">${title}</div>
+                        <input style="
+                            width: 75%;
+                            height: 40px;
+                            line-height: 40px;
+                            outline: none;
+                            padding: 0;
+                            border: 1px solid #cccccc;
+                            border-radius: 5px;
+                            box-sizing: border-box;
+                            text-indent: 0.8em;
+                        " id="${id}" value="${v ? v : defaultValue}"
+                        placeholder="${placeholder}" />
+                    </div>
+                `
+                break
+            }
+            case "multiline": {
+                const title = obj.props.title ? obj.props.title : ""
+                const placeholder = obj.props.placeholder ? obj.props.placeholder : "请输入内容"
+                const defaultValue = obj.props.default ? `${obj.props.default}` : ""
+                html += `
+                    <div style="
+                        width: 90%;
+                        position: relative;
+                        display: flex;
+                        margin-left: 5%;
+                        margin-top: 15px;
+                    ">
+                        <div style="
+                            font-size: 14px;
+                            height: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: left;
+                            width: 15%;
+                            flex-shrink: 1;
+                            flex-grow: 1;
+                        ">${title}</div>
+                        <div class="ats-multiline" style="
+                        " id="${id}" contenteditable="true" 
+                        placeholder="${placeholder}"
+                        >${v ? v : defaultValue}</div>
+                    </div>
+                `
+                break
+            }
+            case "checkbox":{
+                const title = obj.props.title ? obj.props.title : ""
+                const defaultValue = obj.props.default ? "checked" : ""
+                const isChecked = v ? "checked" : defaultValue
+                html += `
+                    <div style="
+                        width: 100%;
+                        position: relative;
+                        display: flex;
+                        align-items: center;
+                        margin-top: 15px;
+                    ">
+                        <input style= "
+                            width: 18px;
+                            height: 18px;
+                            margin: 0 0 0 5%;
+                            cursor: pointer;
+                        "
+                        type="checkbox"  
+                        id="${id}" ${isChecked} />
+                        <div style="
+                            font-size: 14px;
+                            height: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: left;
+                            width: fit-content;;
+                            margin-left: 2%;
+                        ">${title}</div>
+                    </div>
+                `
+                break
+            }
+            case "select": {
+                const placeholder = obj.props.placeholder ? obj.props.placeholder : ""
+                const defaultValue = obj.props.default ? obj.props.default : ""
+                const opts = 
+                    obj.props.options && obj.props.options instanceof Array ? 
+                    obj.props.options : 
+                    []
+                let optsStr = ``
+                opts.forEach(opt => {
+                    const isSelected = 
+                        v === opt.value ? 
+                        'selected' : 
+                        defaultValue === opt.value ? 'selected' : ""
+                    optsStr += `\t<option value="${opt.value}" ${isSelected}>${opt.title}</option>\n`
+                })
+                html += `
+                <ats-select style="
+                    width: 90%;
+                    height: auto;
+                    margin-top: 15px;
+                    left: 5%;
+                " id="${id}" placeholder="${placeholder}">
+                    ${optsStr}
+                </ats-select>
+                `
+                break
+            }
+            default:
+                break
+        }
+        ids.push({
+            type: obj.type,
+            id
+        })
+    })
+    const getValue = () => {
+        const res = Array<string | boolean>()
+        ids.forEach(item => {
+            const dom = document.getElementById(item.id)
+            switch (item.type) {
+                case "input":
+                    res.push((<HTMLInputElement>dom).value)
+                    break
+                case "multiline":
+                    res.push((<HTMLDivElement>dom).innerText)
+                    break
+                case "checkbox":
+                    res.push((<HTMLInputElement>dom).checked)
+                    break
+                case "select":
+                    const value = (<ATSSelectElement>dom).value
+                    res.push(value ? value: "")
+                    break
+                default:
+                    break
+            }
+        })
+        opts.storageId && localStorage.setItem(opts.storageId, JSON.stringify(res))
+        return res
+    }
+    return Swal.fire({
+        html: html,
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        showConfirmButton: true,
+        showCancelButton: true,
+        showCloseButton: true,
+        allowOutsideClick: false,
+        customClass: {
+            popup: "ats-input-popup",
+            htmlContainer: "ats-input-htmlContainer",
+            closeButton: "ats-close-button",
+            actions: "ats-actions",
+            confirmButton: "ats-confirm-button",
+            cancelButton: "ats-cancel-button"
+        },
+        preConfirm: opts.preConfirm(getValue)
+    })
+}
+
 export {
     tipPopup,
     showloading,
     hideLoading,
     closePopup,
     showMsg,
-    showImg
+    showImg,
+    showProgress,
+    inputPopup
 }

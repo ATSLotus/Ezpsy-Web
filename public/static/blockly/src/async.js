@@ -1,141 +1,3 @@
-// Blockly.Blocks['async']={
-//     init:function(){
-//       var a=new Blockly.FieldTextInput("do something",Blockly.Procedures.rename);
-//       a.setSpellcheck(!1);
-//       this.appendDummyInput()
-//         .appendField(Blockly.Msg.PROCEDURES_DEFRETURN_TITLE)
-//         .appendField(a,"NAME").appendField("","PARAMS");
-//       this.appendValueInput("RETURN")
-//         .setAlign(Blockly.ALIGN_RIGHT)
-//         .appendField(Blockly.Msg.PROCEDURES_DEFRETURN_RETURN);
-//       this.setMutator(new Blockly.Mutator(["procedures_mutatorarg"]));
-//       (this.workspace.options.comments
-//         ||this.workspace.options.parentWorkspace
-//         &&this.workspace.options.parentWorkspace.options.comments)
-//         &&Blockly.Msg.PROCEDURES_DEFRETURN_COMMENT
-//         &&this.setCommentText(Blockly.Msg.PROCEDURES_DEFRETURN_COMMENT);
-//       this.setColour(Blockly.Blocks.procedures.HUE);
-//       this.setTooltip(Blockly.Msg.PROCEDURES_DEFRETURN_TOOLTIP);
-//       this.setHelpUrl(Blockly.Msg.PROCEDURES_DEFRETURN_HELPURL);
-//       this.arguments_=[];this.argumentVarModels_=[];this.setStatements_(!0);
-//       this.statementConnection_=null
-//     },
-//     setStatements_:Blockly.Blocks.procedures_defnoreturn.setStatements_,
-//     updateParams_:Blockly.Blocks.procedures_defnoreturn.updateParams_,
-//     mutationToDom:Blockly.Blocks.procedures_defnoreturn.mutationToDom,
-//     domToMutation:Blockly.Blocks.procedures_defnoreturn.domToMutation,
-//     decompose:Blockly.Blocks.procedures_defnoreturn.decompose,
-//     compose:Blockly.Blocks.procedures_defnoreturn.compose,
-//     getProcedureDef:function(){
-//       return[this.getFieldValue("NAME"),this.arguments_,!0]
-//     },
-//     getVars:Blockly.Blocks.procedures_defnoreturn.getVars,
-//     getVarModels:Blockly.Blocks.procedures_defnoreturn.getVarModels,
-//     renameVarById:Blockly.Blocks.procedures_defnoreturn.renameVarById,
-//     updateVarName:Blockly.Blocks.procedures_defnoreturn.updateVarName,
-//     displayRenamedVar_:Blockly.Blocks.procedures_defnoreturn.displayRenamedVar_,
-//     customContextMenu:Blockly.Blocks.procedures_defnoreturn.customContextMenu,
-//     callType_:"procedures_callreturn"
-//   };
-
-// Blockly.Blocks['async'] = {
-//     init:function(){
-//         // this.setHelpUrl('Blockly.Msg.LISTS_CREATE_WITH_HELPURL');
-//         var a=new Blockly.FieldTextInput("do something",Blockly.Procedures.rename);
-//             a.setSpellcheck(!1);
-//         this.appendDummyInput()
-//             .appendField("async")
-//             .appendField(a,"NAME").appendField("","PARAMS");
-//         this.appendStatementInput("func").appendField('func')
-//         this.setColour(290);
-//         this.itemCount_=3;
-//         this.updateShape_();
-//         // this.setInputsInline(false);
-//         // this.setOutput(!0,"Array");
-//         this.setPreviousStatement(true, null);
-//         this.setNextStatement(true, null);
-//         this.setMutator(new Blockly.Mutator(["async_create_with_item"]));
-//         // this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP)
-//     },
-        
-//     mutationToDom:function(){
-//         var a=document.createElement("mutation");
-//         a.setAttribute("items",this.itemCount_);
-//         return a
-//     },
-//     domToMutation:function(a){
-//         this.itemCount_=parseInt(a.getAttribute("items"),10);
-//         this.updateShape_()
-//     },
-//     decompose:function(a){
-//         var b=a.newBlock("async_create_with_container");
-//         b.initSvg();
-//         for(var c=b.getInput("STACK").connection,d=0;d<this.itemCount_;d++){
-//             var e=a.newBlock("async_create_with_item");
-//             e.initSvg();
-//             c.connect(e.previousConnection);
-//             c=e.nextConnection}
-//         return b
-//     },
-//     compose:function(a){
-//         var b=a.getInputTargetBlock("STACK");
-//         for(a=[];b;)
-//             a.push(b.valueConnection_),b=b.nextConnection&&b.nextConnection.targetBlock();
-//         for(b=0;b<this.itemCount_;b++){
-//             var d=this.getInput("func"+b).connection.targetConnection;
-//             d&&-1==a.indexOf(d)&&d.disconnect()
-//         }
-//         this.itemCount_=a.length;
-//         this.updateShape_();
-//         for(b=0;b<this.itemCount_;b++)
-//         {
-//             Blockly.Mutator.reconnect(a[b],this,"func"+b)
-//         }
-            
-//     },
-//     saveConnections:function(a){
-//         a=a.getInputTargetBlock("STACK");
-//         for(var b=0;a;){
-//             var d=this.getInput("func"+b);
-//             a.valueConnection_=d&&d.connection.targetConnection;
-//             b++;
-//             a=a.nextConnection&&a.nextConnection.targetBlock()
-//         }
-//     },
-//     updateShape_:function(){
-//         this.itemCount_&&this.getInput("EMPTY")?this.removeInput("EMPTY"):this.itemCount_||this.getInput("EMPTY")||this.appendDummyInput("EMPTY").appendField('create empty randomfunc');
-
-//         for(var a=0;a<this.itemCount_;a++)
-//             if(!this.getInput("func"+a)){
-//                 var b = this.appendStatementInput("func"+a).appendField('func'+a);
-//             }
-//         for(;this.getInput("func"+a);)
-//             this.removeInput("func"+a),a++
-        
-//     }
-// };
-
-// Blockly.Blocks['async_create_with_item'] = {
-//     init:function(){
-//         this.setColour(290);
-//         this.appendDummyInput().appendField(Blockly.Msg.LISTS_CREATE_WITH_ITEM_TITLE);
-//         this.setPreviousStatement(!0);this.setNextStatement(!0);
-//         // this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_ITEM_TOOLTIP);
-//         this.contextMenu=!1
-//     }
-// };
-
-// Blockly.Blocks['async_create_with_container']={
-//     init:function(){
-//         this.setColour(290);
-//         this.appendDummyInput().appendField(Blockly.Msg.LISTS_CREATE_WITH_CONTAINER_TITLE_ADD);
-//         this.appendStatementInput("STACK");
-//         this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_CONTAINER_TOOLTIP);
-//         this.contextMenu=!1
-//     }
-// };
-
-
 Blockly.Blocks.procedures_defnoreturn={
     init:function(){
         var a=new Blockly.FieldTextInput("",Blockly.Procedures.rename);
@@ -143,9 +5,10 @@ Blockly.Blocks.procedures_defnoreturn={
         this.appendDummyInput()
             .appendField(Blockly.Msg.PROCEDURES_DEFNORETURN_TITLE)
             .appendField(a,"NAME").appendField("","PARAMS");
-        this.setMutator(new Blockly.Mutator(["procedures_mutatorarg"]));
+        this.setMutator(new Blockly.icons.MutatorIcon(["procedures_mutatorarg"], this));
         (this.workspace.options.comments||this.workspace.options.parentWorkspace&&this.workspace.options.parentWorkspace.options.comments)&&Blockly.Msg.PROCEDURES_DEFNORETURN_COMMENT&&this.setCommentText(Blockly.Msg.PROCEDURES_DEFNORETURN_COMMENT);
-        this.setColour(Blockly.Blocks.procedures.HUE);
+        // this.setColour(Blockly.Blocks.procedures.HUE);
+        this.setColour("#995ba5")
         this.setTooltip(Blockly.Msg.PROCEDURES_DEFNORETURN_TOOLTIP);
         this.setHelpUrl(Blockly.Msg.PROCEDURES_DEFNORETURN_HELPURL);
         this.arguments_=[];this.argumentVarModels_=[];
@@ -230,7 +93,7 @@ Blockly.Blocks.procedures_defnoreturn={
         a=a.getFieldValue("STATEMENTS");
         if(null!==a&&(a="TRUE"==a,this.hasStatements_!=a))
             if(a)
-                this.setStatements_(!0),Blockly.Mutator.reconnect(this.statementConnection_,this,"STACK"),
+                this.setStatements_(!0),Blockly.icons.MutatorIcon.reconnect(this.statementConnection_,this,"STACK"),
                 this.statementConnection_=null;
         else{
             a=this.getInput("STACK").connection;

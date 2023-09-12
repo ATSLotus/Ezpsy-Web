@@ -20,7 +20,7 @@ Blockly.Blocks['dataExport'] = {
         this.updateShape_();
         // this.setInputsInline(false);
         // this.setOutput(!0,"Array");
-        this.setMutator(new Blockly.Mutator(["dataExport_create_with_item"]));
+        this.setMutator(new Blockly.icons.MutatorIcon(["dataExport_create_with_item"], this));
         // this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP)
     },
         
@@ -54,7 +54,7 @@ Blockly.Blocks['dataExport'] = {
         this.itemCount_=a.length;
         this.updateShape_();
         for(b=0;b<this.itemCount_;b++)
-            Blockly.Mutator.reconnect(a[b],this,"ADD"+b)
+            Blockly.icons.MutatorIcon.reconnect(a[b],this,"ADD"+b)
     },
     saveConnections:function(a){
         a=a.getInputTargetBlock("STACK");

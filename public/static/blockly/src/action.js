@@ -16,7 +16,7 @@ Blockly.Blocks['setFillColor'] = {
         this.setTooltip("");
         this.setHelpUrl("");
     }
-  };
+};
 
 //2.设置边框颜色
 Blockly.Blocks['setStrokeColor'] = {

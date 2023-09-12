@@ -28,6 +28,13 @@ const loginByCode = async (opts: Parameters<typeof auth.loginByVerifyCode>[0]) =
     return res
 }
 
+type profileParameter = Parameters<typeof auth.updateProfile>
+
+const updateProfile = async (user: profileParameter[0], obj: profileParameter[1]) => {
+    const res = await auth.updateProfile(user, obj)
+    return res
+}
+
 export {
     getCurrentUser,
     getVerifyCode,

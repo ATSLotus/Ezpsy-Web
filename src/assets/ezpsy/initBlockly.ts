@@ -1,10 +1,11 @@
 import randerScript from "./randerScript"
 
 const initBlockly = async () => {
-    await randerScript("static/blockly/code/blockly_compressed.js")
-    await randerScript("static/blockly/code/blocks_compressed.js")
-    await randerScript("static/blockly/code/javascript_compressed.js")
-    await randerScript("static/blockly/code/en.js")
+    // await randerScript("static/blockly/code/blockly_compressed.js")
+    // await randerScript("static/blockly/code/blocks_compressed.js")
+    // await randerScript("static/blockly/code/javascript_compressed.js")
+    // await randerScript("static/blockly/code/en.js")
+    await randerScript("static/blockly/code/blockly.min.js")
     await randerScript("static/blockly/src/graph.js")
     await randerScript("static/blockly/src/graph-gen.js")
     await randerScript("static/blockly/src/systemInformation.js")

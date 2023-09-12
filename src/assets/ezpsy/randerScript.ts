@@ -1,3 +1,5 @@
+import { ScriptsStore } from "@/store/store"
+
 const randerScript = async (str: string) => {
     return new Promise((res, rej) => {
         const script = document.createElement('script')
@@ -8,6 +10,7 @@ const randerScript = async (str: string) => {
         document.getElementsByTagName('head')[0].appendChild(script)
 
         script.onload = () => {
+            ScriptsStore().set(script)
             res(1)
         }
 

@@ -4,18 +4,40 @@
     import BLK from "blockly"
     import { onMounted, reactive, onBeforeUnmount } from 'vue';
     import initBlockly from '@/assets/ezpsy/initBlockly';
-    import { showMsg, showImg } from "@/assets/utils/popup";
+    import { showMsg, showImg, tipPopup, inputPopup, closePopup } from "@/assets/utils/popup";
+    import router from '@/router/router';
+    import { encrypt } from '@/assets/utils/crypto';
+    import { ScriptsStore } from '@/store/store';
+    import { getCurrentUser } from '@/assets/index/auth';
+    import agc from '@/assets/agc/agc'
+    import uuid from "@/assets/utils/uuid"
 
     const tempConsoleWarn = console.warn
     const tempConsoleLog = console.log
     console.warn = message => {
-      if (message.startsWith('WARNING: No message string for')) return;
-      else tempConsoleWarn(message);
+        if(typeof message === 'string') {
+            if(message.startsWith("block generator functions")) {
+                return
+            } else if(message.startsWith('WARNING: No message string for ')) {
+                return
+            } else {
+                tempConsoleWarn(message)
+            }
+        } else tempConsoleWarn(message);
     }
     console.log = message => {
-      if (message.startsWith('WARNING: No message string for ')) return;
-      else tempConsoleLog(message);
+        if(typeof message === 'string') {
+            if(message.startsWith("block generator functions")) {
+                return
+            } else if(message.startsWith('WARNING: No message string for ')) {
+                return
+            } else {
+                tempConsoleLog(message)
+            }
+        } else tempConsoleLog(message);
     }
+
+    const storage = agc.storage
 
     const data = reactive({
         Blockly: {} as typeof BLK,
@@ -23,6 +45,8 @@
         code: "",
         xml: "",
         isFullScreen: false,
+        isAllowUndo: false,
+        isAllowRedo: false
     })
 
     const init = async () => {
@@ -31,7 +55,7 @@
             collapse: true,
             comments: true,
             disable: true,
-            maxBlocks: Infinity,
+            maxBlocks: 1000,
             trashcan: true,
             horizontalLayout: false,
             toolboxPosition: 'start',
@@ -58,6 +82,8 @@
                 data.Blockly.Xml.domToText(
                     data.Blockly.Xml.workspaceToDom(data.workspace as BLK.WorkspaceSvg)
                 )
+            data.isAllowUndo = data.workspace.getUndoStack().length > 0
+            data.isAllowRedo = data.workspace.getRedoStack().length > 0
         })
     }
 
@@ -95,14 +121,133 @@
         }
     }
 
+    const save = async () => {
+        const res = await getCurrentUser()
+        log.info(res)
+        if(res.isSuccess) {
+            inputPopup({
+                title: "请输入相关信息",
+                html: [
+                    {
+                        type: "input",
+                        props: {
+                            title: "文件名",
+                            placeholder: "请输入"
+                        }
+                    },
+                    {
+                        type: "multiline",
+                        props: {
+                            title: "描述",
+                            placeholder: "请输入"
+                        }
+                    }
+                ],
+                preConfirm: (getValue) => {
+                    return () => {
+                        const res = getValue()
+                        return {
+                            title: res[0],
+                            description: res[1]
+                        }
+                    }
+                }
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    closePopup()
+                    const value = result.value
+                    const user = res.data.user
+                    // log.info(user)
+                    const json = {
+                        ctime: Date.now(),
+                        mtime: Date.now(),
+                        creator: {
+                            name: user.displayName,
+                            avatar: user.photoUrl
+                        },
+                        data: {
+                            description: value?.title ? value.title : "",
+                            xml: data.xml,
+                            code: data.code
+                        }
+                    }
+                    storage.uploadString({
+                        str: JSON.stringify(json),
+                        folder: `private/${user.uid}/ezBlock`,
+                        name: value.title ? value.title : uuid.getUuid(),
+                        extension: "json"
+                    })
+                }
+            })
+            
+        } else {
+            tipPopup("error", {
+                title: "请登录",
+                tips: "请登录后使用",
+                isUseConfirm: true
+            }).then(() => {
+                router.push("/index/login")
+            })
+        }
+    }
+
     const showKeyCode = () => {
         showImg("image/ezpsy/keycode.png")
+    }
+    
+    const download = () => {
+        let blob = new Blob([data.xml], {
+            type: "text/xml;charset=utf-8"
+        });
+        let reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onload = function(e) {
+            const target = e.target
+            if(target) {
+                let a = document.createElement('a');
+                a.download = uuid.getUuid();
+                a.href = target.result as string;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+            
+        }
+    }
+
+    const undo = () => {
+        data.workspace.undo(false)
+    }
+
+    const redo = () => {
+        data.workspace.undo(true)
+    }
+
+    const load = () => {
+
+    }
+
+    const run = () => {
+        const routeData = router.resolve({
+            path: "/ezpsy/experiment",
+            query: {
+                code: encrypt(data.code)
+            }
+        })
+        window.open(routeData.href, "_blank")
     }
 
     onBeforeUnmount(async () => {
         const isFullScreen = !!(document.fullscreenElement)
         if(isFullScreen)
             document.exitFullscreen()
+        console.log = tempConsoleLog
+        console.warn = tempConsoleWarn
+        const scriptStore = ScriptsStore()
+        const scripts = scriptStore.getScripts
+        scripts.forEach(script => {
+            script.remove()
+        })
     })
 
 </script>
@@ -115,22 +260,37 @@
                 <button type="button" class="btn" @click="showJs">
                     <img src="image/ezpsy/icons/javascript.svg">
                 </button>  
-                <button type="button" class="btn">
+                <button type="button" class="btn" @click="save">
                     <img src="image/ezpsy/icons/save.svg">保存
                 </button>
                 <button type="button" class="btn" @click="showKeyCode">
                     <img src="image/ezpsy/icons/keycode.svg">keycode
                 </button>
-                <button type="button" class="btn">
+                <button type="button" class="btn" @click="download">
                     <img src="image/ezpsy/icons/cloud_download.svg">下载
                 </button>
                 <button type="button" class="btn">
                     <img src="image/ezpsy/icons/img.svg">图床
                 </button>
-                <button type="button" class="btn">
-                    <img src="image/ezpsy/icons/back.svg">返回
+                <button 
+                    :class="
+                        data.isAllowUndo ? 
+                        '' :
+                        'button_denied'
+                    " 
+                    type="button" class="btn" @click="undo">
+                    <img src="image/ezpsy/icons/back.svg">撤消
                 </button>
-                <button type="button" class="btn">
+                <button 
+                    :class="
+                        data.isAllowRedo ? 
+                        '' :
+                        'button_denied'
+                    " 
+                    type="button" class="btn" @click="redo">
+                    <img src="image/ezpsy/icons/redo.svg">重做
+                </button>
+                <button type="button" class="btn" @click="load">
                     <img src="image/ezpsy/icons/upload.svg">加载
                 </button>
                 <button type="button" class="btn" @click="fullscreen">
@@ -140,7 +300,7 @@
                         'image/ezpsy/icons/fullscreen.svg'"
                     >{{ data.isFullScreen ? "退出全屏" : "全屏" }}
                 </button>
-                <button type="button" class="btn btn-run">
+                <button type="button" class="btn btn-run" @click="run">
                     <img src="image/ezpsy/icons/run.svg">运行
                 </button>
             </div>
@@ -191,6 +351,10 @@
                         height: 22px;
                     }
                 }
+                .button_denied {
+                    opacity: .5;
+                    cursor: not-allowed;
+                }
                 .btn-run {
                     background: #005795;
                     color: #ffffff;
@@ -200,6 +364,9 @@
                 }
                 .btn:hover {
                     background: #3379aa;
+                }
+                .button_denied:hover {
+                    background: #f0f0f0;
                 }
             }
         }

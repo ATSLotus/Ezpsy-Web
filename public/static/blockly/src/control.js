@@ -12,7 +12,7 @@ Blockly.Blocks['randomfunc'] = {
         // this.setOutput(!0,"Array");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setMutator(new Blockly.Mutator(["_create_with_item"]));
+        this.setMutator(new Blockly.icons.MutatorIcon(["_create_with_item"], this));
         // this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP)
     },
         
@@ -47,7 +47,7 @@ Blockly.Blocks['randomfunc'] = {
         this.updateShape_();
         for(b=0;b<this.itemCount_;b++)
         {
-            Blockly.Mutator.reconnect(a[b],this,"func"+b)
+            Blockly.icons.MutatorIcon.reconnect(a[b],this,"func"+b)
         }
             
     },
@@ -90,7 +90,7 @@ Blockly.Blocks['await_keypress'] = {
         // this.setOutput(!0,"Array");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setMutator(new Blockly.Mutator(["_create_with_item"]));
+        this.setMutator(new Blockly.icons.MutatorIcon(["_create_with_item"], this));
         
         // this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP)
     },
@@ -128,8 +128,8 @@ Blockly.Blocks['await_keypress'] = {
         this.updateShape_();
         for(b=0;b<this.itemCount_;b++)
         {
-            Blockly.Mutator.reconnect(a[b],this,"key"+b)
-            Blockly.Mutator.reconnect(a[b],this,"func"+b)
+            Blockly.icons.MutatorIcon.reconnect(a[b],this,"key"+b)
+            Blockly.icons.MutatorIcon.reconnect(a[b],this,"func"+b)
         }
             
     },
@@ -174,7 +174,7 @@ Blockly.Blocks['keypress'] = {
         // this.setOutput(!0,"Array");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setMutator(new Blockly.Mutator(["_create_with_item"]));
+        this.setMutator(new Blockly.icons.MutatorIcon(["_create_with_item"], this));
         
         // this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP)
     },
@@ -212,8 +212,8 @@ Blockly.Blocks['keypress'] = {
         this.updateShape_();
         for(b=0;b<this.itemCount_;b++)
         {
-            Blockly.Mutator.reconnect(a[b],this,"key"+b)
-            Blockly.Mutator.reconnect(a[b],this,"func"+b)
+            Blockly.icons.MutatorIcon.reconnect(a[b],this,"key"+b)
+            Blockly.icons.MutatorIcon.reconnect(a[b],this,"func"+b)
         }
             
     },

@@ -8,8 +8,8 @@
     import Image from "@/components/ezpsy/Image.vue"
     import Codes from "@/components/ezpsy/Codes.vue"
     import Datas from "@/components/ezpsy/Datas.vue"
-    import { EzpsyMenuStore } from "@/store/store";
-    import Experiment from "@/components/ezpsy/Experiment.vue";
+    import { EzpsyMenuStore, UserStore } from "@/store/store";
+    import EzpsyBlock from "@/components/ezpsy/EzpsyBlock.vue";
     import { getCurrentUser } from "@/assets/index/auth";
 
     const route = useRoute()
@@ -22,21 +22,22 @@
     const menus = shallowRef([
         { key: "production", component: Production, icon: 'fa-file-code',title: '个人项目', isSelected: true },
         { key: "image", component: Image, icon: 'fa-image',title: '图床图片', isSelected: false }, 
-        { key: "experiment", component: Experiment, icon: 'fa-file-excel',title: '实验编辑', isSelected: false },
+        { key: "ezpsy-block", component: EzpsyBlock, icon: 'fa-file-excel',title: '实验编辑', isSelected: false },
         { key: "codes", component: Codes, icon: 'fa-list',title: '实验列表', isSelected: false },
         { key: "datas", component: Datas, icon: 'fa-file-excel',title: '实验数据', isSelected: false }
     ])
 
     data.store.set(menus.value)
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         const user = await getCurrentUser()
+        log.info(user)
         if(!user.isSuccess) {
             router.push("/index/login")
+        } else {
+            const userStorage = UserStore()
+            userStorage.set(user.data.user)
         }
-    })
-
-    onMounted(async () => {
         if(!route.query?.menu) {
             router.push({
                 query: { ...route.query, menu: "production" }

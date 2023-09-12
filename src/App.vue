@@ -2,14 +2,6 @@
 	import log from "@/assets/utils/log"
   	import router from '@/router/router';
 	import { getCurrentUser } from '@/assets/index/auth';
-	import { onBeforeMount } from "vue";
-
-	onBeforeMount(async () => {
-		const user = await getCurrentUser()
-		if(!user.isSuccess) {
-			router.push("/index/login")
-		}
-	})
 </script>
 
 <template>
