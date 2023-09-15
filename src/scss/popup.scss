@@ -1,65 +1,74 @@
+@import "./app.scss";
+@import "./ezpsy-menu.scss";
+
+.ats_ezpsy_container {
+    width: calc($APPWidth - $EzpsyMenuWidth) !important;
+    margin: auto !important;
+    left: $EzpsyMenuWidth !important;
+}
+
 .ats-tip-popup {
-    width: 400px;
-    height: auto;
+    width: 400px !important;
+    height: auto !important;
 }
 .ats-input-popup {
-    width: 400px;
-    height: auto;
+    width: 400px !important;
+    height: auto !important;
 }
 .ats-msg-popup {
-    width: 800px;
-    height: auto;
+    width: 800px !important;
+    height: auto !important;
 }
 
 .ats-img-popup {
-    width: 1200px;
-    height: auto;
+    width: 1200px !important;
+    height: auto !important;
 }
 
 // tip
 .ats-tip-popup {
-    padding: 0;
-    padding: 10px 0;
+    padding: 0 !important;
+    padding: 10px 0 !important;
 }
 .ats-tip-htmlContainer{
-    margin: 0;
-    overflow: visible;
+    margin: 0 !important;
+    overflow: visible !important;
 }
 
 // input
 .ats-input-popup {
-    padding: 0;
-    padding: 10px 0;
+    padding: 0 !important;
+    padding: 10px 0 !important;
 }
 .ats-input-htmlContainer{
-    margin: 0;
-    overflow: visible;
+    margin: 0 !important;
+    overflow: visible !important;
 }
 .ats-close-button {
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 5px !important;
 }
 
 .ats-close-button:focus {
-    box-shadow: none;
+    box-shadow: none !important;
 }
 
 .ats-actions {
-    width: 150px;
-    justify-content: space-around;
-    z-index: 0;
-    margin-top: 15px;
+    width: 150px !important;
+    justify-content: space-around !important;
+    z-index: 0 !important;
+    margin-top: 15px !important;
 }
 
 .ats-confirm-button {
-    font-size: 18px;
-    width: 60px;
-    height: 35px;
+    font-size: 18px !important;
+    width: 60px !important;
+    height: 35px !important;
     border: 2px solid !important;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #005795 !important;
     color: #ffffff !important;
     border-color: #005795  !important;
@@ -76,13 +85,13 @@
 }
 
 .ats-cancel-button {
-    font-size: 18px;
-    width: 60px;
-    height: 35px;
+    font-size: 18px !important;
+    width: 60px !important;
+    height: 35px !important;
     border: 2px solid !important;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #888888 !important;
     color: #ffffff !important;
     border-color: #888888 !important;
@@ -109,36 +118,36 @@ $ATS-Loader-radius: 0.5 * $ATS-Loader-circle-size;
 
 // loader
 .ats-loader-popup {
-    padding: 0;
-    // background: none;
-    width: $ATS-Loader-box-size;
-    height: $ATS-Loader-box-size;
+    padding: 0 !important;
+    // background: none !important;
+    width: $ATS-Loader-box-size !important;
+    height: $ATS-Loader-box-size !important;
 }
 .ats-loader-htmlContainer{
-    width: $ATS-Loader-box-size;
-    height: $ATS-Loader-box-size;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    // background: none;
+    width: $ATS-Loader-box-size !important;
+    height: $ATS-Loader-box-size !important;
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    // background: none !important;
     .ats-loader {
-        width: $ATS-Loader-circle-size;
-        height: $ATS-Loader-circle-size;
-        // border-radius: 50%;
-        // border: 1px solid red;
-        // box-sizing: border-box;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        width: $ATS-Loader-circle-size !important;
+        height: $ATS-Loader-circle-size !important;
+        // border-radius: 50% !important;
+        // border: 1px solid red !important;
+        // box-sizing: border-box !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
         .ats-loader-item {
-            width: $ATS-Loader-item-size;
-            height: $ATS-Loader-item-size;
-            border-radius: 50%;
-            background: #2988e6;
-            position: absolute;
-            box-sizing: border-box;
+            width: $ATS-Loader-item-size !important;
+            height: $ATS-Loader-item-size !important;
+            border-radius: 50% !important;
+            background: #2988e6 !important;
+            position: absolute !important;
+            box-sizing: border-box !important;
         }
     }
     .ats-loader-0 {

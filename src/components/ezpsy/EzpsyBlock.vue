@@ -6,11 +6,14 @@
     import initBlockly from '@/assets/ezpsy/initBlockly';
     import { showMsg, showImg, tipPopup, inputPopup, closePopup } from "@/assets/utils/popup";
     import router from '@/router/router';
-    import { encrypt } from '@/assets/utils/crypto';
+    import { decrypt, encrypt } from '@/assets/utils/crypto';
     import { ScriptsStore } from '@/store/store';
     import { getCurrentUser } from '@/assets/index/auth';
     import agc from '@/assets/agc/agc'
     import uuid from "@/assets/utils/uuid"
+    import { useRoute } from 'vue-router';
+
+    const route = useRoute()    
 
     const tempConsoleWarn = console.warn
     const tempConsoleLog = console.log
@@ -92,6 +95,12 @@
         // @ts-ignore
         data.Blockly = await window.Blockly
         await init()
+        if(route.query?.xml) {
+            // data.xml = decrypt(route.query.xml as string, true)
+            const xml = decrypt(route.query.xml as string)
+            const xmlDom = data.Blockly.utils.xml.textToDom(xml)
+            data.Blockly.Xml.appendDomToWorkspace(xmlDom, data.workspace as BLK.WorkspaceSvg)
+        }
     })
 
     const showJs = () => {
@@ -161,15 +170,15 @@
                     const json = {
                         ctime: Date.now(),
                         mtime: Date.now(),
-                        creator: {
-                            name: user.displayName,
-                            avatar: user.photoUrl
-                        },
-                        data: {
+                        data: encrypt(JSON.stringify({
+                            creator: {
+                                name: user.displayName,
+                                avatar: user.photoUrl
+                            },
                             description: value?.title ? value.title : "",
                             xml: data.xml,
                             code: data.code
-                        }
+                        }))
                     }
                     storage.uploadString({
                         str: JSON.stringify(json),
@@ -328,6 +337,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background: #fefefe;
             .btn-group-vertical {
                 width: 100%;
                 height: 80%;

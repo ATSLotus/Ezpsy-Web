@@ -27,8 +27,8 @@
     })
 
     const select = (key: string) => {
-        router.push({
-            query: { ...route.query, menu: key }
+        router.replace({
+            query: { menu: key }
         })
     }
 

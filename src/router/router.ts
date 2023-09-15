@@ -1,3 +1,4 @@
+import { closePopup } from '@/assets/utils/popup'
 import {createRouter, createWebHistory, createWebHashHistory} from 'vue-router'
 
 const getRouters = (): Array<Object> => {
@@ -37,7 +38,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     // const target = to.path.split('/')[1]
-    // closePopup()
+    closePopup()
     // if(target === '' || router.hasRoute(target)) {
     //     if(to.meta.title) {
     //         document.title = `${to.meta.title}`

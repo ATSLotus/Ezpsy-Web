@@ -16,8 +16,9 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "allowJs": true
-    // "suppressImplicitAnyIndexErrors": true
+    "ignoreDeprecations": "5.0",
+    "allowJs": true,
+    "suppressImplicitAnyIndexErrors": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/assets/ezpsy/custom/guide.ts", "src/assets/ezpsy/custom/requestAnimationFrame.js"],
   "references": [{ "path": "./tsconfig.node.json" }]

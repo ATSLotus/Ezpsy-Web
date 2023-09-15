@@ -2,6 +2,20 @@ import Swal from "sweetalert2"
 import ATSSelectElement from "../elem/atsselect"
 import uuid from "./uuid"
 
+let container = "ats_container"
+const setContainer = (type: "normal" | "spacial") => {
+    switch (type) {
+        case "normal":
+            container = "ats_container"
+            break
+        case "spacial":
+            container = "ats_ezpsy_container"
+            break
+        default:
+            container = "ats_container"
+            break
+    }
+}
 interface POPUP {
     title?: string
     tips?: string
@@ -76,7 +90,7 @@ const tipPopup = (type: TYPE, opts?: POPUP) => {
             <div style="
                 display: ${tipsObj.display};
                 font-size: 16px;
-                margin-top: 20px;
+                margin-top: 10px;
                 white-space: pre-wrap;
             ">${tipsObj.tip}</div>
             <div style="
@@ -92,7 +106,7 @@ const tipPopup = (type: TYPE, opts?: POPUP) => {
         cancelButtonText: "取消",
         showCloseButton: isUseClose,
         customClass: {
-            container: "ats_container",
+            container: container,
             popup: "ats-tip-popup",
             htmlContainer: "ats-tip-htmlContainer",
             closeButton: "ats-close-button",
@@ -140,7 +154,7 @@ const showloading = (theme: THEME = 0, speed: SPEED = 0) => {
             </div>
         `,
         customClass: {
-            container: "ats_container",
+            container: container,
             popup: "ats-loader-popup",
             htmlContainer: "ats-loader-htmlContainer"
         },
@@ -149,7 +163,7 @@ const showloading = (theme: THEME = 0, speed: SPEED = 0) => {
     })
 }
 
-const hideLoading = () =>{
+const hideloading = () =>{
     Swal.close()
 }
 
@@ -176,7 +190,7 @@ const showMsg = (title: string, Msg: string) => {
         showCancelButton: true,
         cancelButtonText: "关闭",
         customClass: {
-            container: "ats_container",
+            container: container,
             popup: "ats-msg-popup",
             htmlContainer: "ats-tip-htmlContainer",
             closeButton: "ats-close-button",
@@ -196,7 +210,7 @@ const showImg = (img: string) => {
         showCancelButton: true,
         cancelButtonText: "关闭",
         customClass: {
-            container: "ats_container",
+            container: container,
             popup: "ats-img-popup",
             htmlContainer: "ats-tip-htmlContainer",
             closeButton: "ats-close-button",
@@ -222,6 +236,7 @@ const showProgress = (percent: number) => {
                 width: 80%;
                 height: 20px;
                 border: 1px solid #ccc;
+                // border-radius: 4px;
             ">
                 <div id="ezPopup_bar" style="
                     width: ${percent}%;
@@ -248,7 +263,7 @@ const showProgress = (percent: number) => {
             showConfirmButton: false,
             allowOutsideClick: false,
             customClass: {
-                container: "ats_container",
+                container: container,
                 popup: "ats-tip-popup",
                 htmlContainer: "ats-tip-htmlContainer",
                 closeButton: "ats-close-button",
@@ -492,6 +507,7 @@ const inputPopup = (opts: inputOptions) => {
         showCloseButton: true,
         allowOutsideClick: false,
         customClass: {
+            container: container,
             popup: "ats-input-popup",
             htmlContainer: "ats-input-htmlContainer",
             closeButton: "ats-close-button",
@@ -504,9 +520,10 @@ const inputPopup = (opts: inputOptions) => {
 }
 
 export {
+    setContainer,
     tipPopup,
     showloading,
-    hideLoading,
+    hideloading,
     closePopup,
     showMsg,
     showImg,

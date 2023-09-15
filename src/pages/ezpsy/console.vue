@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import log from "@/assets/utils/log"
     import EzpsyMenu from "@/components/ezpsy/Menu.vue";
-    import { onMounted, reactive, watch, shallowRef, onBeforeMount } from "vue";
+    import { onMounted, reactive, watch, shallowRef, onBeforeMount, onBeforeUnmount } from "vue";
     import { useRoute } from 'vue-router';
     import router from "@/router/router";
     import Production from "@/components/ezpsy/Production.vue"
@@ -11,6 +11,7 @@
     import { EzpsyMenuStore, UserStore } from "@/store/store";
     import EzpsyBlock from "@/components/ezpsy/EzpsyBlock.vue";
     import { getCurrentUser } from "@/assets/index/auth";
+    import { setContainer } from "@/assets/utils/popup";
 
     const route = useRoute()
 
@@ -30,6 +31,7 @@
     data.store.set(menus.value)
 
     onMounted(async () => {
+        setContainer("spacial")
         const user = await getCurrentUser()
         log.info(user)
         if(!user.isSuccess) {
@@ -39,8 +41,8 @@
             userStorage.set(user.data.user)
         }
         if(!route.query?.menu) {
-            router.push({
-                query: { ...route.query, menu: "production" }
+            router.replace({
+                query: { menu: "production" }
             })
         }
         data.currentMenu = route.query.menu as string
@@ -48,6 +50,10 @@
 
     watch(router.currentRoute, () => {
         data.currentMenu = route.query?.menu as string
+    })
+
+    onBeforeUnmount(async () => {
+        setContainer("normal")
     })
     
     
