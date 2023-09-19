@@ -32,7 +32,7 @@ agc.storage.setUploadPercent({
             })
             return;
         }
-        const progress = (snapshot.bytesTransferred / snapshot.totalByteCount) * 100
+        const progress = Math.floor((snapshot.bytesTransferred / snapshot.totalByteCount) * 10000) / 100
         showProgress(progress)
         console.log('Upload is ' + progress.toFixed(1) + '% done')
         switch (snapshot.state) {
@@ -65,6 +65,8 @@ agc.storage.setUploadPercent({
                 title: "上传成功",
                 tips: "您的文件已上传成功",
                 timer: 1500
+            }).then(() => {
+                location.reload()
             })
         }, 500)
     }

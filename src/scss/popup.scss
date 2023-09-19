@@ -21,10 +21,16 @@
 }
 
 .ats-img-popup {
-    width: 1200px !important;
-    height: auto !important;
+    width: 1000px !important;
+    max-height: 800px !important;
 }
-
+.ats-img-htmlContainer {
+    width: 1000px !important;
+    max-height: 600px !important;
+    display: table-cell !important;
+    vertical-align: middle;
+    margin: 10px 0 0 0 !important;
+}
 // tip
 .ats-tip-popup {
     padding: 0 !important;

@@ -201,10 +201,20 @@ const showMsg = (title: string, Msg: string) => {
     })
 }
 
-const showImg = (img: string) => {
+const showImg = (img: string, opts?: {
+    width?: number
+    height?: number
+}) => {
+    const width = opts && opts.width ? `${opts.width}%` : `auto`
+    const height = opts && opts.height ? `${opts.height}%` : `auto`
     Swal.fire({
         html: `
-            <img style="width: 100%;" src="${img}" />
+            <img style="
+                max-width: ${width};
+                max-height: ${height};
+                display: block;
+                margin: auto
+            " src="${img}" />
         `,
         showConfirmButton: false,
         showCancelButton: true,
@@ -212,7 +222,7 @@ const showImg = (img: string) => {
         customClass: {
             container: container,
             popup: "ats-img-popup",
-            htmlContainer: "ats-tip-htmlContainer",
+            htmlContainer: "ats-img-htmlContainer",
             closeButton: "ats-close-button",
             actions: "ats-actions",
             confirmButton: "ats-confirm-button",

@@ -1,5 +1,7 @@
 <script setup lang="ts">
+    import { getBlob } from '@/assets/utils/image';
     import log from '@/assets/utils/log'
+    import { showImg } from '@/assets/utils/popup';
     import { deepClone } from '@/assets/utils/utils';
     import { nextTick, onMounted, reactive, ref, watch } from 'vue';
 
@@ -97,6 +99,13 @@
         data.pages = Math.ceil(data.cache.length/data.numPerPage)
         data.lists = sliceLists(data.cache)
     }
+
+    const openPreview = (str: string) => {
+        showImg(str, {
+            width: 98,
+            height: 98
+        })
+    }
     
 </script>
 
@@ -153,6 +162,9 @@
                             <button class="btn" v-for="bt in list[item.value]" @click="bt.func(list)">
                                 {{ bt.text }}
                             </button>
+                        </div>
+                        <div class="image" v-if="item.type === 'image'">
+                            <img :src="getBlob(list[item.value])" @click="openPreview(getBlob(list[item.value]))" />
                         </div>
                     </div>
                 </div>
@@ -226,6 +238,7 @@
                     align-items: center;
                     cursor: pointer;
                     font-weight: 600;
+                    margin: 0 5px;
                 }
 
                 .btn:hover {
@@ -263,6 +276,7 @@
                     display: flex;
                     align-items: center;
                     .li-item {
+                        height: 100%;
                         display: flex;
                         justify-content: center;
                         align-items: center;
@@ -302,7 +316,19 @@
                                 color: #54aeff;
                             }
                         }
-                        
+                        .image {
+                            aspect-ratio: 1/1;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            img {
+                                display: block;
+                                max-width: 80%;
+                                max-height: 80%;
+                                cursor: pointer;
+                            }
+                        }
                     }
                 }
             }

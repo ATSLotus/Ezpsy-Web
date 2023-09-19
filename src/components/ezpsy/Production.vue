@@ -74,7 +74,7 @@
                     if(lists.length > 0) {
                         await Promise.all(
                             lists.map(async (list) => {
-                                await storage.deleteFile(list.path)
+                                await storage.deleteFile(decrypt(list.path))
                             })
                         )
                         getFileList()
@@ -139,7 +139,7 @@
         delete: {
             text: "删除",
             func: async (item: LIST) => {
-                const res = await storage.deleteFile(item.path)
+                const res = await storage.deleteFile(decrypt(item.path))
                 if(res.isSuccess) {
                     await getFileList()
                 }
@@ -156,7 +156,7 @@
             let cache: Record<string, any> = {}
             if(hasCache) 
                 cache = JSON.parse(cacheStr)
-            let newCache = deepClone(cache)
+            let newCache: Record<string, any> = {}
             data.lists = []
             const lists = listsRes.data.fileList
             for(let i = 0; i < lists.length; i++) {
@@ -174,7 +174,7 @@
                         const json = fileRes.data
                         json.data = JSON.parse(decrypt(json.data))
                         const li = {
-                            path: list.path,
+                            path: encrypt(list.path),
                             title: title,
                             description: json.data.description,
                             modifyTime: formatDate(json.mtime),
