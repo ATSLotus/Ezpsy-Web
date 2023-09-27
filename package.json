@@ -19,6 +19,7 @@
     "ezpsy": "^1.1.2",
     "fs": "^0.0.1-security",
     "js-base64": "^3.7.5",
+    "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
     "pinia": "^2.1.6",
     "sweetalert2": "^11.7.27",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.2",
+    "@types/lodash": "^4.14.199",
     "@types/node": "^20.5.9",
     "@vitejs/plugin-vue": "^4.1.0",
     "cross-env": "^7.0.3",

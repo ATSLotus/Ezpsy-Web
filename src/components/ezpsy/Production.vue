@@ -11,6 +11,8 @@
     import router from "@/router/router";
     import { useRoute } from "vue-router";
     import { getReg, deepClone } from "@/assets/utils/utils"
+    import { DIRECTION } from "@/assets/utils/config"
+    import { ObjectListSort } from "@/assets/utils/sort";
 
     const route = useRoute()
     const storage = agc.storage
@@ -99,7 +101,8 @@
             text: "标题",
             style: {
                 width: "20%"
-            }
+            },
+            sort: true
         },
         description: {
             type: "long-text",
@@ -113,7 +116,8 @@
             text: "修改时间",
             style: {
                 width: "20%"
-            }
+            },
+            sort: DIRECTION.FORWARD
         },
         operations: {
             type: "operate",
@@ -159,35 +163,51 @@
             let newCache: Record<string, any> = {}
             data.lists = []
             const lists = listsRes.data.fileList
-            for(let i = 0; i < lists.length; i++) {
-                const list = lists[i]
-                const title = list.name.split('.')[0]
-                if(title in cache) {
-                    const li = Object.assign(cache[title], {
-                        operations: operate
-                    })
-                    data.lists.push(li)
-                    newCache[title] = deepClone(cache[title])
-                } else {
-                    const fileRes = await storage.getFileData(list.path)
-                    if(fileRes.isSuccess) {
-                        const json = fileRes.data
-                        json.data = JSON.parse(decrypt(json.data))
-                        const li = {
-                            path: encrypt(list.path),
-                            title: title,
-                            description: json.data.description,
-                            modifyTime: formatDate(json.mtime),
-                            xml: json.data.xml,
-                            js: json.data.code
+            Promise.all(
+                lists.map(async (list: any) => {
+                    const title = list.name.split('.')[0]
+                    const metadata = await list.getFileMetadata()
+                    if(
+                        title in cache && 
+                        formatDate(metadata.mtime) === cache[title].modifyTime
+                    ) {
+                        const li = Object.assign(cache[title], {
+                            operations: operate
+                        })
+                        data.lists.push(li)
+                    } else {
+                        const fileRes = await storage.getFileData(list.path)
+                        if(fileRes.isSuccess) {
+                            const json = fileRes.data
+                            json.data = JSON.parse(decrypt(json.data))
+                            const li = {
+                                path: encrypt(list.path),
+                                title: title,
+                                description: json.data.description,
+                                // modifyTime: formatDate(json.mtime),
+                                modifyTime: formatDate(metadata.mtime),
+                                xml: json.data.xml,
+                                js: json.data.code
+                            }
+                            data.lists.push(Object.assign(li, { operations: operate }))
                         }
-                        data.lists.push(Object.assign(li, { operations: operate }))
-                        newCache[title] = deepClone(li)
                     }
-                }
-            }
-            localStorage.setItem("EZPSY_PRODUCTION", JSON.stringify(newCache))
-            reload()
+                })
+            ).then(() => {
+                const newLists = ObjectListSort<LIST>({
+                    list: data.lists,
+                    method: DIRECTION.FORWARD,
+                    key: "modifyTime"
+                })
+                data.lists = []
+                newLists.forEach((list: any) => {
+                    data.lists.push(deepClone(list))
+                    delete list["operations"]
+                    newCache[list.title] = list
+                })
+                localStorage.setItem("EZPSY_PRODUCTION", JSON.stringify(newCache))
+                reload()
+            }) 
         }
         hideloading()
     }

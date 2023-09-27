@@ -168,8 +168,8 @@
                     const user = res.data.user
                     // log.info(user)
                     const json = {
-                        ctime: Date.now(),
-                        mtime: Date.now(),
+                        // ctime: Date.now(),
+                        // mtime: Date.now(),
                         data: encrypt(JSON.stringify({
                             creator: {
                                 name: user.displayName,

@@ -2,13 +2,15 @@
     import agc from '@/assets/agc/agc';
     import { decrypt, encrypt } from '@/assets/utils/crypto';
     import log from '@/assets/utils/log'
-    import { hideloading, showloading } from '@/assets/utils/popup';
+    import { hideloading, showloading, tipPopup } from '@/assets/utils/popup';
     import { deepClone, formatDate } from '@/assets/utils/utils';
     import { UserStore } from '@/store/store';
     import { reactive, ref, nextTick, onMounted } from 'vue';
     import List from './List.vue';
     import { getBase64 } from "@/assets/utils/image"
     import uuid from '@/assets/utils/uuid';
+    import { DIRECTION } from '@/assets/utils/config';
+    import { ObjectListSort } from '@/assets/utils/sort';
 
     const storage = agc.storage
 
@@ -71,8 +73,8 @@
                             const reader = new FileReader()
                             reader.onload = () => {
                                 const json = {
-                                    ctime: Date.now(),
-                                    mtime: Date.now(),
+                                    // ctime: Date.now(),
+                                    // mtime: Date.now(),
                                     data: encrypt(JSON.stringify({
                                         creator: {
                                             // @ts-ignore
@@ -104,19 +106,32 @@
                     color: "#ef0000",
                 },
                 func: async (lists: Array<any>) => {
-                    
+                    if(lists.length > 0) {
+                        await Promise.all(
+                            lists.map(async (list) => {
+                                await storage.deleteFile(decrypt(list.path))
+                            })
+                        )
+                        getFileList()
+                    } else {
+                        tipPopup("warn", {
+                            title: "未选中目标",
+                            tips: "请选择操作目标",
+                            closeTip: "点击空白处关闭弹窗"
+                        })
+                    }
                 }
             }
         }
     }
 
     const operate:OPERATE = {
-        open: {
-            text: "打开",
-            func: (item: LIST) => {
+        // open: {
+        //     text: "打开",
+        //     func: (item: LIST) => {
                 
-            }
-        },
+        //     }
+        // },
         delete: {
             text: "删除",
             func: async (item: LIST) => {
@@ -181,34 +196,50 @@
             let newCache: Record<string, any> = {}
             data.lists = []
             const lists = listsRes.data.fileList
-            for(let i = 0; i < lists.length; i++) {
-                const list = lists[i]
-                const title = list.name.split('.')[0]
-                if(title in cache) {
-                    const li = Object.assign(cache[title], {
-                        operations: operate
-                    })
-                    data.lists.push(li)
-                    newCache[title] = deepClone(cache[title])
-                } else {
-                    const fileRes = await storage.getFileData(list.path)
-                    if(fileRes.isSuccess) {
-                        const json = fileRes.data
-                        json.data = JSON.parse(decrypt(json.data))
-                        const li = {
-                            path: encrypt(list.path),
-                            name: title,
-                            description: json.data.description,
-                            modifyTime: formatDate(json.mtime),
-                            preview: json.data.image
+            Promise.all(
+                lists.map(async (list: any) => {
+                    const title = list.name.split('.')[0]
+                    const metadata = await list.getFileMetadata()
+                    if(
+                        title in cache &&
+                        formatDate(metadata.mtime) === cache[title].modifyTime
+                    ) {
+                        const li = Object.assign(cache[title], {
+                            operations: operate
+                        })
+                        data.lists.push(li)
+                    } else {
+                        const fileRes = await storage.getFileData(list.path)
+                        if(fileRes.isSuccess) {
+                            const json = fileRes.data
+                            json.data = JSON.parse(decrypt(json.data))
+                            const li = {
+                                path: encrypt(list.path),
+                                name: title,
+                                description: json.data.description,
+                                // modifyTime: formatDate(json.mtime),
+                                modifyTime: formatDate(metadata.mtime),
+                                preview: json.data.image
+                            }
+                            data.lists.push(Object.assign(li, { operations: operate }))
                         }
-                        data.lists.push(Object.assign(li, { operations: operate }))
-                        newCache[title] = deepClone(li)
                     }
-                }
-            }
-            localStorage.setItem("EZPSY_IMAGE", JSON.stringify(newCache))
-            reload()
+                })
+            ).then(() => {
+                const newLists = ObjectListSort<LIST>({
+                    list: data.lists,
+                    method: DIRECTION.FORWARD,
+                    key: "modifyTime"
+                })
+                data.lists = []
+                newLists.forEach((list: any) => {
+                    data.lists.push(deepClone(list))
+                    delete list["operations"]
+                    newCache[list.title] = list
+                })
+                localStorage.setItem("EZPSY_IMAGE", JSON.stringify(newCache))
+                reload()
+            }) 
         }
         hideloading()
     }

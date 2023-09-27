@@ -2,7 +2,7 @@ export const formatNum = (num: number) => {
     return num >= 10 ? `${num}` : `0${num}`
 }
 
-export const formatDate = (timestamp: number) => {
+export const formatDate = (timestamp: number | string | Date) => {
     const DATE = new Date(timestamp)
     const year = `${DATE.getFullYear()}`
     const mounth = formatNum(DATE.getMonth() + 1)

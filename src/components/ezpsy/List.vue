@@ -1,15 +1,18 @@
 <script setup lang="ts">
+    import { DIRECTION } from '@/assets/utils/config';
     import { getBlob } from '@/assets/utils/image';
     import log from '@/assets/utils/log'
     import { showImg } from '@/assets/utils/popup';
     import { deepClone } from '@/assets/utils/utils';
     import { nextTick, onMounted, reactive, ref, watch } from 'vue';
+    import { ObjectListSort } from "@/assets/utils/sort"
 
     interface HEADER {
         type: string
         value: string
         text: string
         style: string
+        sort: DIRECTION | undefined
     }
 
     const props = defineProps({
@@ -36,7 +39,8 @@
         numPerPage: 12,
         index: 1,
         pages: 0,
-        checkedList: new Set<any>()
+        checkedList: new Set<any>(),
+        normalLists: deepClone(props.lists),
     })
 
     const getStyle = (obj: Record<string, string>) => {
@@ -49,11 +53,23 @@
 
     onMounted(async () => {
         props.headers && Object.keys(props.headers).forEach(item => {
+            let sort: DIRECTION | undefined = undefined
+            const origin_sort = props.headers?.[item]["sort"]
+            if(origin_sort !== undefined) {
+                if(typeof origin_sort === "boolean")
+                    if(origin_sort)
+                        sort = DIRECTION.NORMAL
+                    else 
+                        sort = undefined
+                else
+                    sort = origin_sort
+            }
             data.header.push({
                 value: item,
                 type: props.headers?.[item]["type"],
                 text: props.headers?.[item]["text"],
-                style: getStyle(props.headers?.[item]["style"])
+                style: getStyle(props.headers?.[item]["style"]),
+                sort: sort
             })
         })
         const length = data.lists.length
@@ -106,6 +122,27 @@
             height: 98
         })
     }
+
+    const sort = (head: HEADER) => {
+        if(head.sort === DIRECTION.NORMAL) {
+            data.normalLists = deepClone(data.lists)
+            head.sort = DIRECTION.FORWARD
+        } else if(head.sort === DIRECTION.FORWARD) {
+            head.sort = DIRECTION.REVERSE
+        } else {
+            head.sort = DIRECTION.NORMAL
+        }
+        if(head.sort === DIRECTION.NORMAL) {
+            data.lists = deepClone(data.normalLists)
+        } else {
+            data.lists = ObjectListSort({
+                list: data.lists,
+                method: head.sort,
+                key: head.value
+            }) 
+        }
+        
+    }
     
 </script>
 
@@ -136,8 +173,24 @@
         <div class="list">
             <div class="header">
                 <input type="checkbox" @click="checkAll()" />
-                <div class="header-li" :style="head.style" v-for="head in data.header">
-                    {{ head.text }}
+                <div
+                    class="header-li"
+                    :style="head.style"
+                    :class="head.sort !== undefined ? 'header-click': ''"
+                    v-for="head in data.header"
+                    @click="head.sort !== undefined && sort(head)"
+                >
+                    {{ head.text }} 
+                    <div 
+                        class="head-sort" 
+                        :class="
+                            head.sort === DIRECTION.FORWARD ?
+                            'head-sort-up' : 
+                                head.sort === DIRECTION.REVERSE ?
+                                'head-sort-down' : ''
+                        "
+                        v-if="head.sort !== undefined"
+                    ></div>
                 </div>
             </div>
             <div class="list-body">
@@ -265,6 +318,41 @@
                     align-items: center;
                     justify-content: center;
                     box-sizing: border-box;
+                    user-select:none;
+                    -ms-user-select: none;
+                    -moz-user-select: none;
+                    -webkit-user-select: none;
+                }
+                .header-click {
+                    cursor: pointer;
+                    .head-sort:before {
+                        content: "";
+                        display: block;
+                        width: 0px;
+                        height: 0px;
+                        border: 5px solid transparent;
+                        border-bottom-color: #cccccc;
+                        position: relative;
+                        top: -1px;
+                        left: 12px;
+                    }
+                    .head-sort:after {
+                        content: "";
+                        display: block;
+                        width: 0px;
+                        height: 0px;
+                        border: 5px solid transparent;
+                        border-top-color: #cccccc;
+                        position: relative;
+                        top: 1px;
+                        left: 12px;
+                    }
+                    .head-sort-up:before {
+                        border-bottom-color: #000000;
+                    }
+                    .head-sort-down:after {
+                        border-top-color: #000000;
+                    }
                 }
             }
             .list-body {
