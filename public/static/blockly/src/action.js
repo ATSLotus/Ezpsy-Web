@@ -1,6 +1,6 @@
 //1.设置填充颜色
 Blockly.Blocks['setFillColor'] = {
-    init: function() {
+    init: function () {
         this.appendDummyInput()
             .appendField("setFillColor");
         this.appendValueInput('id')
@@ -20,7 +20,7 @@ Blockly.Blocks['setFillColor'] = {
 
 //2.设置边框颜色
 Blockly.Blocks['setStrokeColor'] = {
-    init: function() {
+    init: function () {
         this.appendDummyInput()
             .appendField("setStrokeColor");
         this.appendValueInput('id')
@@ -36,11 +36,11 @@ Blockly.Blocks['setStrokeColor'] = {
         this.setTooltip("");
         this.setHelpUrl("");
     }
-  };
+};
 
 //3.设置边框线宽
 Blockly.Blocks['setBorderWidth'] = {
-    init: function() {
+    init: function () {
         this.appendDummyInput()
             .appendField("setBorderWidth");
         this.appendValueInput('id')
@@ -56,11 +56,11 @@ Blockly.Blocks['setBorderWidth'] = {
         this.setTooltip("");
         this.setHelpUrl("");
     }
-  };
+};
 
 //4. 位移
 Blockly.Blocks['translate'] = {
-    init: function() {
+    init: function () {
         this.appendDummyInput()
             .appendField("translate");
         this.appendValueInput('id')
@@ -79,11 +79,11 @@ Blockly.Blocks['translate'] = {
         this.setTooltip("");
         this.setHelpUrl("");
     }
-  };
+};
 
 //5. 缩放
 Blockly.Blocks['scale'] = {
-    init: function() {
+    init: function () {
         this.appendDummyInput()
             .appendField("scale");
         this.appendValueInput('id')
@@ -102,11 +102,11 @@ Blockly.Blocks['scale'] = {
         this.setTooltip("");
         this.setHelpUrl("");
     }
-  };
+};
 
 //6. 旋转
 Blockly.Blocks['rotate'] = {
-    init: function() {
+    init: function () {
         this.appendDummyInput()
             .appendField("rotate");
         this.appendValueInput('id')
@@ -122,4 +122,4 @@ Blockly.Blocks['rotate'] = {
         this.setTooltip("");
         this.setHelpUrl("");
     }
-  };
+};

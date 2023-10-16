@@ -1,7 +1,7 @@
 import initialize from "ezpsy-server" 
 import context from "./context.json"
 import schema from "./schema.json"
-import { showProgress, tipPopup } from "../utils/popup"
+import { closePopup, showProgress, tipPopup } from "../utils/popup"
 
 const agc = await initialize({
     context,
@@ -66,7 +66,8 @@ agc.storage.setUploadPercent({
                 tips: "您的文件已上传成功",
                 timer: 1500
             }).then(() => {
-                location.reload()
+                closePopup()
+                // location.reload()
             })
         }, 500)
     }

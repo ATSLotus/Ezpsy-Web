@@ -7,12 +7,23 @@
     import agc from "@/assets/agc/agc";
     import { decrypt, encrypt } from "@/assets/utils/crypto";
     import { formatDate } from "@/assets/utils/utils";
-    import { hideloading, showloading, tipPopup } from "@/assets/utils/popup";
+    import { closePopup, hideloading, inputPopup, showloading, tipPopup } from "@/assets/utils/popup";
     import router from "@/router/router";
     import { useRoute } from "vue-router";
     import { getReg, deepClone } from "@/assets/utils/utils"
     import { DIRECTION } from "@/assets/utils/config"
     import { ObjectListSort } from "@/assets/utils/sort";
+    import uuid from "@/assets/utils/uuid";
+    
+    interface LIST {
+        path: string
+        title: string
+        description: string
+        modifyTime: string
+        xml: string
+        js: string
+        operations: OPERATE
+    } 
 
     const route = useRoute()
     const storage = agc.storage
@@ -25,27 +36,10 @@
         })
     }
 
-    interface OPERATE {
-        [key: string]: {
-            text: string,
-            func: (item: LIST) => void
-        } 
-    } 
-
-    interface LIST {
-        path: string
-        title: string
-        description: string
-        modifyTime: string
-        xml: string
-        js: string
-        operations: OPERATE
-    }
-
     const data = reactive({
         type: "",
         searchOpts: {},
-        headers: {},
+        headers: {} as Record<string, OPTS_HEADER>,
         lists: new Array<LIST>()
     });
 
@@ -68,10 +62,7 @@
         operations: {
             delete: {
                 title: "删除",
-                style: {
-                    border: "1px solid #ef0000",
-                    color: "#ef0000",
-                },
+                style: "red",
                 func: async (lists: Array<any>) => {
                     if(lists.length > 0) {
                         await Promise.all(
@@ -100,8 +91,9 @@
             type: "text",
             text: "标题",
             style: {
-                width: "20%"
+                width: "20%",
             },
+            align: "start",
             sort: true
         },
         description: {
@@ -115,9 +107,9 @@
             type: "text",
             text: "修改时间",
             style: {
-                width: "20%"
+                width: "20%",
             },
-            sort: DIRECTION.FORWARD
+            sort: DIRECTION.REVERSE
         },
         operations: {
             type: "operate",
@@ -138,7 +130,69 @@
                         xml: encrypt(item.xml)
                     }
                 })
-            }
+            },
+            style: "green"
+        },
+        release: {
+            text: "发布",
+            func: async (item: LIST) => {
+                inputPopup({
+                    title: "请输入相关信息",
+                    html: [
+                        {
+                            type: "input",
+                            props: {
+                                title: "文件名",
+                                placeholder: "请输入"
+                            }
+                        },
+                        {
+                            type: "multiline",
+                            props: {
+                                title: "描述",
+                                placeholder: "请输入"
+                            }
+                        }
+                    ],
+                    preConfirm: (getValue) => {
+                        return () => {
+                            const res = getValue()
+                            return {
+                                title: res[0],
+                                description: res[1]
+                            }
+                        }
+                    }
+                }).then(result => {
+                    if(result.isConfirmed) {
+                        closePopup()
+                        const value = result.value
+                        // log.info(user)
+                        const json = {
+                            // ctime: Date.now(),
+                            // mtime: Date.now(),
+                            data: encrypt(JSON.stringify({
+                                creator: {
+                                    // @ts-ignore
+                                    name: user.displayName,
+                                    // @ts-ignore
+                                    avatar: user.photoUrl
+                                },
+                                description: value?.title ? value.title : "",
+                                code: item.js
+                            }))
+                        }
+                        storage.uploadString({
+                            str: JSON.stringify(json),
+                            // @ts-ignore
+                            folder: `private/${user.uid}/ezExperiment`,
+                            name: value.title ? value.title : uuid.getUuid(),
+                            extension: "json"
+                        })
+                    }
+                })
+            },
+            style: "blue"
         },
         delete: {
             text: "删除",
@@ -147,7 +201,8 @@
                 if(res.isSuccess) {
                     await getFileList()
                 }
-            }
+            },
+            style: "red"
         }
     }
 

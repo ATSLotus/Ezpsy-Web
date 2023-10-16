@@ -3,7 +3,7 @@
     import { decrypt, encrypt } from '@/assets/utils/crypto';
     import log from '@/assets/utils/log'
     import { hideloading, showloading, tipPopup } from '@/assets/utils/popup';
-    import { deepClone, formatDate } from '@/assets/utils/utils';
+    import { getReg, deepClone, formatDate } from '@/assets/utils/utils';
     import { UserStore } from '@/store/store';
     import { reactive, ref, nextTick, onMounted } from 'vue';
     import List from './List.vue';
@@ -22,13 +22,6 @@
         })
     }
 
-    interface OPERATE {
-        [key: string]: {
-            text: string,
-            func: (item: LIST) => void
-        } 
-    } 
-
     interface LIST {
         path: string
         name: string
@@ -41,7 +34,7 @@
     const data = reactive({
         type: "",
         searchOpts: {},
-        headers: {},
+        headers: {} as Record<string, OPTS_HEADER>,
         lists: new Array<LIST>()
     });
 
@@ -50,16 +43,21 @@
             title: "搜索: ",
             placeholder: "通过标题查询",
             func: (value: string, origin: Array<any>) => {
-                
+                const reg = getReg(value)
+                const target = origin.filter(item => {
+                    if(reg.test(item.name)) {
+                        return deepClone(item)
+                    } else {
+                        return false
+                    }
+                })
+                return target
             }
         },
         operations: {
             add: {
                 title: "增加",
-                style: {
-                    border: "1px solid #19c37d",
-                    color: "#19c37d"
-                },
+                style: "green",
                 func: async () => {
                     const input = document.createElement("input")
                     input.type = "file"
@@ -101,10 +99,7 @@
             },
             delete: {
                 title: "删除",
-                style: {
-                    border: "1px solid #ef0000",
-                    color: "#ef0000",
-                },
+                style: "red",
                 func: async (lists: Array<any>) => {
                     if(lists.length > 0) {
                         await Promise.all(
@@ -126,14 +121,9 @@
     }
 
     const operate:OPERATE = {
-        // open: {
-        //     text: "打开",
-        //     func: (item: LIST) => {
-                
-        //     }
-        // },
         delete: {
             text: "删除",
+            style: "red",
             func: async (item: LIST) => {
                 const res = await storage.deleteFile(decrypt(item.path))
                 if(res.isSuccess) {
@@ -152,7 +142,9 @@
             text: "标题",
             style: {
                 width: "20%"
-            }
+            },
+            align: "start",
+            sort: true
         },
         description: {
             type: "long-text",
@@ -173,7 +165,8 @@
             text: "修改时间",
             style: {
                 width: "20%"
-            }
+            },
+            sort: DIRECTION.REVERSE
         },
         operations: {
             type: "operate",

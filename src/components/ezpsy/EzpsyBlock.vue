@@ -21,7 +21,7 @@
         if(typeof message === 'string') {
             if(message.startsWith("block generator functions")) {
                 return
-            } else if(message.startsWith('WARNING: No message string for ')) {
+            } else if(message.startsWith('No message string for ')) {
                 return
             } else {
                 tempConsoleWarn(message)
@@ -32,7 +32,7 @@
         if(typeof message === 'string') {
             if(message.startsWith("block generator functions")) {
                 return
-            } else if(message.startsWith('WARNING: No message string for ')) {
+            } else if(message.startsWith('No message string for ')) {
                 return
             } else {
                 tempConsoleLog(message)
@@ -94,6 +94,49 @@
         await initBlockly()
         // @ts-ignore
         data.Blockly = await window.Blockly
+        data.Blockly.dialog.setPrompt((
+            message: string,
+            defaultValue: string,
+            callback: (result: string | null) => void,
+        ) => {
+            inputPopup({
+                title: message,
+                html: [
+                    {
+                        type: "input",
+                        props: {
+                            title: "变量名",
+                            placeholder: "请输入" 
+                        }
+                    }
+                ],
+                preConfirm: (getValue) => {
+                    return () => {
+                        const res = getValue()
+                        return {
+                            title: res[0]
+                        }
+                    }
+                }
+            }).then(res => {
+                if(res.isConfirmed) {
+                    callback(res.value.title)
+                } else {
+                    callback(defaultValue)
+                }
+            })
+        })
+        // data.Blockly.dialog.setAlert((
+        //     message: string,
+        //     callback: (() => void) | undefined
+        // ) => {
+        //     showMsg(message, "").then(() => {
+        //         if(callback) {
+        //             callback()
+        //         }
+        //     })
+            
+        // })
         await init()
         if(route.query?.xml) {
             // data.xml = decrypt(route.query.xml as string, true)

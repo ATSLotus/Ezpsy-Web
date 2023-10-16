@@ -5,15 +5,7 @@
     import { showImg } from '@/assets/utils/popup';
     import { deepClone } from '@/assets/utils/utils';
     import { nextTick, onMounted, reactive, ref, watch } from 'vue';
-    import { ObjectListSort } from "@/assets/utils/sort"
-
-    interface HEADER {
-        type: string
-        value: string
-        text: string
-        style: string
-        sort: DIRECTION | undefined
-    }
+    import { ObjectListSort } from "@/assets/utils/sort"    
 
     const props = defineProps({
         searchOpts: {
@@ -41,6 +33,7 @@
         pages: 0,
         checkedList: new Set<any>(),
         normalLists: deepClone(props.lists),
+        defaultSort: -1
     })
 
     const getStyle = (obj: Record<string, string>) => {
@@ -52,7 +45,7 @@
     }
 
     onMounted(async () => {
-        props.headers && Object.keys(props.headers).forEach(item => {
+        props.headers && Object.keys(props.headers).forEach((item, index) => {
             let sort: DIRECTION | undefined = undefined
             const origin_sort = props.headers?.[item]["sort"]
             if(origin_sort !== undefined) {
@@ -61,20 +54,35 @@
                         sort = DIRECTION.NORMAL
                     else 
                         sort = undefined
-                else
+                else{
                     sort = origin_sort
+                    data.defaultSort = index
+                }
             }
             data.header.push({
                 value: item,
                 type: props.headers?.[item]["type"],
                 text: props.headers?.[item]["text"],
                 style: getStyle(props.headers?.[item]["style"]),
+                align: props.headers?.[item]["align"],
                 sort: sort
             })
         })
         const length = data.lists.length
         data.pages = Math.ceil(length/data.numPerPage)
         data.lists = sliceLists(data.origin as [])
+        if(data.defaultSort !== -1) {
+            const head = data.header[data.defaultSort]
+            if(head.sort === DIRECTION.NORMAL) {
+                data.lists = deepClone(data.normalLists)
+            } else {
+                data.lists = ObjectListSort({
+                    list: data.lists,
+                    method: head.sort,
+                    key: head.value
+                }) 
+            }
+        }
     })
 
     const checkAll = () => {
@@ -123,7 +131,7 @@
         })
     }
 
-    const sort = (head: HEADER) => {
+    const sort = (event: Event, head: HEADER) => {
         if(head.sort === DIRECTION.NORMAL) {
             data.normalLists = deepClone(data.lists)
             head.sort = DIRECTION.FORWARD
@@ -141,7 +149,20 @@
                 key: head.value
             }) 
         }
-        
+        data.header.forEach(H => {
+            if(H.sort !== undefined) {
+                if(head !== H)
+                    H.sort = DIRECTION.NORMAL
+                
+            }
+        })
+    }
+
+    const getBTNStyle = (str: string) => {
+        if(str)
+            return `btn-${str}`
+        else
+            return ""
     }
     
 </script>
@@ -163,7 +184,7 @@
                 <div 
                     v-for="item in props.searchOpts?.operations"
                     class="btn"
-                    :style="getStyle(item.style)"
+                    :class="getBTNStyle(item?.style)"
                     @click="item.func([...data.checkedList])"
                 >{{ item.title }}</div>
                 <!-- <div v-if="props.searchOpts?.add" class="btn add">增加</div>
@@ -178,7 +199,7 @@
                     :style="head.style"
                     :class="head.sort !== undefined ? 'header-click': ''"
                     v-for="head in data.header"
-                    @click="head.sort !== undefined && sort(head)"
+                    @click="head.sort !== undefined && sort($event, head)"
                 >
                     {{ head.text }} 
                     <div 
@@ -190,7 +211,8 @@
                                 'head-sort-down' : ''
                         "
                         v-if="head.sort !== undefined"
-                    ></div>
+                    >
+                    </div>
                 </div>
             </div>
             <div class="list-body">
@@ -204,19 +226,26 @@
                         :checked="data.checkedList.has(list)" 
                         @click="check($event, list)" 
                     />
+                    <!--
+                        对齐方式: center-居中 start-置前 end-置后
+                        text: 默认center
+                        long-text: 无对齐方式
+                        operate： 默认center
+                        image: 默认center
+                    -->
                     <div class="li-item" :style="item.style" v-for="item in data.header">
-                        <div class="text" v-if="item.type === 'text'">
+                        <div class="text align" :class="item?.align" v-if="item.type === 'text'">
                             {{ list[item.value] }}
                         </div>
-                        <div class="long-text" v-if="item.type === 'long-text'">
+                        <div class="long-text" :title="list[item.value]" v-if="item.type === 'long-text'">
                             {{ list[item.value] }}
                         </div>
-                        <div class="operate" v-if="item.type === 'operate'">
-                            <button class="btn" v-for="bt in list[item.value]" @click="bt.func(list)">
+                        <div class="operate align" :class="item?.align" v-if="item.type === 'operate'">
+                            <button class="btn" :class="getBTNStyle(bt?.style)" v-for="bt in list[item.value]" @click="bt.func(list)">
                                 {{ bt.text }}
                             </button>
                         </div>
-                        <div class="image" v-if="item.type === 'image'">
+                        <div class="image align" :class="item?.align" v-if="item.type === 'image'">
                             <img :src="getBlob(list[item.value])" @click="openPreview(getBlob(list[item.value]))" />
                         </div>
                     </div>
@@ -247,6 +276,57 @@
         height: 18px;
         margin: 5px;
         cursor: pointer;
+    }
+    .listbox {
+        .btn {
+            border: 1px solid #cccccc;
+            color: #cccccc;
+        }
+        .btn:hover {
+            border-color: #b2b2b2;
+            color: #b2b2b2;
+        }
+        .btn-red {
+            color: #ff0436;
+            border-color: #ff0436;
+        }
+        .btn-red:hover {
+            color: #ff0400;
+            border-color: #ff0400;
+        }
+        .btn-green {
+            color: #8dc149;
+            border-color: #8dc149;
+        }
+        .btn-green:hover {
+            color: #45ba68;
+            border-color: #45ba68;
+        }
+        .btn-blue {
+            color: #54aeff;
+            border-color: #54aeff;
+        }
+        .btn-blue:hover {
+            color: #2395f8;
+            border-color: #2395f8;
+        }
+        .align {
+            display: flex;
+            justify-content: center;
+        }
+        .center {
+            justify-content: center;
+        }
+        .start {
+            text-indent: .8em;
+            justify-content: start;
+        }
+        .end {
+            justify-content: end;
+        }
+        .justify {
+           justify-content: space-between; 
+        }
     }
 
     .listbox {
@@ -284,18 +364,19 @@
                 .btn {
                     width: 50px;
                     height: 32px;
+                    line-height: 32px;
                     box-sizing: border-box;
                     border-radius: 4px;
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     cursor: pointer;
-                    font-weight: 600;
+                    // font-weight: 600;
                     margin: 0 5px;
                 }
-
                 .btn:hover {
-                    filter: hue-rotate(30deg);
+                    border-width: 2px;
+                    font-weight: bold;
                 }
             }
         }
@@ -370,8 +451,6 @@
                         align-items: center;
                         .text {
                             width: 100%;
-                            display: flex;
-                            justify-content: center;
                             overflow: hidden; 
                             white-space: nowrap; 
                             text-overflow: ellipsis;
@@ -381,6 +460,7 @@
                             overflow: hidden;
                             text-overflow: ellipsis;
                             text-indent: .8em;
+                            text-align: justify;
                             display: -webkit-box;
                             -webkit-line-clamp: 2;
                             overflow: hidden;
@@ -389,26 +469,22 @@
                         }
                         .operate {
                             width: 100%;
-                            display: flex;
-                            justify-content: center;
                             .btn {
                                 background: none;
                                 outline: none;
                                 cursor: pointer;
-                                border: 1px solid #cccccc;
                                 border-radius: 4px;
                                 margin: 0 5px;
+                                box-sizing: border-box;
                             }
                             .btn:hover {
-                                border-color: #54aeff;
-                                color: #54aeff;
+                                border-width: 2px;
+                                font-weight: bold;
                             }
                         }
                         .image {
                             aspect-ratio: 1/1;
                             height: 100%;
-                            display: flex;
-                            justify-content: center;
                             align-items: center;
                             img {
                                 display: block;
