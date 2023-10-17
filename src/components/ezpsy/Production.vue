@@ -91,7 +91,7 @@
             type: "text",
             text: "标题",
             style: {
-                width: "20%",
+                width: "15%",
             },
             align: "start",
             sort: true
@@ -100,7 +100,7 @@
             type: "long-text",
             text: "描述",
             style: {
-                width: "30%"
+                width: "35%"
             }
         },
         modifyTime: {
@@ -177,6 +177,9 @@
                                     name: user.displayName,
                                     // @ts-ignore
                                     avatar: user.photoUrl
+                                },
+                                origin: {
+                                    name: item.title
                                 },
                                 description: value?.title ? value.title : "",
                                 code: item.js

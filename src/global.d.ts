@@ -12,6 +12,7 @@ declare interface OPTS_HEADER {
     style: Record<string, string>
     sort?: DIRECTION | boolean
     align?: "center" | "start" | "end"
+    action?: (list: LIST) => void
 }
 
 declare interface HEADER extends OPTS_HEADER {

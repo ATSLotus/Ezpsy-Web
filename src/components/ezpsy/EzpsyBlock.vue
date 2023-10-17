@@ -23,6 +23,10 @@
                 return
             } else if(message.startsWith('No message string for ')) {
                 return
+            } else if(message.startsWith("CodeGenerator init")) {
+                return
+            } else if(message.startsWith("Deprecated call to")) {
+                return
             } else {
                 tempConsoleWarn(message)
             }
@@ -44,12 +48,13 @@
 
     const data = reactive({
         Blockly: {} as typeof BLK,
-        workspace: {} as BLK.WorkspaceSvg,
+        // workspace: {} as BLK.WorkspaceSvg,
         code: "",
         xml: "",
         isFullScreen: false,
         isAllowUndo: false,
-        isAllowRedo: false
+        isAllowRedo: false,
+        imgIsShow: false
     })
 
     const init = async () => {
@@ -78,15 +83,21 @@
             sounds: false,
             oneBasedIndex: true
         }
-        data.workspace = data.Blockly.inject("ezpsy-experiment", options)
-        data.workspace.addChangeListener((e) => {
-            data.code = data.Blockly.JavaScript.workspaceToCode(data.workspace)
+        // data.workspace = data.Blockly.inject("ezpsy-experiment", options)
+        const workspace = data.Blockly.inject("ezpsy-experiment", options)
+        // data.workspace.addChangeListener((e) => {
+        workspace.addChangeListener((e) => {
+            // data.code = data.Blockly.JavaScript.workspaceToCode(data.workspace)
+            data.code = data.Blockly.JavaScript.workspaceToCode(workspace)
             data.xml = 
                 data.Blockly.Xml.domToText(
-                    data.Blockly.Xml.workspaceToDom(data.workspace as BLK.WorkspaceSvg)
+                    // data.Blockly.Xml.workspaceToDom(data.workspace as BLK.WorkspaceSvg)
+                    data.Blockly.Xml.workspaceToDom(data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
                 )
-            data.isAllowUndo = data.workspace.getUndoStack().length > 0
-            data.isAllowRedo = data.workspace.getRedoStack().length > 0
+            // data.isAllowUndo = data.workspace.getUndoStack().length > 0
+            // data.isAllowRedo = data.workspace.getRedoStack().length > 0
+            data.isAllowUndo = workspace.getUndoStack().length > 0
+            data.isAllowRedo = workspace.getRedoStack().length > 0
         })
     }
 
@@ -142,7 +153,7 @@
             // data.xml = decrypt(route.query.xml as string, true)
             const xml = decrypt(route.query.xml as string)
             const xmlDom = data.Blockly.utils.xml.textToDom(xml)
-            data.Blockly.Xml.appendDomToWorkspace(xmlDom, data.workspace as BLK.WorkspaceSvg)
+            data.Blockly.Xml.appendDomToWorkspace(xmlDom, data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
         }
     })
 
@@ -165,11 +176,13 @@
                 top: 0;
                 left: 0;
             `
-            data.Blockly.svgResize(data.workspace as BLK.WorkspaceSvg)
+            // data.Blockly.svgResize(data.workspace as BLK.WorkspaceSvg)
+            data.Blockly.svgResize(data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
         } else {
             document.exitFullscreen()
             BOX.style.cssText = ``
-            data.Blockly.svgResize(data.workspace as BLK.WorkspaceSvg)
+            // data.Blockly.svgResize(data.workspace as BLK.WorkspaceSvg)
+            data.Blockly.svgResize(data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
         }
     }
 
@@ -266,16 +279,22 @@
         }
     }
 
+    const openImgLibirary = () => {
+        data.imgIsShow = true
+    }
+
     const undo = () => {
-        data.workspace.undo(false)
+        // data.workspace.undo(false)
+        data.Blockly.getMainWorkspace().undo(false)
     }
 
     const redo = () => {
-        data.workspace.undo(true)
+        // data.workspace.undo(true)
+        data.Blockly.getMainWorkspace().undo(true)
     }
 
     const load = () => {
-
+        
     }
 
     const run = () => {
@@ -320,7 +339,7 @@
                 <button type="button" class="btn" @click="download">
                     <img src="image/ezpsy/icons/cloud_download.svg">下载
                 </button>
-                <button type="button" class="btn">
+                <button type="button" class="btn" @click="openImgLibirary">
                     <img src="image/ezpsy/icons/img.svg">图床
                 </button>
                 <button 
@@ -357,6 +376,11 @@
             </div>
         </div>
         <ToolBox></ToolBox>
+        <div class="imgLibirary" v-if="data.imgIsShow">
+            <div class="libiraryContent">
+                <!-- LIST -->
+            </div>
+        </div>
     </div>
 </template>
 
@@ -420,6 +444,24 @@
                 .button_denied:hover {
                     background: #f0f0f0;
                 }
+            }
+        }
+        .imgLibirary {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: rgba(0,0,0,.4);
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .libiraryContent {
+                width: 80%;
+                height: 80%;
+                background: #FFFFFF;
+                border-radius: 24px;
             }
         }
     }

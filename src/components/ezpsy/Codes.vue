@@ -18,6 +18,7 @@
     interface LIST {
         path: string
         title: string
+        origin: string
         description: string
         modifyTime: string
         js: string
@@ -89,16 +90,38 @@
             type: "text",
             text: "标题",
             style: {
-                width: "20%",
+                width: "15%",
             },
             align: "start",
             sort: true
+        },
+        origin: {
+            type: "link",
+            text: "源模板",
+            style: {
+                width: "10%"
+            },
+            sort: true,
+            action: async (list: LIST) => {
+                // @ts-ignore
+                const res = await agc.storage.getFileData(`/private/${user?.uid}/ezBlock/${list.origin}.json`)
+                if(res.isSuccess) {
+                    console.log(res)
+                    const result = JSON.parse(decrypt(res.data.data))
+                    router.replace({
+                        query: {
+                            menu: "ezpsy-block",
+                            xml: encrypt(result.xml)
+                        }
+                    })
+                }
+            }
         },
         description: {
             type: "long-text",
             text: "描述",
             style: {
-                width: "30%"
+                width: "20%"
             }
         },
         modifyTime: {
@@ -176,6 +199,7 @@
                             const li = {
                                 path: encrypt(list.path),
                                 title: title,
+                                origin: json.data.origin.name,
                                 description: json.data.description,
                                 // modifyTime: formatDate(json.mtime),
                                 modifyTime: formatDate(metadata.mtime),

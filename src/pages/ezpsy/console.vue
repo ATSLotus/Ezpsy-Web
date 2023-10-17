@@ -101,6 +101,7 @@
                 justify-content: center;
                 align-items: center;
                 background-color: #f4f8fa;
+                position: relative;
                 .content {
                     width: 90%;
                     height: 90%;

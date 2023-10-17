@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import log from '@/assets/utils/log'
-    
+
 </script>
 
 <template>

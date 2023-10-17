@@ -65,7 +65,8 @@
                 text: props.headers?.[item]["text"],
                 style: getStyle(props.headers?.[item]["style"]),
                 align: props.headers?.[item]["align"],
-                sort: sort
+                sort: sort,
+                action: props.headers?.[item]["action"]
             })
         })
         const length = data.lists.length
@@ -248,7 +249,11 @@
                         <div class="image align" :class="item?.align" v-if="item.type === 'image'">
                             <img :src="getBlob(list[item.value])" @click="openPreview(getBlob(list[item.value]))" />
                         </div>
+                        <div class="link align" :class="item?.align" v-if="item.type === 'link'" @click="item.action && item.action(list)">
+                            {{ list[item.value] }}
+                        </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -270,11 +275,13 @@
 
 <style scoped lang="scss">
 
+    $checkboxSize: 18px; $checkboxMargin: 5px;
+
     input[type="checkbox"] {
         outline: none;
-        width: 18px;
-        height: 18px;
-        margin: 5px;
+        width: $checkboxSize;
+        height: $checkboxSize;
+        margin: $checkboxMargin;
         cursor: pointer;
     }
     .listbox {
@@ -444,6 +451,7 @@
                     height: 40px;
                     display: flex;
                     align-items: center;
+                    justify-content: space-around;
                     .li-item {
                         height: 100%;
                         display: flex;
@@ -493,7 +501,16 @@
                                 cursor: pointer;
                             }
                         }
+                        .link {
+                            width: 100%;
+                            overflow: hidden; 
+                            white-space: nowrap; 
+                            text-overflow: ellipsis;
+                            color: #0073bb;
+                            cursor: pointer;
+                        }
                     }
+                    
                 }
             }
         }
