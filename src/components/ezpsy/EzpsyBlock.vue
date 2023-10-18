@@ -179,7 +179,7 @@
                 z-index: 100;
                 flex-shrink: 0;
                 flex-grow: 0;
-                position: absolute;
+                position: fixed;
                 top: 0;
                 left: 0;
             `
