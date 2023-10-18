@@ -130,8 +130,27 @@
         }
     }
 
-    const register = async () => {
-        const res = await registerAuth
+    const register = async (event: Event) => {
+        event.preventDefault()
+        const res = await registerAuth({
+            countryCode: "86",
+            phoneNumber: data.phone,
+            password: data.password,
+            verifyCode: data.code
+        })
+        if(res.isSuccess) {
+            tipPopup("success", {
+                title: "登录成功",
+                timer: 1000
+            }).then(() => {
+                router.push("/index/login")
+            })
+        } else {
+            tipPopup("error", {
+                title: "登录失败",
+                tips: `${res.data}`
+            })
+        }
     }
 
     const login = () => {

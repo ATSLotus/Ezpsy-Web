@@ -121,7 +121,8 @@
         }
     }
     
-    const login = async () => {
+    const login = async (event: Event) => {
+        event.preventDefault();
         let res = {} as Awaited<ReturnType<typeof loginByPsd>>
         if(data.isUsePassWord)
             res = await loginByPsd({
@@ -160,6 +161,7 @@
 
     onBeforeMount(async () => {
         const user = await getCurrentUser()
+        console.log("USER", user)
         if(user.isSuccess) {
             router.push("/ezpsy/console")
         }

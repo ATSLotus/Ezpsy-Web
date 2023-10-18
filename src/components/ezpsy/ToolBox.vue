@@ -1,12 +1,16 @@
 <script setup lang="ts">
     import log from '@/assets/utils/log'
+    import blockColor from "@/assets/blockly/config"
+    import { reactive } from 'vue';
+
+    const color = reactive(blockColor)
 
 </script>
 
 <template>
     <xml id="ezpsy-toolbox" style="display: none">
         <!-- guide -->
-        <category name="Guide" colour="#3392FF">
+        <!-- <category name="Guide" :colour="color.guide">
             <block type="guide">
                 <value name="imageUrl">
                     <shadow type="text">
@@ -21,10 +25,10 @@
                     </shadow>
                 </value>
             </block>
-        </category>
-        <sep></sep>
+        </category> -->
+        <!-- <sep></sep> -->
         <!-- logic -->
-        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+        <category name="Logic" :colour="color.logic">
             <block type="controls_if"></block>
             <block type="logic_compare"></block>
             <block type="logic_operation"></block>
@@ -35,7 +39,7 @@
         </category>
         <sep></sep>
         <!-- loops -->
-        <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+        <category name="Loops" :colour="color.loops">
             <block type="controls_repeat_ext">
                 <value name="TIMES">
                     <shadow type="math_number">
@@ -66,7 +70,7 @@
         </category>
         <sep></sep>
         <!--代码块-Math区域-->
-        <category name="Math" colour="%{BKY_MATH_HUE}">
+        <category name="Math" :colour="color.math">
             <block type="math_number"></block>
             <block type="math_arithmetic">
                 <value name="A">
@@ -155,7 +159,7 @@
         </category>
         <sep></sep>
         <!--代码块-Text区域-->
-        <category name="Text" colour="%{BKY_TEXTS_HUE}">
+        <category name="Text" :colour="color.texts">
             <block type="text"></block>
             <block type="text_join"></block>
             <block type="text_append">
@@ -241,7 +245,7 @@
         </category>
         <sep></sep>
         <!--代码块-Lists区域-->
-        <category name="Lists" colour="%{BKY_LISTS_HUE}">
+        <category name="Lists" :colour="color.lists">
             <block type="lists_create_with">
                 <mutation items="0"></mutation>
             </block>
@@ -294,7 +298,7 @@
         </category>
         <sep></sep>
         <!--Object-->
-        <category name="Object" colour="#1E90FF">
+        <category name="Object" :colour="color.object">
             <block type="objectContent">
                 <value name="key">
                     <block type="text">
@@ -323,7 +327,7 @@
         </category>
         <sep></sep>
         <!--代码块-color区域-->
-        <category name="Color" colour="%{BKY_COLOUR_HUE}">
+        <category name="Color" :colour="color.colour">
             <block type="colour_picker"></block>
             <block type="colour_random"></block>
             <block type="colour_rgb">
@@ -363,7 +367,7 @@
         </category>
         <sep></sep>
         <!--设置canvas样式-->
-        <category name="Canvas" colour="#EE82EE">
+        <category name="Canvas" :colour="color.canvas">
             <block type="canvasSize">
                 <value name="width">
                     <block type="math_number">
@@ -400,7 +404,7 @@
         </category>
         <sep></sep>
         <!-- 图形 -->
-        <category name="Graph" colour="#a5a55b">
+        <category name="Graph" :colour="color.graph">
             <!-- 直线 -->
             <block type="graph_line">
                 <value name="id">
@@ -900,7 +904,7 @@
         </category>
         <sep></sep>
         <!-- 基础动作 -->
-        <category name="Action" colour="#FF4500">
+        <category name="Action" :colour="color.action">
             <!-- 设置填充色 -->
             <block type="setFillColor">
                 <value name="id">
@@ -1020,7 +1024,7 @@
         </category>
         <sep></sep>
         <!-- 动画 -->
-        <category name="Animate" colour="#FFA500">
+        <category name="Animate" :colour="color.animate">
             <block type="refresh">
                 <value name="id">
                     <block type="variables_get">
@@ -1057,7 +1061,7 @@
         </category>
         <sep></sep>
         <!-- 清除 -->
-        <category name="Clear" colour="%{BKY_VARIABLES_HUE}">
+        <category name="Clear" :colour="color.clearScreen">
             <!-- 清屏 -->
             <block type="clearscreen">
             </block>
@@ -1072,7 +1076,7 @@
         </category>
         <sep></sep>
         <!-- 弹窗 -->
-        <category name="Dialog" colour="#ff99ff">
+        <category name="Dialog" :colour="color.dialog">
             <!-- -弹窗信息- -->
             <block type="inputDlg">
                 <value name="titleText">
@@ -1206,7 +1210,7 @@
         </category>
         <sep></sep>
         <!-- 延时 -->
-        <category name="Delay" colour="#a55b6d">
+        <category name="Delay" :colour="color.delay">
             <block type="delay_ms">
                 <value name="X">
                     <block type="math_number">
@@ -1221,12 +1225,12 @@
                     </block>
                 </value>
             </block>
-            <block type="await">
-            </block>
+            <!-- <block type="await">
+            </block> -->
         </category>
         <sep></sep>
         <!--计时-->
-        <category name="Time" colour="#3CB371">
+        <category name="Time" :colour="color.time">
             <block type="record"></block>
             <block type="getContinueValue">
                 <value name="id">
@@ -1245,7 +1249,7 @@
         </category>
         <sep></sep>
         <!-- 系统信息 -->
-        <category name="SysInfo" colour="#5ba5a5">
+        <category name="SysInfo" :colour="color.systemInformation">
             <block type="broswerversion"></block>
             <block type="screeninformation">
                 <field name="information">'height'</field>
@@ -1253,7 +1257,7 @@
         </category>
         <sep></sep>
         <!-- Control -->
-        <category name="Control" colour="#805ba5">
+        <category name="Control" :colour="color.control">
 
             <block type="randomfunc">
                 <value name="randomValue">
@@ -1285,15 +1289,15 @@
         </category>
         <sep></sep>
         <!-- 变量 -->
-        <category name="Variables" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE">
+        <category name="Variables" :colour="color.variables" custom="VARIABLE">
         </category>
         <sep></sep>
         <!-- 函数 custom="PROCEDURE" -->
-        <category name="Function" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE">
+        <category name="Function" :colour="color.procedure" custom="PROCEDURE">
         </category>
         <sep></sep>
         <!-- 数据导出 -->
-        <category name="DataExport" colour="#8FBC8F">
+        <category name="DataExport" :colour="color.dataExport">
             <block type="dataExport">
                 <value name="name">
                     <block type="text">
@@ -1305,7 +1309,7 @@
         </category>
         <sep></sep>
         <!-- 模块 -->
-        <category name="Module" colour="#8AC2D4">
+        <!-- <category name="Module" :colour="#8AC2D4">
             <block type="First-orderGratingMotion">
             </block>
             <block type="GratingTrain">
@@ -1409,8 +1413,8 @@
                     </block>
                 </value>
             </block>
-        </category>
-        <sep></sep>
+        </category> -->
+        <!-- <sep></sep> -->
     </xml>
 </template>
 

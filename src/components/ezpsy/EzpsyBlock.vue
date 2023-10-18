@@ -12,6 +12,10 @@
     import agc from '@/assets/agc/agc'
     import uuid from "@/assets/utils/uuid"
     import { useRoute } from 'vue-router';
+    import blocksInit from "@/assets/blockly/blocks/blocks_init"
+    import javascriptInit from "@/assets/blockly/javascript/javascript_init"
+    import defaultInit from "@/assets/blockly/default_init"
+    import formatJavaScriptCode from "@/assets/utils/formatJS"
 
     const route = useRoute()    
 
@@ -104,7 +108,7 @@
     onMounted(async () => {
         await initBlockly()
         // @ts-ignore
-        data.Blockly = await window.Blockly
+        data.Blockly = window.Blockly
         data.Blockly.dialog.setPrompt((
             message: string,
             defaultValue: string,
@@ -148,6 +152,9 @@
         //     })
             
         // })
+        blocksInit(data.Blockly as typeof BLK)
+        javascriptInit(data.Blockly as typeof BLK)
+        defaultInit(data.Blockly as typeof BLK)
         await init()
         if(route.query?.xml) {
             // data.xml = decrypt(route.query.xml as string, true)
@@ -158,7 +165,7 @@
     })
 
     const showJs = () => {
-        showMsg("JavaScript Code", data.code)
+        showMsg("JavaScript Code", formatJavaScriptCode(data.code))
     }
 
     const fullscreen = async () => {
@@ -294,7 +301,9 @@
     }
 
     const load = () => {
-        
+        var workspace = data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg
+        var allBlocks = workspace.getAllBlocks(true) 
+        console.log(allBlocks)
     }
 
     const run = () => {

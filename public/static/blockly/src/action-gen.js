@@ -1,11 +1,3 @@
-/*
- * @Author: ATSLotus/时桐
- * @Date: 2022-05-12 16:00:40
- * @LastEditors: ATSLotus/时桐
- * @LastEditTime: 2022-09-22 20:04:23
- * @Description: 
- * @FilePath: /ezpsy/public/static/js/ezpsy/blockly-src/action-gen.js
- */
 //1. 设置填充颜色
 Blockly.JavaScript['setFillColor'] = function (block) {
   let value_id = Blockly.JavaScript.valueToCode(block, 'id', Blockly.JavaScript.ORDER_ATOMIC);
