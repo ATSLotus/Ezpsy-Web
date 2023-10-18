@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { decrypt } from '@/assets/utils/crypto';
     import log from '@/assets/utils/log'
-    import { onMounted, reactive } from 'vue';
+    import { onBeforeUnmount, onMounted, reactive } from 'vue';
     import { useRoute } from 'vue-router';
     import ezpsy from "ezpsy"
 
@@ -9,8 +9,8 @@
     const code = `(async function(){\n${decrypt(route.query.code as string)}\n}())`
     const _window = window as any
 
-    const randerCode = (str: string, isString: boolean = true) => {
-        return new Promise((res, rej) => {
+    const randerCode = async (str: string, isString: boolean = true): Promise<HTMLScriptElement> => {
+        return await new Promise((res, rej) => {
             const script = document.createElement("script")
             if(isString)
                 script.textContent = str
@@ -18,7 +18,7 @@
                 script.src = str
             document.getElementsByTagName('head')[0].appendChild(script)
             script.onload = () => {
-                res(1)
+                res(script)
             }
 
             script.onerror = () => {
@@ -26,16 +26,20 @@
             }
         })
     }
+
+    const data = reactive({
+        scripts: new Array<HTMLScriptElement>()
+    })
     
     onMounted(async () => {
-        await randerCode("static/blockly/src/requestAnimationFrame.js", false)
-        await randerCode("static/blockly/src/graph-func.js", false)
-        await randerCode("static/blockly/src/systemInformation-func.js", false)
-        await randerCode("static/blockly/src/delay-func.js", false)
-        await randerCode("static/blockly/src/clearScreen-func.js", false)
-        await randerCode("static/blockly/src/control-func.js", false)
-        await randerCode("static/blockly/src/animate-func.js", false)
-        await randerCode("static/blockly/src/dataExport-func.js", false)
+        data.scripts.push(await randerCode("static/blockly/src/requestAnimationFrame.js", false))
+        data.scripts.push(await randerCode("static/blockly/src/graph-func.js", false))
+        data.scripts.push(await randerCode("static/blockly/src/systemInformation-func.js", false))
+        data.scripts.push(await randerCode("static/blockly/src/delay-func.js", false))
+        data.scripts.push(await randerCode("static/blockly/src/clearScreen-func.js", false))
+        data.scripts.push(await randerCode("static/blockly/src/control-func.js", false))
+        data.scripts.push(await randerCode("static/blockly/src/animate-func.js", false))
+        data.scripts.push(await randerCode("static/blockly/src/dataExport-func.js", false))
         const ez = ezpsy.init({
             el: document.getElementById("toturial") as HTMLElement,
             style: {
@@ -52,9 +56,15 @@
         _window.time = time
         _window.keypress = keypress
         log.info(code)
-        await randerCode(code)
+        data.scripts.push(await randerCode(code))
     })
 
+    onBeforeUnmount(async () => {
+        data.scripts.forEach(script => {
+            if(script)
+                document.getElementsByTagName('head')[0].removeChild(script)
+        })
+    })
     
 </script>
 
