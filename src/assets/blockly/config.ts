@@ -39,7 +39,7 @@ const blockColor = {
     object: "#5B76A6",
     colour: "#AB685D",
     canvas: "#5B76A6",
-    graph: "#E4AF32", 
+    graph: "#D7A423", 
     action: "#5B76A6",
     animate: "#AB685D",
     clearScreen: "#849C7C",
