@@ -3,7 +3,8 @@ import ATSSelectElement from "../elem/atsselect"
 import uuid from "./uuid"
 
 let container = "ats_container"
-const setContainer = (type: "normal" | "spacial") => {
+type ContainerType = "normal" | "spacial" | "fullscreen"
+const setContainer = (type: ContainerType) => {
     switch (type) {
         case "normal":
             container = "ats_container"
@@ -11,6 +12,8 @@ const setContainer = (type: "normal" | "spacial") => {
         case "spacial":
             container = "ats_ezpsy_container"
             break
+        case "fullscreen":
+            container = "ats_full_container"
         default:
             container = "ats_container"
             break
@@ -179,11 +182,14 @@ const showMsg = (title: string, Msg: string) => {
             >${title}</div>
             <div style="
                 width: fit-content;
+                max-height: 80vh;
                 font-size: 16px;
                 margin: auto;
                 margin-top: 20px;
                 white-space: pre-wrap;
                 text-align: start;
+                overflow-y: scroll;
+                padding: 0 20px;
             ">${Msg}</div>
         `,
         showConfirmButton: false,

@@ -31,29 +31,27 @@ const blockColor = {
     guide: "#3392FF",
     module: "",
 
-    "logic": "#5BCFB7",
-    "loops": "#D5A979",
-    "math": "#CFBF5B",
-    "texts": "#CF5BAA",
-    "lists": "#CF5B66",
-    "object": "#5BBBCF",
-    "colour": "#D19072",
-    "canvas": "#5B6DCF",
-    "graph": "#5BCF99",
-    "action": "#9BCF8E",
-    "animate": "#5B88CF",
-    "clearScreen": "#78CF8E",
-    "dialog": "#CF5B78",
-    "delay": "#CF9E5B",
-    "time": "#CF5B8F",
-    "systemInformation": "#5B9FCF",
-    "control": "#A55BCF",
-    "variables": "#8D5BCF",
-    "procedure": "#CF5B8F",
-    "dataExport": "#CF7B5B"
+    logic: "#5BCFB7",
+    loops: "#D5A979",
+    math: "#CFBF5B",
+    texts: "#CF5BAA",
+    lists: "#CF5B66",
+    object: "#5BBBCF",
+    colour: "#D19072",
+    canvas: "#5B6DCF",
+    graph: "#5BCF99",
+    action: "#9BCF8E",
+    animate: "#5B88CF",
+    clearScreen: "#78CF8E",
+    dialog: "#CF5B78",
+    delay: "#CF9E5B",
+    time: "#CF5B8F",
+    systemInformation: "#5B9FCF",
+    control: "#A55BCF",
+    variables: "#8D5BCF",
+    procedure: "#CF5B8F",
+    dataExport: "#CF7B5B"
 
 }
-
- 
 
 export default blockColor

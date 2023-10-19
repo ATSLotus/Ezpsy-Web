@@ -181,14 +181,14 @@
                                 origin: {
                                     name: item.title
                                 },
-                                description: value?.title ? value.title : "",
+                                description: value?.description ? value.description : "",
                                 code: item.js
                             }))
                         }
                         storage.uploadString({
                             str: JSON.stringify(json),
                             // @ts-ignore
-                            folder: `private/${user.uid}/ezExperiment`,
+                            folder: `public/${user.uid}/ezExperiment`,
                             name: value.title ? value.title : uuid.getUuid(),
                             extension: "json"
                         })

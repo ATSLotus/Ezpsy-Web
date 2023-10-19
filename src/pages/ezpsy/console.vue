@@ -21,11 +21,11 @@
     })
 
     const menus = shallowRef([
-        { key: "production", component: Production, icon: 'fa-file-code',title: '个人项目', isSelected: true },
-        { key: "image", component: Image, icon: 'fa-image',title: '图床图片', isSelected: false }, 
-        { key: "ezpsy-block", component: EzpsyBlock, icon: 'fa-file-excel',title: '实验设计', isSelected: false },
-        { key: "codes", component: Codes, icon: 'fa-list',title: '实验列表', isSelected: false },
-        { key: "datas", component: Datas, icon: 'fa-file-excel',title: '实验数据', isSelected: false }
+        { key: "production", component: Production, icon: 'file-code',title: '个人项目', isSelected: true },
+        { key: "image", component: Image, icon: 'image', title: '图床图片', isSelected: false }, 
+        { key: "ezpsy-block", component: EzpsyBlock, icon: "puzzle-piece", title: '实验设计', isSelected: false },
+        { key: "codes", component: Codes, icon: 'list', title: '实验列表', isSelected: false },
+        { key: "datas", component: Datas, icon: 'file-excel', title: '实验数据', isSelected: false }
     ])
 
     data.store.set(menus.value)

@@ -1,12 +1,18 @@
 <script setup lang="ts">
     import log from '@/assets/utils/log'
     import router from '@/router/router';
-    import { onMounted, reactive, watch} from 'vue';
+    import { onMounted, reactive, watch, defineComponent } from 'vue';
     import { useRoute } from 'vue-router';
     import { EzpsyMenuStore } from "@/store/store";
-
+    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
     const route = useRoute()
     const store = EzpsyMenuStore()
+
+    // defineComponent({
+    //     components: {
+    //         FontAwesomeIcon: () => import("@fortawesome/vue-fontawesome")
+    //     }
+    // })
 
     const removeComponent = () => {
         const newMenus = new Array()
@@ -65,14 +71,15 @@
             v-for="item in data.menus"
             @click="select(item.key)"
         >
-            <i class="item-icon fa" :class=item.icon></i>
+            <!-- <i class="item-icon fa" :class=item.icon></i> -->
+            <font-awesome-icon class="item-icon" :icon="item.icon" />
             <div class="item-title">{{ item.title }}</div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-    @import "https://use.fontawesome.com/releases/v5.1.0/css/all.css";
+    // @import "https://use.fontawesome.com/releases/v5.1.0/css/all.css";
     @import "@/scss/ezpsy-menu.scss";
 
     .menus {
@@ -94,8 +101,8 @@
             color: white;
             cursor: pointer;
             .item-icon {
-                width: 24px;
-                height: 24px;
+                width: 20px;
+                height: 20px;
                 display: flex;
                 justify-content: center;
                 align-items: center;

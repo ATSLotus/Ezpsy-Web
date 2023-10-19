@@ -4,7 +4,7 @@
     import BLK from "blockly"
     import { onMounted, reactive, onBeforeUnmount } from 'vue';
     import initBlockly from '@/assets/ezpsy/initBlockly';
-    import { showMsg, showImg, tipPopup, inputPopup, closePopup } from "@/assets/utils/popup";
+    import { showMsg, showImg, tipPopup, inputPopup, closePopup, setContainer } from "@/assets/utils/popup";
     import router from '@/router/router';
     import { decrypt, encrypt } from '@/assets/utils/crypto';
     import { ScriptsStore } from '@/store/store';
@@ -105,7 +105,14 @@
         })
     }
 
+    const handleFullScreenChange = (event: Event) => {
+        if (!document.fullscreenElement) {
+            changeToNormal(false)
+        }
+    }
+
     onMounted(async () => {
+        document.addEventListener("fullscreenchange", handleFullScreenChange)
         await initBlockly()
         // @ts-ignore
         data.Blockly = window.Blockly
@@ -168,29 +175,37 @@
         showMsg("JavaScript Code", formatJavaScriptCode(data.code))
     }
 
-    const fullscreen = async () => {
+    const changeToFull = (isNeedInFull = true) => {
+        data.isFullScreen = true
         const BOX = document.getElementById("ezpsy-blockly") as HTMLElement
-        data.isFullScreen = !data.isFullScreen
-        if(data.isFullScreen) {
-            document.body.requestFullscreen()
-            BOX.style.cssText = `
-                width: 100vw;
-                height: 100vh;
-                z-index: 100;
-                flex-shrink: 0;
-                flex-grow: 0;
-                position: fixed;
-                top: 0;
-                left: 0;
-            `
-            // data.Blockly.svgResize(data.workspace as BLK.WorkspaceSvg)
-            data.Blockly.svgResize(data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
-        } else {
-            document.exitFullscreen()
-            BOX.style.cssText = ``
-            // data.Blockly.svgResize(data.workspace as BLK.WorkspaceSvg)
-            data.Blockly.svgResize(data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
-        }
+        setContainer('fullscreen')
+        isNeedInFull && document.body.requestFullscreen()
+        BOX.style.cssText = `
+            width: 100vw;
+            height: 100vh;
+            z-index: 100;
+            flex-shrink: 0;
+            flex-grow: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+        `
+        // data.Blockly.svgResize(data.workspace as BLK.WorkspaceSvg)
+        data.Blockly.svgResize(data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
+    }
+
+    const changeToNormal = (isNeedOutFull = true) => {
+        data.isFullScreen = false
+        const BOX = document.getElementById("ezpsy-blockly") as HTMLElement
+        setContainer('spacial')
+        isNeedOutFull && document.exitFullscreen()
+        BOX.style.cssText = ``
+        // data.Blockly.svgResize(data.workspace as BLK.WorkspaceSvg)
+        data.Blockly.svgResize(data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
+    }
+
+    const fullscreen = async () => {
+        data.isFullScreen ? changeToNormal() : changeToFull()
     }
 
     const save = async () => {
@@ -238,7 +253,7 @@
                                 name: user.displayName,
                                 avatar: user.photoUrl
                             },
-                            description: value?.title ? value.title : "",
+                            description: value?.description ? value.description : "",
                             xml: data.xml,
                             code: data.code
                         }))
@@ -317,6 +332,7 @@
     }
 
     onBeforeUnmount(async () => {
+        document.removeEventListener("fullscreenchange", handleFullScreenChange)
         const isFullScreen = !!(document.fullscreenElement)
         if(isFullScreen)
             document.exitFullscreen()
@@ -332,7 +348,10 @@
 </script>
 
 <template>
-    <div class="ezpsy-blockly" id="ezpsy-blockly">
+    <div 
+        class="ezpsy-blockly" 
+        id="ezpsy-blockly" 
+    >
         <div id="ezpsy-experiment"></div>
         <div class="functional_area">
             <div class="btn-group-vertical">

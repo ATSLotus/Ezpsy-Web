@@ -9,7 +9,7 @@ const control = (Blockly: typeof BLK) => {
         }
         let object = `switch(x){\n`;
         for (let i = 0; i < c; i++) {
-            object += `case ${i}: \n${d[i]};\nbreak;\n`
+            object += `case ${i}: \n${d[i]}\nbreak;\n`
         }
         object += `default:
           console.dir('error');

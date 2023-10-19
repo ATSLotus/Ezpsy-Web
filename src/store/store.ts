@@ -50,6 +50,8 @@ export const UserStore = defineStore({
     actions: {
         set(user: Object) {
             this.user = user
+            // @ts-ignore
+            window.localStorage.setItem("userId", user?.uid)
         }
     }
 })

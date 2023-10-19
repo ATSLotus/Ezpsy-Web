@@ -19,7 +19,7 @@ const dataExport = (Blockly: typeof BLK) => {
         // \n`
         // console.dir(userId);
         let code = `
-            AjaxData(${value_name}, ${data});
+            AjaxData( '${localStorage.getItem('userId')}', ${value_name}, ${data});
         `
         return code;
         // return["{"+b.join(", ")+"}",Blockly.JavaScript.ORDER_ATOMIC]

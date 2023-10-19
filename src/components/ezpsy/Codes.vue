@@ -84,7 +84,7 @@
 
     const user = UserStore().getUser
     // @ts-ignore
-    data.type = `/private/${user?.uid}/ezExperiment/`
+    data.type = `/public/${user?.uid}/ezExperiment/`
     data.headers = {
         title: {
             type: "text",
