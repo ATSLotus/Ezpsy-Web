@@ -109,8 +109,8 @@ let makeCircle=function(x,y,r,border_width,color_stroke,color_fill){
 let makeText = function(
   value_text,
   value_x, value_y, 
-  font_size, font_weight, font_style,font_family,
-  textAlgin,textBaseline,color
+  font_size, font_weight, font_style, font_family,
+  textAlgin, textBaseline, color
 ){
   let text = new ezpsy.Texts({
     shape: {

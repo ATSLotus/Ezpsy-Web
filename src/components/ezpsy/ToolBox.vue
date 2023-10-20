@@ -694,16 +694,16 @@
                     </block>
                 </value>
                 <value name="font_attributes">
-                    <block type="font_attributes" movable="false" deletable="false">
-                        <field name="fontWeight">'normal'</field>
-                        <field name="fontStyle">'normal'</field>
+                    <block movable="false" deletable="false" type="font_attributes">
                         <value name="fontSize">
                             <block type="math_number" movable="false" deletable="false">
                                 <field name="NUM">20</field>
                             </block>
                         </value>
-                        <value name="fontFamily" movable="false" deletable="false">
-                            <block type="text">
+                        <field name="fontWeight">'normal'</field>
+                        <field name="fontStyle">'normal'</field>
+                        <value name="fontFamily">
+                            <block type="text" movable="false" deletable="false">
                                 <field name="TEXT">仿宋</field>
                             </block>
                         </value>
@@ -851,39 +851,47 @@
                         <field name="VAR">randomDot</field>
                     </block>
                 </value>
-                <value name="x">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
+                <value name="lis_pointer_r">
+                    <block  movable="false" deletable="false" type="points_r">
+                        <value name="x_0">
+                            <block  movable="false" deletable="false" type="math_number">
+                                <field name="NUM">100</field>
+                            </block>
+                        </value>
+                        <value name="y_0">
+                            <block  movable="false" deletable="false" type="math_number">
+                                <field name="NUM">100</field>
+                            </block>
+                        </value>
+                        <value name="r">
+                            <block type="math_number" movable="false" deletable="false">
+                                <field name="NUM">50</field>
+                            </block>
+                        </value>
                     </block>
                 </value>
-                <value name="y">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
-                    </block>
-                </value>
-                <value name="r">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
-                    </block>
-                </value>
-                <value name="maskBand">
-                    <block type="math_number">
-                        <field name="NUM">8</field>
-                    </block>
-                </value>
-                <value name="dotNumber">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
-                    </block>
-                </value>
-                <value name="minSpeed">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="maxSpeed">
-                    <block type="math_number">
-                        <field name="NUM">5</field>
+                <value name="random_dot_attributes">
+                    <block type="random_dot_attributes" movable="false" deletable="false">
+                        <value name="maskBand">
+                            <block type="math_number" movable="false" deletable="false">
+                                <field name="NUM">8</field>
+                            </block>
+                        </value>
+                        <value name="dotNumber">
+                            <block type="math_number" movable="false" deletable="false">
+                                <field name="NUM">100</field>
+                            </block>
+                        </value>
+                        <value name="minSpeed">
+                            <block type="math_number" movable="false" deletable="false">
+                                <field name="NUM">0</field>
+                            </block>
+                        </value>
+                        <value name="maxSpeed">
+                            <block type="math_number" movable="false" deletable="false">
+                                <field name="NUM">5</field>
+                            </block>
+                        </value>
                     </block>
                 </value>
             </block>

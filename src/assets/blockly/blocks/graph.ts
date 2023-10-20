@@ -194,6 +194,27 @@ const graph = (Blockly: typeof BLK) => {
             this.setHelpUrl("");
         }
     }
+    Blockly.Blocks["random_dot_attributes"] = {
+        init: function() {
+            this.appendValueInput("maskBand")
+                .setCheck(null)
+                .appendField("maskBand");
+            this.appendValueInput("dotNumber")
+                .setCheck(null)
+                .appendField("dotNumber");
+            this.appendValueInput("minSpeed")
+                .setCheck(null)
+                .appendField("minSpeed");
+            this.appendValueInput("maxSpeed")
+                .setCheck(null)
+                .appendField("maxSpeed");
+            this.setOutput(true, null)
+            this.setInputsInline(true);
+            this.setColour(blockColor.graph);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    }
     // 1.直线
     Blockly.Blocks['graph_line'] = {
         init: function () {
@@ -449,33 +470,18 @@ const graph = (Blockly: typeof BLK) => {
     // 10.随机点
     Blockly.Blocks['randomDot'] = {
         init: function () {
-            this.appendDummyInput()
-                .appendField("randomDot");
+            // this.appendDummyInput()
+            //     .appendField("randomDot");
             this.appendValueInput('id')
                 .setCheck("String")
-                .appendField('id')
-            this.appendValueInput("x")
-                .setCheck(null)
-                .appendField("x");
-            this.appendValueInput("y")
-                .setCheck(null)
-                .appendField("y");
-            this.appendValueInput("r")
-                .setCheck(null)
-                .appendField("r");
-            this.appendValueInput("maskBand")
-                .setCheck(null)
-                .appendField("maskBand");
-            this.appendValueInput("dotNumber")
-                .setCheck(null)
-                .appendField("dotNumber");
-            this.appendValueInput("minSpeed")
-                .setCheck(null)
-                .appendField("minSpeed");
-            this.appendValueInput("maxSpeed")
-                .setCheck(null)
-                .appendField("maxSpeed");
-            this.setInputsInline(true);
+                .appendField('RandomDot')
+            this.appendValueInput("lis_pointer_r")
+                .appendField("center")
+                .setAlign(Blockly.ALIGN_RIGHT)
+            this.appendValueInput("random_dot_attributes")
+                .appendField("attributes")
+                .setAlign(Blockly.ALIGN_RIGHT)
+            this.setInputsInline(false);
             this.setPreviousStatement(true, null);
             this.setNextStatement(true, null);
             this.setColour(blockColor.graph);
