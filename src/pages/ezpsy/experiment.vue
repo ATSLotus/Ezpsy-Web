@@ -75,5 +75,15 @@
 </template>
 
 <style scoped lang="scss">
-    
+    #toturial {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        canvas {
+            top: 0;
+            left: 0;
+        }
+    }
 </style>

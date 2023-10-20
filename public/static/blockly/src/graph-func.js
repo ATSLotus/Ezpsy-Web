@@ -17,8 +17,8 @@ let makeLine = function(start_x,start_y,end_x,end_y,border_width,color){
   return line
 }
 
-//2.空心矩形
-let makeStrokeRect = function(left,top,width,height,border_width,color){
+//2.矩形
+let makeRect = function(left,top,width,height,border_width,color_stroke,color_fill){
   let strokeRect = new ezpsy.Rectangle({
     shape: {
       x: left,
@@ -28,7 +28,8 @@ let makeStrokeRect = function(left,top,width,height,border_width,color){
     },
     style: {
       lineWidth: border_width,
-      stroke: color
+      stroke: color_stroke,
+      fill: color_fill
     }
   })
   ez.add(strokeRect)
@@ -37,31 +38,33 @@ let makeStrokeRect = function(left,top,width,height,border_width,color){
 }
 
 // 3.实心矩形
-let makeFillRect=function(left,top,width,height,color){
-  let fillRect = new ezpsy.Rectangle({
-    shape: {
-      x: left,
-      y: top,
-      width: width,
-      height: height
-    },
-    style: {
-      fill: color
-    }
-  })
-  ez.add(fillRect)
-  return(fillRect)
-}
+// let makeFillRect=function(left,top,width,height,color){
+//   let fillRect = new ezpsy.Rectangle({
+//     shape: {
+//       x: left,
+//       y: top,
+//       width: width,
+//       height: height
+//     },
+//     style: {
+//       fill: color
+//     }
+//   })
+//   ez.add(fillRect)
+//   return(fillRect)
+// }
 
 // 4.三角形
-let makeTriangle=function(x1,y1,x2,y2,x3,y3,color){
+let makeTriangle=function(x1,y1,x2,y2,x3,y3,border_width,color_stroke,color_fill){
   let triangle = new ezpsy.Polygon({
     shape: {
       xA: [x1,x2,x3],
       yA: [y1,y2,y3]
     },
     style: {
-      stroke: color
+      lineWidth: border_width,
+      stroke: color_stroke,
+      fill: color_fill
     }
   })
   ez.add(triangle)
@@ -69,7 +72,7 @@ let makeTriangle=function(x1,y1,x2,y2,x3,y3,color){
 }
 
 // 5.空心圆
-let makeStroke_circle=function(x,y,r,color){
+let makeCircle=function(x,y,r,border_width,color_stroke,color_fill){
   let stroke_circle = new ezpsy.Circle({
     shape: {
       x: x,
@@ -77,7 +80,9 @@ let makeStroke_circle=function(x,y,r,color){
       r: r
     },
     style: {
-      stroke: color
+      lineWidth: border_width,
+      stroke: color_stroke,
+      fill: color_fill
     }
   })
   ez.add(stroke_circle)
@@ -85,23 +90,28 @@ let makeStroke_circle=function(x,y,r,color){
 }
 
 // 6.填充圆
-let makeFill_circle=function(x,y,r,color){
-  let fill_circle = new ezpsy.Circle({
-    shape: {
-      x: x,
-      y: y,
-      r: r
-    },
-    style: {
-      fill: color
-    }
-  })
-  ez.add(fill_circle)
-  return(fill_circle)
-}
+// let makeFill_circle=function(x,y,r,color){
+//   let fill_circle = new ezpsy.Circle({
+//     shape: {
+//       x: x,
+//       y: y,
+//       r: r
+//     },
+//     style: {
+//       fill: color
+//     }
+//   })
+//   ez.add(fill_circle)
+//   return(fill_circle)
+// }
 
 //7.文本
-let makeText = function(font_style,font_weight,font_size,font_family,color,value_text,value_x,value_y,textAlgin,textBaseline){
+let makeText = function(
+  value_text,
+  value_x, value_y, 
+  font_size, font_weight, font_style,font_family,
+  textAlgin,textBaseline,color
+){
   let text = new ezpsy.Texts({
     shape: {
         text: value_text,
