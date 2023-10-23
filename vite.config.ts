@@ -25,7 +25,20 @@ export default defineConfig({
       compilerOptions: {
         // 忽略自定义标签警告 vue3 app.config.compilerOptions.isCustomElement 配置有问题
         isCustomElement: (tag) => {
-          return ["field", "shadow", "value", "block", "category", "sep", "mutation", "xml", "next", "statement", "container"].includes(tag)
+          return [
+            "field", 
+            "shadow", 
+            "value", 
+            "block", 
+            "category", 
+            "sep", 
+            "mutation", 
+            "xml", 
+            "next", 
+            "statement", 
+            "container", 
+            "subblock"
+          ].includes(tag)
         },
       }
     }

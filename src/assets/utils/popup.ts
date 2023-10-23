@@ -188,9 +188,8 @@ const showMsg = (title: string, Msg: string) => {
                 margin-top: 20px;
                 white-space: pre-wrap;
                 text-align: start;
-                overflow-y: scroll;
                 padding: 0 20px;
-            ">${Msg}</div>
+            " class="ats_no_scroll_bar">${Msg}</div>
         `,
         showConfirmButton: false,
         showCancelButton: true,
@@ -211,8 +210,8 @@ const showImg = (img: string, opts?: {
     width?: number
     height?: number
 }) => {
-    const width = opts && opts.width ? `${opts.width}%` : `auto`
-    const height = opts && opts.height ? `${opts.height}%` : `auto`
+    const width = opts && opts.width ? `${opts.width}%` : `100%`
+    const height = opts && opts.height ? `${opts.height}%` : `100%`
     Swal.fire({
         html: `
             <img style="

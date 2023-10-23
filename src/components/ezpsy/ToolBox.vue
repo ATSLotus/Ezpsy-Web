@@ -301,7 +301,7 @@
         <category name="Object" :colour="color.object">
             <block type="objectContent">
                 <value name="key">
-                    <block type="text">
+                    <block type="text" movable="false" deletable="false">
                         <field name="TEXT">objectKey</field>
                     </block>
                 </value>
@@ -312,18 +312,29 @@
                         <field name="TEXT">title</field>
                     </block>
                 </value>
-                <mutation items="0"></mutation>
+                <mutation items="1"></mutation>
+                <value name="ADD0">
+                    <block type="objectContent">
+                        <value name="key">
+                            <block type="text">
+                                <field name="TEXT">objectKey</field>
+                            </block>
+                        </value>
+                    </block>
+                </value>
             </block>
             <block type="DlgObjectsCreate">
-                <mutation items="0"></mutation>
+                <mutation items="1"></mutation>
+                <value name="ADD0">
+                    <block type="objectContent">
+                        <value name="key">
+                            <block type="text">
+                                <field name="TEXT">objectKey</field>
+                            </block>
+                        </value>
+                    </block>
+                </value>
             </block>
-            <!-- <block type="ObjectAdd">
-    <value name="key">
-    <block type="objectContent">
-        <field name="TEXT">objectKey</field>
-    </block>
-    </value>
-</block> -->
         </category>
         <sep></sep>
         <!--代码块-color区域-->
@@ -1083,43 +1094,50 @@
             </block>
             <block type="listDlg">
                 <value name="listDlgContent">
-                    <block type="listDlgContent">
+                    <block type="listDlgContent" movable="false" deletable="false">
                         <value name="titleText">
-                            <block type="text">
+                            <block type="text" movable="false" deletable="false">
                                 <field name="TEXT">title</field>
                             </block>
                         </value>
                         <value name="result">
-                            <block type="variables_get">
+                            <block type="variables_get" movable="false" deletable="false">
                                 <field name="VAR">result</field>
                             </block>
                         </value>
                         <value name="IsMultiple">
-                            <block type="logic_boolean">
-                                <field name="BOOL">flase</field>
+                            <block type="logic_boolean" movable="false" deletable="false">
+                                <field name="BOOL">FALSE</field>
                             </block>
                         </value>
                     </block>
                 </value>
                 <value name="listDlgListen">
-                    <block type="listDlgListen">
+                    <block type="listDlgListen" movable="false" deletable="false">
                         <value name="confirmText">
-                            <block type="text">
+                            <block type="text" movable="false" deletable="false">
                                 <field name="TEXT">OK</field>
                             </block>
                         </value>
                         <value name="cancelText">
-                            <block type="text">
+                            <block type="text" movable="false" deletable="false">
                                 <field name="TEXT">Cancel</field>
                             </block>
                         </value>
                     </block>
                 </value>
                 <value name="objectList">
-                    <block type="DlgObjectsCreate">
-                        <mutation items="1">
-                            
-                        </mutation>
+                    <block type="DlgObjectsCreate" movable="false" deletable="false">
+                        <mutation items="1"></mutation>
+                        <value name="ADD0">
+                            <block type="objectContent">
+                                <value name="key">
+                                    <block type="text" movable="false" deletable="false">
+                                        <field name="TEXT">objectKey</field>
+                                    </block>
+                                </value>
+                            </block>
+                        </value>
                     </block>
                 </value>
             </block>
@@ -1153,29 +1171,37 @@
                 </value>
             </block>
             <block type="msgDlg">
-                <value name="image">
-                    <block type="text">
-                        <field name="TEXT">https://unsplash.it/400/200</field>
+                <value name="msgDlgContent">
+                    <block type="msgDlgContent" movable="false" deletable="false">
+                        <value name="image">
+                            <block type="text" movable="false" deletable="false">
+                                <field name="TEXT">https://unsplash.it/400/200</field>
+                            </block>
+                        </value>
+                        <value name="textContent">
+                            <block type="text" movable="false" deletable="false">
+                                <field name="TEXT">请仔细阅读用户指引</field>
+                            </block>
+                        </value>
                     </block>
                 </value>
-                <value name="textContent">
-                    <block type="text">
-                        <field name="TEXT">请仔细阅读用户指引</field>
-                    </block>
-                </value>
-                <value name="width">
-                    <block type="math_number">
-                        <field name="NUM">400</field>
-                    </block>
-                </value>
-                <value name="height">
-                    <block type="math_number">
-                        <field name="NUM">200</field>
-                    </block>
-                </value>
-                <value name="confirm">
-                    <block type="text">
-                        <field name="TEXT">开始实验</field>
+                <value name="msgDlgListener">
+                    <block type="msgDlgListener" movable="false" deletable="false">
+                        <value name="width">
+                            <block type="math_number" movable="false" deletable="false">
+                                <field name="NUM">400</field>
+                            </block>
+                        </value>
+                        <value name="height">
+                            <block type="math_number" movable="false" deletable="false">
+                                <field name="NUM">200</field>
+                            </block>
+                        </value>
+                        <value name="confirm">
+                            <block type="text" movable="false" deletable="false">
+                                <field name="TEXT">开始实验</field>
+                            </block>
+                        </value>
                     </block>
                 </value>
             </block>

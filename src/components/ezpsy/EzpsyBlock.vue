@@ -7,7 +7,7 @@
     import { showMsg, showImg, tipPopup, inputPopup, closePopup, setContainer } from "@/assets/utils/popup";
     import router from '@/router/router';
     import { decrypt, encrypt } from '@/assets/utils/crypto';
-    import { ScriptsStore } from '@/store/store';
+    import { ScriptsStore, UserStore } from '@/store/store';
     import { getCurrentUser } from '@/assets/index/auth';
     import agc from '@/assets/agc/agc'
     import uuid from "@/assets/utils/uuid"
@@ -16,20 +16,26 @@
     import javascriptInit from "@/assets/blockly/javascript/javascript_init"
     import defaultInit from "@/assets/blockly/default_init"
     import formatJavaScriptCode from "@/assets/utils/formatJS"
+    import { deepClone, formatDate } from '@/assets/utils/utils';
+    import { DIRECTION } from '@/assets/utils/config';
+    import { ObjectListSort } from '@/assets/utils/sort';
+    import { getBlob } from '@/assets/utils/image';
 
     const route = useRoute()    
 
     const tempConsoleWarn = console.warn
     const tempConsoleLog = console.log
+    const ignores = [
+        "block generator functions",
+        "MutatorIcon.reconnect was deprecated",
+        "No message string for ",
+        "CodeGenerator init",
+        "Deprecated call to"
+    ]
     console.warn = message => {
         if(typeof message === 'string') {
-            if(message.startsWith("block generator functions")) {
-                return
-            } else if(message.startsWith('No message string for ')) {
-                return
-            } else if(message.startsWith("CodeGenerator init")) {
-                return
-            } else if(message.startsWith("Deprecated call to")) {
+            const res = ignores.filter(a => message.startsWith(a))
+            if(res.length > 0) {
                 return
             } else {
                 tempConsoleWarn(message)
@@ -38,9 +44,8 @@
     }
     console.log = message => {
         if(typeof message === 'string') {
-            if(message.startsWith("block generator functions")) {
-                return
-            } else if(message.startsWith('No message string for ')) {
+            const res = ignores.filter(a => message.startsWith(a))
+            if(res.length > 0) {
                 return
             } else {
                 tempConsoleLog(message)
@@ -50,6 +55,15 @@
 
     const storage = agc.storage
 
+    interface LIST {
+        path: string
+        name: string
+        description: string
+        modifyTime: string
+        preview: string
+        selected: boolean
+    }
+
     const data = reactive({
         Blockly: {} as typeof BLK,
         // workspace: {} as BLK.WorkspaceSvg,
@@ -58,7 +72,8 @@
         isFullScreen: false,
         isAllowUndo: false,
         isAllowRedo: false,
-        imgIsShow: false
+        imgIsShow: false,
+        lists: [] as Array<LIST>
     })
 
     const init = async () => {
@@ -169,6 +184,7 @@
             const xmlDom = data.Blockly.utils.xml.textToDom(xml)
             data.Blockly.Xml.appendDomToWorkspace(xmlDom, data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
         }
+        getFileList()
     })
 
     const showJs = () => {
@@ -301,8 +317,68 @@
         }
     }
 
-    const openImgLibirary = () => {
+    const getFileList = async () => {
+        const user = UserStore().getUser
+        // @ts-ignore
+        const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ezImage/`)
+        if(listsRes.isSuccess){
+            const cacheStr = localStorage.getItem("EZPSY_IMAGE")
+            const hasCache = !!(cacheStr)
+            let cache: Record<string, any> = {}
+            if(hasCache) 
+                cache = JSON.parse(cacheStr)
+            let newCache: Record<string, any> = {}
+            data.lists = []
+            const lists = listsRes.data.fileList
+            Promise.all(
+                lists.map(async (list: any) => {
+                    const title = list.name.split('.')[0]
+                    const metadata = await list.getFileMetadata()
+                    if(
+                        title in cache &&
+                        formatDate(metadata.mtime) === cache[title].modifyTime
+                    ) {
+                        data.lists.push(Object.assign(cache[title], {selected: false}))
+                    } else {
+                        const fileRes = await storage.getFileData(list.path)
+                        if(fileRes.isSuccess) {
+                            const json = fileRes.data
+                            json.data = JSON.parse(decrypt(json.data))
+                            const li = {
+                                path: encrypt(list.path),
+                                name: title,
+                                description: json.data.description,
+                                // modifyTime: formatDate(json.mtime),
+                                modifyTime: formatDate(metadata.mtime),
+                                preview: json.data.image
+                            }
+                            data.lists.push(Object.assign(li, {selected: false}))
+                        }
+                    }
+                })
+            ).then(() => {
+                const newLists = ObjectListSort<LIST>({
+                    list: data.lists,
+                    method: DIRECTION.FORWARD,
+                    key: "modifyTime"
+                })
+                data.lists = []
+                newLists.forEach((list: any) => {
+                    data.lists.push(deepClone(list))
+                    delete list["selected"]
+                    newCache[list.name] = list
+                })
+                localStorage.setItem("EZPSY_IMAGE", JSON.stringify(newCache))
+                // reload()
+            }) 
+        }
+    }
+
+    const openImgLibirary = async () => {
         data.imgIsShow = true
+        if(data.lists.length > 0) 
+            getFileList()
+        // console.log(data.lists)
     }
 
     const undo = () => {
@@ -316,9 +392,21 @@
     }
 
     const load = () => {
-        var workspace = data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg
-        var allBlocks = workspace.getAllBlocks(true) 
-        console.log(allBlocks)
+        // const workspace = data.Blockly.getMainWorkspace() as BLK.Workspace
+        // const blocks = workspace.getBlocksByType("msgDlg", true)
+        // if(blocks.length > 0) {
+        //     const block = blocks[0]
+        //     const chilren = block.getChildren(true)
+        //     const child = chilren[0].getChildren(true)[0].inputList[0]
+        //     const text = child.fieldRow[1]
+        //     text.setValue("1")
+        // }
+        
+        // blocklyBlockCanvas
+        // const svgElements = document.getElementsByClassName('blocklySvg');
+        // const svgElement = svgElements[0]
+        
+        
     }
 
     const run = () => {
@@ -329,6 +417,34 @@
             }
         })
         window.open(routeData.href, "_blank")
+    }
+
+    const close_libirary = (event: Event) => {
+        const target = event.target as Node | null
+        const dom = document.getElementById("EzpsyBlockLibirary")
+        if(!(dom === target || dom?.contains(target))) {
+            data.imgIsShow = false
+        }
+    }
+
+    const selecte_image = (li: LIST) => {
+        data.lists.forEach(item => {
+            item.selected = false
+        })
+        li.selected = true
+    }
+
+    const copy_src = async (li: LIST) => {
+        const src = getBlob(li.preview)
+        await navigator.clipboard.writeText(src);
+        tipPopup("success", {
+            title: `已选中 ${li.name}`, 
+            tips: "已复制到剪切板中，请自行复制到相应位置",
+            timer: 2000,
+            isUseConfirm: true,
+        }).then(() => {
+            data.imgIsShow = false
+        })
     }
 
     onBeforeUnmount(async () => {
@@ -404,9 +520,22 @@
             </div>
         </div>
         <ToolBox></ToolBox>
-        <div class="imgLibirary" v-if="data.imgIsShow">
-            <div class="libiraryContent">
-                <!-- LIST -->
+        <div class="imgLibirary" v-if="data.imgIsShow" @click="close_libirary">
+            <div id="EzpsyBlockLibirary" class="libiraryContent">
+                <div class="libiraryHeader">
+                    <div class="libiraryClose">X</div>
+                </div>
+                <div class="libiraryImage no_scroll_bar">
+                    <div 
+                        class="image" 
+                        :class="item.selected ? 'image-selected' : ''" 
+                        v-for="item in data.lists"
+                        @click="selecte_image(item)"
+                        @dblclick="copy_src(item)"
+                    >
+                        <img :src="getBlob(item.preview)" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -473,7 +602,8 @@
                     background: #f0f0f0;
                 }
             }
-        }
+        } 
+        $HEADERHeight: 20px;
         .imgLibirary {
             width: 100%;
             height: 100%;
@@ -483,13 +613,62 @@
             left: 0;
             z-index: 1000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            .libiraryHeader {
+                width: 100%;
+                height: $HEADERHeight;
+                font-size: $HEADERHeight;
+                font-weight: 700;
+                position: relative;
+                display: flex;
+                justify-content: flex-end;
+                padding: 10px;
+                box-sizing: border-box;
+                .libiraryClose {
+                    width: $HEADERHeight;
+                    height: $HEADERHeight;
+                    text-align: center;
+                }
+            }
             .libiraryContent {
                 width: 80%;
                 height: 80%;
                 background: #FFFFFF;
                 border-radius: 24px;
+                .libiraryImage {
+                    display: flex;
+                    justify-content: space-between;
+                    flex-wrap: wrap;
+                    padding: 2%;
+                    .image {
+                        width: 20%;
+                        height: auto;
+                        aspect-ratio: 1/1;
+                        display: block;
+                        margin: 1%;
+                        padding: 1%;
+                        border: 2px solid #FFFFFF;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        img {
+                            max-width: 100%;
+                            max-height: 100%;
+                            width: auto;
+                            height: auto;
+                            display: block;
+                            margin: auto
+                        }
+                    }
+                    .image:hover {
+                        border-color: #005795;
+                    }
+                    .image-selected {
+                        border-color: #005795;
+                    }
+                }
             }
         }
     }

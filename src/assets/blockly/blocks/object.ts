@@ -83,7 +83,7 @@ const object = (Blockly: typeof BLK) => {
             for(var a=0;a<this.itemCount_;a++)
                 if(!this.getInput("ADD"+a)){
                     var b=this.appendValueInput("ADD"+a);
-                    0==a&&b.appendField(Blockly.Msg.LISTS_CREATE_WITH_INPUT_WITH)
+                    0==a&&b.appendField("create object with")
                 }
             for(;this.getInput("ADD"+a);)
             this.removeInput("ADD"+a),
@@ -150,7 +150,7 @@ const object = (Blockly: typeof BLK) => {
             for(var a=0;a<this.itemCount_;a++)
                 if(!this.getInput("ADD"+a)){
                     var b=this.appendValueInput("ADD"+a);
-                    0==a&&b.appendField(Blockly.Msg.LISTS_CREATE_WITH_INPUT_WITH)
+                    0==a&&b.appendField("create object with")
                 }
             for(;this.getInput("ADD"+a);)
             this.removeInput("ADD"+a),
@@ -162,7 +162,6 @@ const object = (Blockly: typeof BLK) => {
         init:function(){
             this.setColour(blockColor.object);
             this.appendDummyInput().appendField(Blockly.Msg.LISTS_CREATE_WITH_ITEM_TITLE);
-            this.appendValueInput("objectContent")
             this.setPreviousStatement(!0);this.setNextStatement(!0);
             // this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_ITEM_TOOLTIP);
             this.contextMenu=!1

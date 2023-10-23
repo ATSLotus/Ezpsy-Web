@@ -228,7 +228,7 @@
                 newLists.forEach((list: any) => {
                     data.lists.push(deepClone(list))
                     delete list["operations"]
-                    newCache[list.title] = list
+                    newCache[list.name] = list
                 })
                 localStorage.setItem("EZPSY_IMAGE", JSON.stringify(newCache))
                 reload()

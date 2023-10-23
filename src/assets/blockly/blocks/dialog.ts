@@ -3,41 +3,6 @@ import blockColor from "../config"
 
 const dialog = (Blockly: typeof BLK) => {
 
-    Blockly.Blocks['listDlgContent'] = {
-        init: function() {
-            this.appendValueInput("result")
-                .setCheck(null)
-                .appendField("result")
-            this.appendValueInput('titleText')
-                .setCheck(null)
-                .appendField('titleText')
-            this.appendValueInput("IsMultiple")
-                .setCheck(null)
-                .appendField("IsMultiple")
-            this.setInputsInline(true);
-            this.setOutput(true, null)
-            this.setColour(blockColor.dialog);
-            this.setTooltip("");
-            this.setHelpUrl("");
-        }
-    }
-
-    Blockly.Blocks['listDlgListen'] = {
-        init: function() {
-            this.appendValueInput("confirmText")
-                .setCheck(null)
-                .appendField("confirmText")
-            this.appendValueInput("cancelText")
-                .setCheck(null)
-                .appendField("cancelText")
-            this.setInputsInline(true);
-            this.setOutput(true, null)
-            this.setColour(blockColor.dialog);
-            this.setTooltip("");
-            this.setHelpUrl("");
-        }
-    }
-
     Blockly.Blocks['inputDlg'] = {
         init: function () {
             this.appendDummyInput()
@@ -101,6 +66,41 @@ const dialog = (Blockly: typeof BLK) => {
         }
     };
 
+    Blockly.Blocks['listDlgContent'] = {
+        init: function() {
+            this.appendValueInput("result")
+                .setCheck(null)
+                .appendField("result")
+            this.appendValueInput('titleText')
+                .setCheck(null)
+                .appendField('titleText')
+            this.appendValueInput("IsMultiple")
+                .setCheck(null)
+                .appendField("IsMultiple")
+            this.setInputsInline(true);
+            this.setOutput(true, null)
+            this.setColour(blockColor.dialog);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    }
+
+    Blockly.Blocks['listDlgListen'] = {
+        init: function() {
+            this.appendValueInput("confirmText")
+                .setCheck(null)
+                .appendField("confirmText")
+            this.appendValueInput("cancelText")
+                .setCheck(null)
+                .appendField("cancelText")
+            this.setInputsInline(true);
+            this.setOutput(true, null)
+            this.setColour(blockColor.dialog);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    }
+
     Blockly.Blocks['listDlg'] = {
         init: function () {
             // this.appendDummyInput()
@@ -111,7 +111,7 @@ const dialog = (Blockly: typeof BLK) => {
             this.appendValueInput("listDlgListen")
             this.appendValueInput("objectList")
                 .setCheck(null)
-                .appendField("objectList")
+                .appendField("options")
             
             this.setInputsInline(false);
             this.setPreviousStatement(true, null);
@@ -166,16 +166,24 @@ const dialog = (Blockly: typeof BLK) => {
         }
     };
 
-    Blockly.Blocks['msgDlg'] = {
-        init: function () {
-            this.appendDummyInput()
-                .appendField("msgDlg")
+    Blockly.Blocks["msgDlgContent"] = {
+        init: function() {
             this.appendValueInput('image')
                 .setCheck(null)
                 .appendField('image')
             this.appendValueInput("textContent")
                 .setCheck(null)
                 .appendField("textContent")
+            this.setInputsInline(true);
+            this.setOutput(true, null)
+            this.setColour(blockColor.dialog);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    }
+
+    Blockly.Blocks["msgDlgListener"] = {
+        init: function() {
             this.appendValueInput("width")
                 .setCheck(null)
                 .appendField("width")
@@ -185,10 +193,25 @@ const dialog = (Blockly: typeof BLK) => {
             this.appendValueInput("confirm")
                 .setCheck(null)
                 .appendField("confirm")
+            this.setInputsInline(true);
+            this.setOutput(true, null)
+            this.setColour(blockColor.dialog);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    }
+
+    Blockly.Blocks['msgDlg'] = {
+        init: function () {
+            // this.appendDummyInput()
+            //     .appendField("")
+            this.appendValueInput("msgDlgContent")
+                .appendField("msgDlg")
+            this.appendValueInput("msgDlgListener")
             this.appendStatementInput("func")
                 .setCheck(null)
                 .appendField("func");
-            this.setInputsInline(true);
+            this.setInputsInline(false);
             this.setPreviousStatement(true, null);
             this.setNextStatement(true, null);
             this.setColour(blockColor.dialog);
