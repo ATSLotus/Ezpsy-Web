@@ -162,6 +162,7 @@ const object = (Blockly: typeof BLK) => {
         init:function(){
             this.setColour(blockColor.object);
             this.appendDummyInput().appendField(Blockly.Msg.LISTS_CREATE_WITH_ITEM_TITLE);
+            this.appendValueInput("objectContent")
             this.setPreviousStatement(!0);this.setNextStatement(!0);
             // this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_ITEM_TOOLTIP);
             this.contextMenu=!1

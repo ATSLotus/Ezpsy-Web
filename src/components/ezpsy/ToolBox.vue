@@ -907,23 +907,7 @@
                     </block>
                 </value>
                 <value name="color">
-                    <block type="colour_rgb">
-                        <value name="RED">
-                            <shadow type="math_number">
-                                <field name="NUM">100</field>
-                            </shadow>
-                        </value>
-                        <value name="GREEN">
-                            <shadow type="math_number">
-                                <field name="NUM">50</field>
-                            </shadow>
-                        </value>
-                        <value name="BLUE">
-                            <shadow type="math_number">
-                                <field name="NUM">0</field>
-                            </shadow>
-                        </value>
-                    </block>
+                    <block type="colour_picker"></block>
                 </value>
             </block>
             <!-- 设置边框色 -->
@@ -934,23 +918,7 @@
                     </block>
                 </value>
                 <value name="color">
-                    <block type="colour_rgb">
-                        <value name="RED">
-                            <shadow type="math_number">
-                                <field name="NUM">100</field>
-                            </shadow>
-                        </value>
-                        <value name="GREEN">
-                            <shadow type="math_number">
-                                <field name="NUM">50</field>
-                            </shadow>
-                        </value>
-                        <value name="BLUE">
-                            <shadow type="math_number">
-                                <field name="NUM">0</field>
-                            </shadow>
-                        </value>
-                    </block>
+                    <block type="colour_picker"></block>
                 </value>
             </block>
             <!-- 设置边框线宽 -->
@@ -1114,34 +1082,44 @@
                 </value>
             </block>
             <block type="listDlg">
-                <value name="titleText">
-                    <block type="text">
-                        <field name="TEXT">title</field>
+                <value name="listDlgContent">
+                    <block type="listDlgContent">
+                        <value name="titleText">
+                            <block type="text">
+                                <field name="TEXT">title</field>
+                            </block>
+                        </value>
+                        <value name="result">
+                            <block type="variables_get">
+                                <field name="VAR">result</field>
+                            </block>
+                        </value>
+                        <value name="IsMultiple">
+                            <block type="logic_boolean">
+                                <field name="BOOL">flase</field>
+                            </block>
+                        </value>
                     </block>
                 </value>
-                <value name="result">
-                    <block type="variables_get">
-                        <field name="VAR">result</field>
+                <value name="listDlgListen">
+                    <block type="listDlgListen">
+                        <value name="confirmText">
+                            <block type="text">
+                                <field name="TEXT">OK</field>
+                            </block>
+                        </value>
+                        <value name="cancelText">
+                            <block type="text">
+                                <field name="TEXT">Cancel</field>
+                            </block>
+                        </value>
                     </block>
                 </value>
                 <value name="objectList">
                     <block type="DlgObjectsCreate">
-                        <mutation items="0"></mutation>
-                    </block>
-                </value>
-                <value name="IsMultiple">
-                    <block type="logic_boolean">
-                        <field name="BOOL">flase</field>
-                    </block>
-                </value>
-                <value name="confirmText">
-                    <block type="text">
-                        <field name="TEXT">OK</field>
-                    </block>
-                </value>
-                <value name="cancelText">
-                    <block type="text">
-                        <field name="TEXT">Cancel</field>
+                        <mutation items="1">
+                            
+                        </mutation>
                     </block>
                 </value>
             </block>

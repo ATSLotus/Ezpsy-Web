@@ -2,6 +2,42 @@ import BLK from "blockly"
 import blockColor from "../config"
 
 const dialog = (Blockly: typeof BLK) => {
+
+    Blockly.Blocks['listDlgContent'] = {
+        init: function() {
+            this.appendValueInput("result")
+                .setCheck(null)
+                .appendField("result")
+            this.appendValueInput('titleText')
+                .setCheck(null)
+                .appendField('titleText')
+            this.appendValueInput("IsMultiple")
+                .setCheck(null)
+                .appendField("IsMultiple")
+            this.setInputsInline(true);
+            this.setOutput(true, null)
+            this.setColour(blockColor.dialog);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    }
+
+    Blockly.Blocks['listDlgListen'] = {
+        init: function() {
+            this.appendValueInput("confirmText")
+                .setCheck(null)
+                .appendField("confirmText")
+            this.appendValueInput("cancelText")
+                .setCheck(null)
+                .appendField("cancelText")
+            this.setInputsInline(true);
+            this.setOutput(true, null)
+            this.setColour(blockColor.dialog);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    }
+
     Blockly.Blocks['inputDlg'] = {
         init: function () {
             this.appendDummyInput()
@@ -67,27 +103,17 @@ const dialog = (Blockly: typeof BLK) => {
 
     Blockly.Blocks['listDlg'] = {
         init: function () {
-            this.appendDummyInput()
+            // this.appendDummyInput()
+            //     .appendField("listDlg")
+            
+            this.appendValueInput("listDlgContent")
                 .appendField("listDlg")
-            this.appendValueInput('titleText')
-                .setCheck(null)
-                .appendField('titleText')
-            this.appendValueInput("result")
-                .setCheck(null)
-                .appendField("result")
+            this.appendValueInput("listDlgListen")
             this.appendValueInput("objectList")
                 .setCheck(null)
                 .appendField("objectList")
-            this.appendValueInput("IsMultiple")
-                .setCheck(null)
-                .appendField("IsMultiple")
-            this.appendValueInput("confirmText")
-                .setCheck(null)
-                .appendField("confirmText")
-            this.appendValueInput("cancelText")
-                .setCheck(null)
-                .appendField("cancelText")
-            this.setInputsInline(true);
+            
+            this.setInputsInline(false);
             this.setPreviousStatement(true, null);
             this.setNextStatement(true, null);
             this.setColour(blockColor.dialog);
