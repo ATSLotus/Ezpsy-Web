@@ -4,12 +4,13 @@
     import { onMounted, reactive, watch, shallowRef, onBeforeMount, onBeforeUnmount } from "vue";
     import { useRoute } from 'vue-router';
     import router from "@/router/router";
+    
+    import { EzpsyMenuStore, UserStore } from "@/store/store";
     import Production from "@/components/ezpsy/Production.vue"
     import Image from "@/components/ezpsy/Image.vue"
+    import EzpsyBlock from "@/components/ezpsy/EzpsyBlock.vue";
     import Codes from "@/components/ezpsy/Codes.vue"
     import Datas from "@/components/ezpsy/Datas.vue"
-    import { EzpsyMenuStore, UserStore } from "@/store/store";
-    import EzpsyBlock from "@/components/ezpsy/EzpsyBlock.vue";
     import { getCurrentUser } from "@/assets/index/auth";
     import { setContainer } from "@/assets/utils/popup";
 

@@ -531,7 +531,7 @@
             .left {
                 border: 1px solid;
                 border-color: #000000;
-                background: url("./image/index/list/arrow_left.svg");
+                background: url("./src/assets/image/index/list/arrow_left.svg");
                 background-position: center center;
                 background-size: 18px 18px;
                 cursor: pointer;
@@ -546,7 +546,7 @@
             .right {
                 border: 1px solid;
                 border-color: #000000;
-                background: url("./image/index/list/arrow_right.svg");
+                background: url("./src/assets/image/index/list/arrow_right.svg");
                 background-position: center center;
                 background-size: 18px 18px;
                 cursor: pointer;

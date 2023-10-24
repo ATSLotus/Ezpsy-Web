@@ -305,7 +305,7 @@ interface inputOptions {
     storageId?: string
     title: string
     html: Array<inputObject>
-    preConfirm: (getValue: () => Array<boolean|string>) => () => any
+    preConfirm: (getValue: () => Array<boolean|File|string>) => () => any
 }
 
 const inputPopup = (opts: inputOptions) => {
@@ -481,13 +481,75 @@ const inputPopup = (opts: inputOptions) => {
                 break
             }
             case "file" : {
+                const accept = obj.props.accept ? obj.props.accept : "*"
                 html += `
                 <div style="
-                    width: 90%;
-                    aspect-ratio: 3/2;
-                    border: 2px dashed #cccccc;
+                    position: relative;
+                    width: 100%;
                 ">
-                    <img src="./image" />
+                    <div style="
+                        width: 90%;
+                        aspect-ratio: 3/2;
+                        border: 4px dashed #cccccc;
+                        margin: auto;
+                        margin-top: 15px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        flex-direction: column;
+                        cursor: pointer;
+                        box-sizing: border-box;
+                        border-radius: 5px;
+                    " id="${id}_BORDER">
+                        <img 
+                            src="./src/assets/image/popup/file.svg" 
+                            style="
+                                width: 20%;
+                            "
+                            id="${id}_IMG"
+                        />
+                        <div style="
+                            color: #cccccc;
+                            font-weight: 700;
+                            margin-top: 10px;
+                        " id="${id}_TITLE" >请上传文件</div>
+                    </div>
+                    <input style="
+                        position: absolute;
+                        width: 90%;
+                        aspect-ratio: 3/2;
+                        top: 0;
+                        left: 5%;
+                        cursor: pointer;
+                        opacity: 0;
+                        border-radius: 5px;
+                    " type="file" id="${id}" accept="${accept}"
+                    onchange="(async () => {
+                        const input = document.getElementById('${id}')
+                        const border = document.getElementById('${id}_BORDER')
+                        const img = document.getElementById('${id}_IMG')
+                        const msg = document.getElementById('${id}_TITLE')
+                        if(input.files && input.files?.length > 0){
+                            const file = input.files[0]
+                            if(file){
+                                msg.innerText = file.name
+                                msg.style.color = '#0D9357'
+                                border.style.borderColor = '#0D9357'
+                                img.src = './src/assets/image/popup/file-select.svg'
+                            }
+                            else{
+                                msg.innerText = '请上传文件'
+                                msg.style.color = '#cccccc'
+                                border.style.borderColor = '#cccccc'
+                                img.src = './src/assets/image/popup/file.svg'
+                            }
+                        } else {
+                            msg.innerText = '请上传文件'
+                            msg.style.color = '#cccccc'
+                            border.style.borderColor = '#cccccc'
+                            img.src = './src/assets/image/popup/file.svg'
+                        }
+                    })()" />
                 </div>
                 `
             }
@@ -500,7 +562,7 @@ const inputPopup = (opts: inputOptions) => {
         })
     })
     const getValue = () => {
-        const res = Array<string | boolean>()
+        const res = Array<string | File | boolean>()
         ids.forEach(item => {
             const dom = document.getElementById(item.id)
             switch (item.type) {
@@ -516,6 +578,10 @@ const inputPopup = (opts: inputOptions) => {
                 case "select":
                     const value = (<ATSSelectElement>dom).value
                     res.push(value ? value: "")
+                    break
+                case "file":
+                    const file_list = (<HTMLInputElement>dom).files
+                    res.push(file_list ? file_list[0]: "")
                     break
                 default:
                     break
