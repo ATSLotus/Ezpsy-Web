@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development vite --host",
     "dev:pure": "cross-env NODE_ENV=production vite  --host",
+    "transImage": "node script/transImage.js",
+    "prebuild:test": "npm run transImage",
     "build:test": "vue-tsc --noEmit && cross-env NODE_ENV=development vite build",
     "postbuild:test": "node script/zip.js",
+    "prebuild": "npm run transImage",
     "build": "vue-tsc --noEmit && cross-env NODE_ENV=production vite build",
-    "postbuild": "node script/zip.js",
     "preview": "vite preview",
     "start": "node script/server.js"
   },
@@ -35,7 +37,9 @@
     "@types/lodash": "^4.14.199",
     "@types/node": "^20.5.9",
     "@vitejs/plugin-vue": "^4.1.0",
+    "chalk": "^4.1.2",
     "cross-env": "^7.0.3",
+    "express": "^4.18.2",
     "sass": "^1.66.1",
     "sass-loader": "^13.3.2",
     "typescript": "^5.2.2",

@@ -107,7 +107,7 @@
                 minScale: 0.3,
                 scaleSpeed: 1.2
             },
-            media: './image/ezpsy/media/',
+            media: './src/assets/image/ezpsy/media/',
             rtl: false,
             scrollbars: true,
             sounds: false,
@@ -331,7 +331,7 @@
     }
 
     const showKeyCode = () => {
-        showImg("./image/ezpsy/keycode.png")
+        showImg("./src/assets/image/ezpsy/keycode.png")
     }
     
     const download = () => {
@@ -357,7 +357,7 @@
     const getFileList = async () => {
         const user = UserStore().getUser
         // @ts-ignore
-        const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ez./image/`)
+        const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ezImage`)
         if(listsRes.isSuccess){
             const cacheStr = localStorage.getItem("EZPSY_IMAGE")
             const hasCache = !!(cacheStr)
@@ -576,19 +576,19 @@
         <div class="functional_area">
             <div class="btn-group-vertical">
                 <button type="button" class="btn" @click="showJs">
-                    <img src="./image/ezpsy/icons/javascript.svg">
+                    <img src="@/assets/image/ezpsy/icons/javascript.svg">
                 </button>  
                 <button type="button" class="btn" @click="save">
-                    <img src="./image/ezpsy/icons/save.svg">保存
+                    <img src="@/assets/image/ezpsy/icons/save.svg">保存
                 </button>
                 <button type="button" class="btn" @click="showKeyCode">
-                    <img src="./image/ezpsy/icons/keycode.svg">keycode
+                    <img src="@/assets/image/ezpsy/icons/keycode.svg">keycode
                 </button>
                 <button type="button" class="btn" @click="download">
-                    <img src="./image/ezpsy/icons/cloud_download.svg">下载
+                    <img src="@/assets/image/ezpsy/icons/cloud_download.svg">下载
                 </button>
                 <button type="button" class="btn" @click="openImgLibirary">
-                    <img src="./image/ezpsy/icons/img.svg">图床
+                    <img src="@/assets/image/ezpsy/icons/img.svg">图床
                 </button>
                 <button 
                     :class="
@@ -597,7 +597,7 @@
                         'button_denied'
                     " 
                     type="button" class="btn" @click="undo">
-                    <img src="./image/ezpsy/icons/back.svg">撤消
+                    <img src="@/assets/image/ezpsy/icons/back.svg">撤消
                 </button>
                 <button 
                     :class="
@@ -606,20 +606,20 @@
                         'button_denied'
                     " 
                     type="button" class="btn" @click="redo">
-                    <img src="./image/ezpsy/icons/redo.svg">重做
+                    <img src="@/assets/image/ezpsy/icons/redo.svg">重做
                 </button>
                 <button type="button" class="btn" @click="load">
-                    <img src="./image/ezpsy/icons/upload.svg">加载
+                    <img src="@/assets/image/ezpsy/icons/upload.svg">加载
                 </button>
                 <button type="button" class="btn" @click="fullscreen">
                     <img 
                         :src="data.isFullScreen ? 
-                        './image/ezpsy/icons/normalscreen.svg' : 
-                        './image/ezpsy/icons/fullscreen.svg'"
+                        './src/assets/image/ezpsy/icons/normalscreen.svg' : 
+                        './src/assets/image/ezpsy/icons/fullscreen.svg'"
                     >{{ data.isFullScreen ? "退出全屏" : "全屏" }}
                 </button>
                 <button type="button" class="btn btn-run" @click="run">
-                    <img src="./image/ezpsy/icons/run.svg">运行
+                    <img src="@/assets/image/ezpsy/icons/run.svg">运行
                 </button>
             </div>
         </div>

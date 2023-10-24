@@ -174,7 +174,7 @@
             </div>
             <form class="form" @submit="register">
                 <div v-if="!data.phoneIsTrue" class="Error">
-                    <img src="./image/index/auth/warn.svg" width="12" height="12" >
+                    <img src="@/assets/image/index/auth/warn.svg" width="12" height="12" >
                     <span style="margin-left: 5px;">手机号码格式不正确</span>
                 </div>
                 <div 
@@ -195,7 +195,7 @@
                     />
                 </div>
                 <div v-if="!data.validateIsTrue" class="Error">
-                    <img src="./image/index/auth/warn.svg" width="12" height="12" >
+                    <img src="@/assets/image/index/auth/warn.svg" width="12" height="12" >
                     <span style="margin-left: 5px;">{{ data.codetips }}</span>
                 </div>
                 <div 
@@ -226,7 +226,7 @@
                     </div>
                 </div>
                 <div v-if="!data.passwordIsTrue" class="Error">
-                    <img src="./image/index/auth/warn.svg" width="12" height="12" >
+                    <img src="@/assets/image/index/auth/warn.svg" width="12" height="12" >
                     <span style="margin-left: 5px;">
                         密码必须至少八个字符且包含字母和数字
                     </span>
@@ -250,15 +250,15 @@
                             class="showPassword"
                             :style="
                                 data.passwordIsShow0 ? 
-                                'background-image: url(image/index/auth/eye.svg)' : 
-                                'background-image: url(image/index/auth/eye-slash.svg)'
+                                'background-image: url(./src/assets/image/index/auth/eye.svg)' : 
+                                'background-image: url(./src/assets/image/index/auth/eye-slash.svg)'
                             "
                             @click="data.passwordIsShow0 = !data.passwordIsShow0"
                         ></div>
                     </div>
                 </div>
                 <div v-if="!data.confirmIsTrue" class="Error">
-                    <img src="./image/index/auth/warn.svg" width="12" height="12" >
+                    <img src="@/assets/image/index/auth/warn.svg" width="12" height="12" >
                     <span style="margin-left: 5px;">
                         前后密码不一致
                     </span>
@@ -282,8 +282,8 @@
                             class="showPassword"
                             :style="
                                 data.passwordIsShow1 ? 
-                                'background-image: url(./image/index/auth/eye.svg)' : 
-                                'background-image: url(./image/index/auth/eye-slash.svg)'
+                                'background-image: url(./index/auth/eye.svg)' : 
+                                'background-image: url(./index/auth/eye-slash.svg)'
                             "
                             @click="data.passwordIsShow1 = !data.passwordIsShow1"
                         ></div>

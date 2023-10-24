@@ -28,7 +28,7 @@
     }
     
     const data = reactive({
-        logo: './image/logo.png',
+        logo: './src/assets/image/logo.png',
         menus: removeComponent()
     })
 
