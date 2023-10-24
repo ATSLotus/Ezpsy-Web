@@ -177,7 +177,7 @@
             </div>
             <form class="form" @submit="login">
                 <div v-if="!data.phoneIsTrue" class="Error">
-                    <img src="image/index/auth/warn.svg" width="12" height="12" >
+                    <img src="./image/index/auth/warn.svg" width="12" height="12" >
                     <span style="margin-left: 5px;">手机号码格式不正确</span>
                 </div>
                 <div 
@@ -198,7 +198,7 @@
                     />
                 </div>
                 <div v-if="!data.codeIsTrue" class="Error">
-                    <img src="image/index/auth/warn.svg" width="12" height="12" >
+                    <img src="./image/index/auth/warn.svg" width="12" height="12" >
                     <span style="margin-left: 5px;">
                         {{ data.codetips }}
                     </span>
@@ -227,8 +227,8 @@
                             class="showPassword"
                             :style="
                                 data.passwordIsShow ? 
-                                'background-image: url(image/index/auth/eye.svg)' : 
-                                'background-image: url(image/index/auth/eye-slash.svg)'
+                                'background-image: url(./image/index/auth/eye.svg)' : 
+                                'background-image: url(./image/index/auth/eye-slash.svg)'
                             "
                             @click="data.passwordIsShow = !data.passwordIsShow"
                             v-if="data.isUsePassWord"

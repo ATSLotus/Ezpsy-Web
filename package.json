@@ -8,7 +8,7 @@
     "dev:pure": "cross-env NODE_ENV=production vite  --host",
     "build:test": "vue-tsc --noEmit && cross-env NODE_ENV=development vite build",
     "postbuild:test": "node script/zip.js",
-    "build": "node script/transImage.js && vue-tsc --noEmit && cross-env NODE_ENV=production vite build",
+    "build": "vue-tsc --noEmit && cross-env NODE_ENV=production vite build",
     "postbuild": "node script/zip.js",
     "preview": "vite preview",
     "start": "node script/server.js"

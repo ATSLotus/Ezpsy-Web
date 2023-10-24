@@ -7,9 +7,23 @@ import { createPinia } from 'pinia'
 import ATSSelectElement from '@/assets/elem/atsselect'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faFileCode, faImage, faFileExcel, faList, faPuzzlePiece } from '@fortawesome/free-solid-svg-icons';
+import { 
+    faFileCode, 
+    faImage, 
+    faFileExcel, 
+    faList, 
+    faPuzzlePiece,
+    faXmark
+} from '@fortawesome/free-solid-svg-icons';
 
-library.add(faFileCode, faImage, faFileExcel, faList, faPuzzlePiece)
+library.add(
+    faFileCode, 
+    faImage, 
+    faFileExcel, 
+    faList, 
+    faPuzzlePiece,
+    faXmark
+)
 
 const app = createApp(App)
 app.use(createPinia())

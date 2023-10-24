@@ -290,7 +290,7 @@ const showProgress = (percent: number) => {
     }
 }
 
-type inputTypes = "input" | "multiline" | "checkbox" | "select"
+type inputTypes = "input" | "multiline" | "checkbox" | "select" | "file"
 interface inputObject {
     type: inputTypes
     props: {
@@ -465,7 +465,7 @@ const inputPopup = (opts: inputOptions) => {
                     const isSelected = 
                         v === opt.value ? 
                         'selected' : 
-                        defaultValue === opt.value ? 'selected' : ""
+                        defaultValue === opt.value ? "selected" : ""
                     optsStr += `\t<option value="${opt.value}" ${isSelected}>${opt.title}</option>\n`
                 })
                 html += `
@@ -479,6 +479,17 @@ const inputPopup = (opts: inputOptions) => {
                 </ats-select>
                 `
                 break
+            }
+            case "file" : {
+                html += `
+                <div style="
+                    width: 90%;
+                    aspect-ratio: 3/2;
+                    border: 2px dashed #cccccc;
+                ">
+                    <img src="./image" />
+                </div>
+                `
             }
             default:
                 break

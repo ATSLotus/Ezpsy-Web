@@ -59,42 +59,43 @@
                 title: "增加",
                 style: "green",
                 func: async () => {
-                    const input = document.createElement("input")
-                    input.type = "file"
-                    input.accept = "image/*"
-                    // input.style.display = "none"
-                    // document.body.append(input)
-                    input.click()
-                    input.onchange = async (event: Event) => {
-                        if(input.files && input.files?.length > 0){
-                            const file = input.files[0]
-                            const reader = new FileReader()
-                            reader.onload = () => {
-                                const json = {
-                                    // ctime: Date.now(),
-                                    // mtime: Date.now(),
-                                    data: encrypt(JSON.stringify({
-                                        creator: {
-                                            // @ts-ignore
-                                            name: user.displayName,
-                                            // @ts-ignore
-                                            avatar: user.photoUrl
-                                        },
-                                        description: "",
-                                        image: getBase64(reader.result as string)
-                                    }))
-                                }
-                                storage.uploadString({
-                                    str: JSON.stringify(json),
-                                    // @ts-ignore
-                                    folder: `private/${user.uid}/ezImage`,
-                                    name: uuid.getUuid(),
-                                    extension: "json"
-                                })
-                            }
-                            reader.readAsDataURL(file)
-                        }
-                    }
+                    
+                    // const input = document.createElement("input")
+                    // input.type = "file"
+                    // input.accept = "image/*"
+                    // // input.style.display = "none"
+                    // // document.body.append(input)
+                    // input.click()
+                    // input.onchange = async (event: Event) => {
+                    //     if(input.files && input.files?.length > 0){
+                    //         const file = input.files[0]
+                    //         const reader = new FileReader()
+                    //         reader.onload = () => {
+                    //             const json = {
+                    //                 // ctime: Date.now(),
+                    //                 // mtime: Date.now(),
+                    //                 data: encrypt(JSON.stringify({
+                    //                     creator: {
+                    //                         // @ts-ignore
+                    //                         name: user.displayName,
+                    //                         // @ts-ignore
+                    //                         avatar: user.photoUrl
+                    //                     },
+                    //                     description: "",
+                    //                     image: getBase64(reader.result as string)
+                    //                 }))
+                    //             }
+                    //             storage.uploadString({
+                    //                 str: JSON.stringify(json),
+                    //                 // @ts-ignore
+                    //                 folder: `private/${user.uid}/ezImage`,
+                    //                 name: uuid.getUuid(),
+                    //                 extension: "json"
+                    //             })
+                    //         }
+                    //         reader.readAsDataURL(file)
+                    //     }
+                    // }
                 }
             },
             delete: {
@@ -253,7 +254,6 @@
         ></List>
     </div>
 </template>
-
 <style scoped lang="scss">
     
 </style>

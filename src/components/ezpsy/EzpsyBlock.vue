@@ -2,7 +2,7 @@
     import log from '@/assets/utils/log'
     import ToolBox from './ToolBox.vue';
     import BLK from "blockly"
-    import { onMounted, reactive, onBeforeUnmount } from 'vue';
+    import { onMounted, reactive, onBeforeUnmount, watch, ref, nextTick } from 'vue';
     import initBlockly from '@/assets/ezpsy/initBlockly';
     import { showMsg, showImg, tipPopup, inputPopup, closePopup, setContainer } from "@/assets/utils/popup";
     import router from '@/router/router';
@@ -20,6 +20,8 @@
     import { DIRECTION } from '@/assets/utils/config';
     import { ObjectListSort } from '@/assets/utils/sort';
     import { getBlob } from '@/assets/utils/image';
+    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+    import ContextMenu from "@/components/ezpsy/ContextMenu.vue"
 
     const route = useRoute()    
 
@@ -64,6 +66,8 @@
         selected: boolean
     }
 
+    const contextIsShow = ref(false)
+
     const data = reactive({
         Blockly: {} as typeof BLK,
         // workspace: {} as BLK.WorkspaceSvg,
@@ -73,7 +77,14 @@
         isAllowUndo: false,
         isAllowRedo: false,
         imgIsShow: false,
-        lists: [] as Array<LIST>
+        lists: [] as Array<LIST>,
+        selectedItem: null as LIST | null,
+        contextMenu: new Array<CONTEXT_MENU>(),
+        position: {
+            x: 0,
+            y: 0
+        } as POSITION,
+        contextItem: {} as LIST
     })
 
     const init = async () => {
@@ -96,7 +107,7 @@
                 minScale: 0.3,
                 scaleSpeed: 1.2
             },
-            media: 'image/ezpsy/media/',
+            media: './image/ezpsy/media/',
             rtl: false,
             scrollbars: true,
             sounds: false,
@@ -185,6 +196,32 @@
             data.Blockly.Xml.appendDomToWorkspace(xmlDom, data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
         }
         getFileList()
+        data.contextMenu = [
+            {
+                title: "复制",
+                func: (item) => {
+                    copy_src(item)
+                }
+            },
+            {
+                title: {
+                    value: [
+                        "选中",
+                        "取消选中"
+                    ],
+                    key: "selected"
+                },
+                func: (item) => {
+                    selecte_image(item)
+                }
+            },
+            {
+                title: "预览",
+                func: (item) => {
+                    showImg(getBlob(item.preview))
+                }
+            }
+        ]
     })
 
     const showJs = () => {
@@ -294,7 +331,7 @@
     }
 
     const showKeyCode = () => {
-        showImg("image/ezpsy/keycode.png")
+        showImg("./image/ezpsy/keycode.png")
     }
     
     const download = () => {
@@ -320,7 +357,7 @@
     const getFileList = async () => {
         const user = UserStore().getUser
         // @ts-ignore
-        const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ezImage/`)
+        const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ez./image/`)
         if(listsRes.isSuccess){
             const cacheStr = localStorage.getItem("EZPSY_IMAGE")
             const hasCache = !!(cacheStr)
@@ -376,7 +413,7 @@
 
     const openImgLibirary = async () => {
         data.imgIsShow = true
-        if(data.lists.length > 0) 
+        if(data.lists.length === 0) 
             getFileList()
         // console.log(data.lists)
     }
@@ -427,11 +464,22 @@
         }
     }
 
+    const close_libirary_now= (event: Event) => {
+        data.imgIsShow = false
+        event.preventDefault()
+    }
+
     const selecte_image = (li: LIST) => {
+        const selected = li.selected
         data.lists.forEach(item => {
             item.selected = false
         })
-        li.selected = true
+        li.selected = !selected
+        if(li.selected) {
+            data.selectedItem = li
+        } else {
+            data.selectedItem = null
+        }
     }
 
     const copy_src = async (li: LIST) => {
@@ -445,6 +493,50 @@
         }).then(() => {
             data.imgIsShow = false
         })
+    }
+
+    const open_contextmenu = (event: MouseEvent, li: LIST) => {
+        data.position = {
+            x: event.clientX,
+            y: event.clientY
+        }
+        data.contextItem = li
+        if(contextIsShow.value) {
+            contextIsShow.value = false
+            nextTick(() => {
+                contextIsShow.value = true
+            })
+        } else {
+            contextIsShow.value = true
+        }
+    }
+
+    const libirary_copy = () => {
+        if(data.selectedItem) {
+            copy_src(data.selectedItem)
+        } else {
+            tipPopup("warn", {
+                title: "无法复制",
+                tips: "请选择需要复制的图片",
+                closeTip: "点击空白处关闭"
+            })
+        }
+    }
+
+    const libirary_preview = () => {
+        if(data.selectedItem) {
+            showImg(getBlob(data.selectedItem.preview)) 
+        } else {
+            tipPopup("warn", {
+                title: "无法预览",
+                tips: "请选择需要预览的图片",
+                closeTip: "点击空白处关闭"
+            })
+        }
+    }
+
+    const libirary_cancel = (event: Event) => {
+        close_libirary_now(event)
     }
 
     onBeforeUnmount(async () => {
@@ -461,6 +553,18 @@
         })
     })
 
+    const close_menu = () => {
+        contextIsShow.value = false
+    }
+
+    watch(contextIsShow, (value) => {
+        if(value) {
+            document.body.addEventListener("click", close_menu)
+        } else {
+            document.body.removeEventListener("click", close_menu)
+        }
+    })
+
 </script>
 
 <template>
@@ -472,19 +576,19 @@
         <div class="functional_area">
             <div class="btn-group-vertical">
                 <button type="button" class="btn" @click="showJs">
-                    <img src="image/ezpsy/icons/javascript.svg">
+                    <img src="./image/ezpsy/icons/javascript.svg">
                 </button>  
                 <button type="button" class="btn" @click="save">
-                    <img src="image/ezpsy/icons/save.svg">保存
+                    <img src="./image/ezpsy/icons/save.svg">保存
                 </button>
                 <button type="button" class="btn" @click="showKeyCode">
-                    <img src="image/ezpsy/icons/keycode.svg">keycode
+                    <img src="./image/ezpsy/icons/keycode.svg">keycode
                 </button>
                 <button type="button" class="btn" @click="download">
-                    <img src="image/ezpsy/icons/cloud_download.svg">下载
+                    <img src="./image/ezpsy/icons/cloud_download.svg">下载
                 </button>
                 <button type="button" class="btn" @click="openImgLibirary">
-                    <img src="image/ezpsy/icons/img.svg">图床
+                    <img src="./image/ezpsy/icons/img.svg">图床
                 </button>
                 <button 
                     :class="
@@ -493,7 +597,7 @@
                         'button_denied'
                     " 
                     type="button" class="btn" @click="undo">
-                    <img src="image/ezpsy/icons/back.svg">撤消
+                    <img src="./image/ezpsy/icons/back.svg">撤消
                 </button>
                 <button 
                     :class="
@@ -502,20 +606,20 @@
                         'button_denied'
                     " 
                     type="button" class="btn" @click="redo">
-                    <img src="image/ezpsy/icons/redo.svg">重做
+                    <img src="./image/ezpsy/icons/redo.svg">重做
                 </button>
                 <button type="button" class="btn" @click="load">
-                    <img src="image/ezpsy/icons/upload.svg">加载
+                    <img src="./image/ezpsy/icons/upload.svg">加载
                 </button>
                 <button type="button" class="btn" @click="fullscreen">
                     <img 
                         :src="data.isFullScreen ? 
-                        'image/ezpsy/icons/normalscreen.svg' : 
-                        'image/ezpsy/icons/fullscreen.svg'"
+                        './image/ezpsy/icons/normalscreen.svg' : 
+                        './image/ezpsy/icons/fullscreen.svg'"
                     >{{ data.isFullScreen ? "退出全屏" : "全屏" }}
                 </button>
                 <button type="button" class="btn btn-run" @click="run">
-                    <img src="image/ezpsy/icons/run.svg">运行
+                    <img src="./image/ezpsy/icons/run.svg">运行
                 </button>
             </div>
         </div>
@@ -523,7 +627,11 @@
         <div class="imgLibirary" v-if="data.imgIsShow" @click="close_libirary">
             <div id="EzpsyBlockLibirary" class="libiraryContent">
                 <div class="libiraryHeader">
-                    <div class="libiraryClose">X</div>
+                    <font-awesome-icon 
+                        class="libiraryClose" 
+                        icon="xmark"
+                        @click="close_libirary_now"
+                    ></font-awesome-icon>
                 </div>
                 <div class="libiraryImage no_scroll_bar">
                     <div 
@@ -532,16 +640,30 @@
                         v-for="item in data.lists"
                         @click="selecte_image(item)"
                         @dblclick="copy_src(item)"
+                        @contextmenu.prevent="open_contextmenu($event, item)"
                     >
                         <img :src="getBlob(item.preview)" />
                     </div>
                 </div>
+                <div class="libiraryOperate">
+                    <div class="libiraryButton libiraryAdd" @click="libirary_copy">上传</div>
+                    <div class="libiraryButton libiraryCopy" @click="libirary_copy">复制</div>
+                    <div class="libiraryButton libiraryPreview" @click="libirary_preview">预览</div>
+                    <div class="libiraryButton libiraryCancel" @click="libirary_cancel">关闭</div>
+                </div>
             </div>
         </div>
+        <ContextMenu 
+            v-if="contextIsShow" 
+            :list="data.contextMenu" 
+            :position="data.position" 
+            :item="data.contextItem"
+        ></ContextMenu>
     </div>
 </template>
 
 <style scoped lang="scss">
+    @import "../../scss/app.scss";
     $functionalWidth: 160px;
     .ezpsy-blockly {
         width: 100%;
@@ -603,7 +725,9 @@
                 }
             }
         } 
-        $HEADERHeight: 20px;
+        $HEADERHeight: 32px; $HEADERTop: 16px;
+        $BOTTOMHeght: 40px; $BOTTOMbottom: $HEADERTop;
+        $IMGAEHeight: calc(100% - $HEADERHeight - $HEADERTop - $BOTTOMHeght - $BOTTOMbottom);
         .imgLibirary {
             width: 100%;
             height: 100%;
@@ -611,40 +735,51 @@
             background: rgba(0,0,0,.4);
             top: 0;
             left: 0;
-            z-index: 1000;
+            z-index: $ZIndexLessTop;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            .libiraryHeader {
-                width: 100%;
-                height: $HEADERHeight;
-                font-size: $HEADERHeight;
-                font-weight: 700;
-                position: relative;
-                display: flex;
-                justify-content: flex-end;
-                padding: 10px;
-                box-sizing: border-box;
-                .libiraryClose {
-                    width: $HEADERHeight;
-                    height: $HEADERHeight;
-                    text-align: center;
-                }
-            }
+            
             .libiraryContent {
                 width: 80%;
                 height: 80%;
                 background: #FFFFFF;
                 border-radius: 24px;
+                .libiraryHeader {
+                    width: 100%;
+                    height: $HEADERHeight;
+                    font-size: $HEADERHeight;
+                    font-weight: 700;
+                    position: relative;
+                    display: flex;
+                    justify-content: flex-end;
+                    top: $HEADERTop;
+                    padding: 0 20px;
+                    box-sizing: border-box;
+                    .libiraryClose {
+                        width: $HEADERHeight;
+                        height: $HEADERHeight;
+                        text-align: center;
+                        font-size: 20px;
+                        cursor: pointer;
+                    }
+                    .libiraryClose:hover {
+                        color: #FF0000;
+                    }
+                }
                 .libiraryImage {
+                    width: 100%;
+                    min-height: $IMGAEHeight;
                     display: flex;
                     justify-content: space-between;
                     flex-wrap: wrap;
                     padding: 2%;
+                    box-sizing: border-box;
                     .image {
-                        width: 20%;
+                        // width: 20%;
                         height: auto;
+                        // max-height: 320px;
+                        height: 240px;
                         aspect-ratio: 1/1;
                         display: block;
                         margin: 1%;
@@ -669,7 +804,70 @@
                         border-color: #005795;
                     }
                 }
+                .libiraryOperate {
+                    width: 100%;
+                    height: $BOTTOMHeght;
+                    position: relative;
+                    bottom: $BOTTOMbottom;
+                    display: flex;
+                    justify-content: flex-end;
+                    .libiraryButton {
+                        // width: 60px;
+                        height: $BOTTOMHeght;
+                        aspect-ratio: 3/2;
+                        margin: 20px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-weight: 600;
+                        border: 1px solid;
+                        box-sizing: border-box;
+                    }
+                    .libiraryButton:hover {
+                        background: none;
+                    }
+                    $ADDColor: #d5a979;
+                    .libiraryAdd {
+                        background: $ADDColor;
+                        border-color: $ADDColor;
+                        color: #FFFFFF;
+                    }
+                    .libiraryAdd:hover {
+                        color: $ADDColor;
+                    }
+                    $COPYColor: #005795;
+                    .libiraryCopy {
+                        background: $COPYColor;
+                        border-color: $COPYColor;
+                        color: #FFFFFF;
+                    }
+                    .libiraryCopy:hover {
+                        color: $COPYColor;
+                    }
+                    $PREVIEWColor: #78cf8e;
+                    .libiraryPreview {
+                        background: $PREVIEWColor;
+                        border-color: $PREVIEWColor;
+                        color: #FFFFFF;
+                    }
+                    .libiraryPreview:hover {
+                        color: $PREVIEWColor;
+                    }
+                    $CancelColor: #888888;
+                    .libiraryCancel {
+                        background: $CancelColor;
+                        border-color: $CancelColor;
+                        color: #FFFFFF;
+                    }
+                    .libiraryCancel:hover {
+                        color: $CancelColor;
+
+                    }
+                }
             }
+            
         }
     }
     

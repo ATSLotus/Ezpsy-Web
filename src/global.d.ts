@@ -19,3 +19,16 @@ declare interface HEADER extends OPTS_HEADER {
     value: string
     style: string
 }
+
+declare interface CONTEXT_MENU {
+    title: string | {
+        value: [ string, string ],
+        key: string
+    }
+    func: (item: LIST) => void
+}
+
+declare interface POSITION {
+    x: number
+    y: number
+}
