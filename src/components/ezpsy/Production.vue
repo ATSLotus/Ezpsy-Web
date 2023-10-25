@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import List from "@/components/ezpsy/List.vue"
     import log from '@/assets/utils/log'
-    import { nextTick, onBeforeMount, onMounted, reactive, ref } from "vue";
+    import { nextTick, onBeforeMount, reactive, ref } from "vue";
     import { getCurrentUser } from "@/assets/index/auth";
     import { UserStore } from "@/store/store";
     import agc from "@/assets/agc/agc";

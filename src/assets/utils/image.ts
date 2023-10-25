@@ -1,3 +1,5 @@
+import { inputPopup } from "./popup"
+
 const baseHeader = `data:image/png;base64,`
 
 export const getBase64 = (str: string) => {

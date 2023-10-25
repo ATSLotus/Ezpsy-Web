@@ -67,7 +67,8 @@ agc.storage.setUploadPercent({
                 timer: 1500
             }).then(() => {
                 closePopup()
-                // agc.storage.funcs.get()
+                const reload = agc.storage.funcs.get("reload") 
+                reload && reload()
             })
         }, 500)
     }

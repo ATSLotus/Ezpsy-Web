@@ -22,8 +22,9 @@
     import { getBlob } from '@/assets/utils/image';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
     import ContextMenu from "@/components/ezpsy/ContextMenu.vue"
+    import storeImage from '@/assets/agc/storeImage';
 
-    const route = useRoute()    
+    const route = useRoute()  
 
     const tempConsoleWarn = console.warn
     const tempConsoleLog = console.log
@@ -66,6 +67,8 @@
         selected: boolean
     }
 
+    const user = UserStore().getUser
+
     const contextIsShow = ref(false)
 
     const data = reactive({
@@ -86,6 +89,15 @@
         } as POSITION,
         contextItem: {} as LIST
     })
+
+    const reloadLibirary = () => {
+        if(data.imgIsShow) {
+            data.imgIsShow = false
+            nextTick(() => {
+                data.imgIsShow = true
+            })
+        }
+    }
 
     const init = async () => {
         const options = {
@@ -222,6 +234,7 @@
                 }
             }
         ]
+        storage.setInsertFunc("reload", getFileList)
     })
 
     const showJs = () => {
@@ -355,9 +368,9 @@
     }
 
     const getFileList = async () => {
-        const user = UserStore().getUser
         // @ts-ignore
-        const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ezImage`)
+        const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ezImage/`)
+        console.log(listsRes)
         if(listsRes.isSuccess){
             const cacheStr = localStorage.getItem("EZPSY_IMAGE")
             const hasCache = !!(cacheStr)
@@ -406,7 +419,7 @@
                     newCache[list.name] = list
                 })
                 localStorage.setItem("EZPSY_IMAGE", JSON.stringify(newCache))
-                // reload()
+                reloadLibirary()
             }) 
         }
     }
@@ -511,6 +524,10 @@
         }
     }
 
+    const libirary_upload = () => {
+        storeImage(user)
+    }
+
     const libirary_copy = () => {
         if(data.selectedItem) {
             copy_src(data.selectedItem)
@@ -551,6 +568,7 @@
         scripts.forEach(script => {
             script.remove()
         })
+        storage.deleteInsertFunc("reload")
     })
 
     const close_menu = () => {
@@ -646,7 +664,7 @@
                     </div>
                 </div>
                 <div class="libiraryOperate">
-                    <div class="libiraryButton libiraryAdd" @click="libirary_copy">上传</div>
+                    <div class="libiraryButton libiraryAdd" @click="libirary_upload">上传</div>
                     <div class="libiraryButton libiraryCopy" @click="libirary_copy">复制</div>
                     <div class="libiraryButton libiraryPreview" @click="libirary_preview">预览</div>
                     <div class="libiraryButton libiraryCancel" @click="libirary_cancel">关闭</div>
@@ -771,23 +789,23 @@
                     width: 100%;
                     min-height: $IMGAEHeight;
                     display: flex;
-                    justify-content: space-between;
+                    // justify-content: flex-start;
                     flex-wrap: wrap;
                     padding: 2%;
                     box-sizing: border-box;
                     .image {
-                        // width: 20%;
+                        width: 20%;
                         height: auto;
-                        // max-height: 320px;
-                        height: 240px;
                         aspect-ratio: 1/1;
                         display: block;
-                        margin: 1%;
+                        margin: 2.5%;
                         padding: 1%;
                         border: 2px solid #FFFFFF;
+                        box-sizing: border-box;
                         cursor: pointer;
                         display: flex;
                         align-items: center;
+                        justify-content: center;
                         img {
                             max-width: 100%;
                             max-height: 100%;
@@ -815,7 +833,7 @@
                         // width: 60px;
                         height: $BOTTOMHeght;
                         aspect-ratio: 3/2;
-                        margin: 20px;
+                        margin: 0 20px;
                         border-radius: 4px;
                         cursor: pointer;
                         display: flex;
