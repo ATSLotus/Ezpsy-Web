@@ -1,9 +1,11 @@
 <script setup lang="ts">
-    import { decrypt } from '@/assets/utils/crypto';
+    import { decrypt, encrypt } from '@/assets/utils/crypto';
     import log from '@/assets/utils/log'
     import { onBeforeUnmount, onMounted, reactive } from 'vue';
     import { useRoute } from 'vue-router';
     import ezpsy from "ezpsy"
+    import agc from '@/assets/agc/agc';
+    import uuid from '@/assets/utils/uuid';
 
     const route = useRoute()
     const code = `(async function(){\n${decrypt(route.query.code as string)}\n}())`
@@ -30,6 +32,8 @@
     const data = reactive({
         scripts: new Array<HTMLScriptElement>()
     })
+
+    const storage = agc.storage
     
     onMounted(async () => {
         data.scripts.push(await randerCode("static/blockly/src/requestAnimationFrame.js", false))
@@ -39,7 +43,7 @@
         data.scripts.push(await randerCode("static/blockly/src/clearScreen-func.js", false))
         data.scripts.push(await randerCode("static/blockly/src/control-func.js", false))
         data.scripts.push(await randerCode("static/blockly/src/animate-func.js", false))
-        data.scripts.push(await randerCode("static/blockly/src/dataExport-func.js", false))
+        // data.scripts.push(await randerCode("static/blockly/src/dataExport-func.js", false))
         const ez = ezpsy.init({
             el: document.getElementById("toturial") as HTMLElement,
             style: {
@@ -55,7 +59,19 @@
         _window.dlg = dlg
         _window.time = time
         _window.keypress = keypress
-        log.info(code)
+        _window.AjaxData = (id: string, name: string, data: string) => {
+            const json = {
+                data: encrypt(JSON.stringify({
+                    data: encrypt(JSON.stringify(data))
+                }))
+            }
+            storage.uploadString({
+                str: JSON.stringify(json),
+                folder: `private/${id}/ezData`,
+                name: uuid.getUuid(),
+                extension: "json"
+            })
+        }
         data.scripts.push(await randerCode(code))
     })
 
