@@ -12,13 +12,15 @@ const dataExport = (Blockly: typeof BLK) => {
     //     }
     // }
 
-    Blockly.Blocks['dataExport'] = {
+    Blockly.Blocks['DataStorage'] = {
         init: function () {
             // this.setHelpUrl('Blockly.Msg.LISTS_CREATE_WITH_HELPURL');
             this.setColour(blockColor.dataExport);
-            this.appendValueInput('name')
-                .setCheck(null)
-                .appendField('name')
+            // this.appendValueInput('name')
+            //     .setCheck(null)
+            //     .appendField('name')
+            this.appendDummyInput()
+                .appendField("DataStorage")
             this.setPreviousStatement(true, null);
             this.setNextStatement(true, null);
             this.itemCount_ = 3;
@@ -75,7 +77,7 @@ const dataExport = (Blockly: typeof BLK) => {
             this.itemCount_ && this.getInput("EMPTY") ? this.removeInput("EMPTY") : this.itemCount_ || this.getInput("EMPTY") || this.appendDummyInput("EMPTY").appendField('create empty data');
             for (var a = 0; a < this.itemCount_; a++)
                 if (!this.getInput("ADD" + a)) {
-                    var b = this.appendValueInput("ADD" + a).setCheck("Variables").setAlign(Blockly.ALIGN_RIGHT).appendField('var' + a);
+                    var b = this.appendValueInput("ADD" + a).setCheck("Variables").setAlign(Blockly.ALIGN_RIGHT).appendField('variable' + a);
                     // 0==a&&b.appendField(Blockly.Msg.LISTS_CREATE_WITH_INPUT_WITH)
                 }
             for (; this.getInput("ADD" + a);)

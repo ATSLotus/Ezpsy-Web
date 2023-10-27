@@ -1295,14 +1295,19 @@
         </category>
         <sep></sep>
         <!-- 数据导出 -->
-        <category name="DataExport" :colour="color.dataExport">
-            <block type="dataExport">
-                <value name="name">
+        <category name="DataStorage" :colour="color.dataExport">
+            <block type="DataStorage">
+                <!-- <value name="name">
                     <block type="text">
                         <field name="TEXT">expermentName</field>
                     </block>
+                </value> -->
+                <mutation items="1"></mutation>
+                <value name="ADD0">
+                    <block type="variables_get">
+                        <field name="VAR">data</field>
+                    </block>
                 </value>
-                <mutation items="0"></mutation>
             </block>
         </category>
         <sep></sep>

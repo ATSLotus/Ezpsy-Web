@@ -34,8 +34,15 @@
     })
 
     const storage = agc.storage
+
+    const oldTostring = Object.toString
     
     onMounted(async () => {
+
+        Object.toString = () => {
+            return JSON.stringify(this)
+        }
+
         data.scripts.push(await randerCode("static/blockly/src/requestAnimationFrame.js", false))
         data.scripts.push(await randerCode("static/blockly/src/graph-func.js", false))
         data.scripts.push(await randerCode("static/blockly/src/systemInformation-func.js", false))
@@ -59,23 +66,30 @@
         _window.dlg = dlg
         _window.time = time
         _window.keypress = keypress
-        _window.AjaxData = (id: string, name: string, data: string) => {
-            const json = {
-                data: encrypt(JSON.stringify({
-                    data: encrypt(JSON.stringify(data))
-                }))
+        _window.AjaxData = (id: string, data: string) => {
+            const name = route.query?.experiment
+            if(name) {
+                const json = {
+                    data: encrypt(JSON.stringify({
+                        sourceCode: name,
+                        data
+                    }))
+                }
+                storage.uploadString({
+                    str: JSON.stringify(json),
+                    folder: `private/${id}/ezData`,
+                    name: uuid.getUuid(),
+                    extension: "json"
+                })
+            } else {
+
             }
-            storage.uploadString({
-                str: JSON.stringify(json),
-                folder: `private/${id}/ezData`,
-                name: uuid.getUuid(),
-                extension: "json"
-            })
         }
         data.scripts.push(await randerCode(code))
     })
 
     onBeforeUnmount(async () => {
+        Object.toString = oldTostring
         data.scripts.forEach(script => {
             if(script)
                 document.getElementsByTagName('head')[0].removeChild(script)

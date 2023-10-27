@@ -149,7 +149,8 @@
                 const routeData = router.resolve({
                     path: "/ezpsy/experiment",
                     query: {
-                        code: encrypt(item.js)
+                        code: encrypt(item.js),
+                        experiment: item.title
                     }
                 })
                 window.open(routeData.href, "_blank")
