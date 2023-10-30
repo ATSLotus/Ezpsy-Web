@@ -12,7 +12,6 @@
     import { DIRECTION } from '@/assets/utils/config';
     import { ObjectListSort } from '@/assets/utils/sort';
     import storeImage from '@/assets/agc/storeImage';
-import { js } from 'js-beautify';
 
     const storage = agc.storage
 

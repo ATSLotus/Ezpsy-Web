@@ -252,6 +252,9 @@
                         <div class="link align" :class="item?.align" v-if="item.type === 'link'" @click="item.action && item.action(list)">
                             {{ list[item.value] }}
                         </div>
+                        <div class="code" :title="JSON.stringify(list[item.value], null, 4)" v-if="item.type === 'code'">
+                            {{ list[item.value] }}
+                        </div>
                     </div>
                     
                 </div>
@@ -508,6 +511,19 @@
                             text-overflow: ellipsis;
                             color: #0073bb;
                             cursor: pointer;
+                        }
+
+                        .code {
+                            width: 100%;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            text-indent: .8em;
+                            text-align: center;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            overflow: hidden;
+                            /*! autoprefixer: off */
+                            -webkit-box-orient: vertical;
                         }
                     }
                     

@@ -34,14 +34,8 @@
     })
 
     const storage = agc.storage
-
-    const oldTostring = Object.toString
     
     onMounted(async () => {
-
-        Object.toString = () => {
-            return JSON.stringify(this)
-        }
 
         data.scripts.push(await randerCode("static/blockly/src/requestAnimationFrame.js", false))
         data.scripts.push(await randerCode("static/blockly/src/graph-func.js", false))
@@ -85,11 +79,18 @@
 
             }
         }
+        _window.getString = (data: any) => {
+            switch(typeof data) {
+                case "object":
+                    return JSON.stringify(data)
+                default:
+                    return data.toString()
+            }
+        }
         data.scripts.push(await randerCode(code))
     })
 
     onBeforeUnmount(async () => {
-        Object.toString = oldTostring
         data.scripts.forEach(script => {
             if(script)
                 document.getElementsByTagName('head')[0].removeChild(script)
