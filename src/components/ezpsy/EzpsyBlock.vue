@@ -237,7 +237,7 @@
         storage.setInsertFunc("reload", getFileList)
     })
 
-    const showJs = () => {
+    const showJS = () => {
         showMsg("JavaScript Code", formatJavaScriptCode(data.code))
     }
 
@@ -593,7 +593,7 @@
         <div id="ezpsy-experiment"></div>
         <div class="functional_area">
             <div class="btn-group-vertical">
-                <button type="button" class="btn" @click="showJs">
+                <button type="button" class="btn" @click="showJS">
                     <img src="@/assets/image/ezpsy/icons/javascript.svg">
                 </button>  
                 <button type="button" class="btn" @click="save">

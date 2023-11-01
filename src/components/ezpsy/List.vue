@@ -6,6 +6,7 @@
     import { deepClone } from '@/assets/utils/utils';
     import { nextTick, onMounted, reactive, ref, watch } from 'vue';
     import { ObjectListSort } from "@/assets/utils/sort"    
+import ToolTip from './ToolTip.vue';
 
     const props = defineProps({
         searchOpts: {
@@ -238,9 +239,15 @@
                         <div class="text align" :class="item?.align" v-if="item.type === 'text'">
                             {{ list[item.value] }}
                         </div>
-                        <div class="long-text" :title="list[item.value]" v-if="item.type === 'long-text'">
+                        <!-- <div class="long-text" :title="list[item.value]" v-if="item.type === 'long-text'">
                             {{ list[item.value] }}
-                        </div>
+                        </div> -->
+                        <ToolTip 
+                            class="long-text" 
+                            v-if="item.type === 'long-text'"
+                            :content="list[item.value]"
+                            :type="'text'"
+                        ></ToolTip>
                         <div class="operate align" :class="item?.align" v-if="item.type === 'operate'">
                             <button class="btn" :class="getBTNStyle(bt?.style)" v-for="bt in list[item.value]" @click="bt.func(list)">
                                 {{ bt.text }}
@@ -252,9 +259,12 @@
                         <div class="link align" :class="item?.align" v-if="item.type === 'link'" @click="item.action && item.action(list)">
                             {{ list[item.value] }}
                         </div>
-                        <div class="code" :title="JSON.stringify(list[item.value], null, 4)" v-if="item.type === 'code'">
-                            {{ list[item.value] }}
-                        </div>
+                        <ToolTip 
+                            class="code" 
+                            v-if="item.type === 'code'"
+                            :content="list[item.value]"
+                            :type="'json'"
+                        ></ToolTip>
                     </div>
                     
                 </div>
@@ -455,6 +465,7 @@
                     display: flex;
                     align-items: center;
                     justify-content: space-around;
+                    padding: 10px 0;
                     .li-item {
                         height: 100%;
                         display: flex;
@@ -468,15 +479,7 @@
                         }
                         .long-text {
                             width: 100%;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            text-indent: .8em;
-                            text-align: justify;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            overflow: hidden;
-                            /*! autoprefixer: off */
-                            -webkit-box-orient: vertical;
+                            height: 100%;
                         }
                         .operate {
                             width: 100%;
@@ -515,15 +518,10 @@
 
                         .code {
                             width: 100%;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            text-indent: .8em;
-                            text-align: center;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            overflow: hidden;
-                            /*! autoprefixer: off */
-                            -webkit-box-orient: vertical;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
                         }
                     }
                     

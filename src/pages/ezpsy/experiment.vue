@@ -6,6 +6,8 @@
     import ezpsy from "ezpsy"
     import agc from '@/assets/agc/agc';
     import uuid from '@/assets/utils/uuid';
+    import { showMsg } from '@/assets/utils/popup';
+    import formatJavaScriptCode from '@/assets/utils/formatJS';
 
     const route = useRoute()
     const code = `(async function(){\n${decrypt(route.query.code as string)}\n}())`
@@ -76,7 +78,7 @@
                     extension: "json"
                 })
             } else {
-
+                showMsg("Result", formatJavaScriptCode(data))
             }
         }
         _window.getString = (data: any) => {

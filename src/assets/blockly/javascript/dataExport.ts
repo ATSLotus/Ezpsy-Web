@@ -11,7 +11,7 @@ const dataExport = (Blockly: typeof BLK) => {
             b[c] = Blockly.JavaScript.valueToCode(a, "ADD" + c, Blockly.JavaScript.ORDER_COMMA) || "null";
         let data = "`{"
         for (let i = 0; i < c; i++) {
-            data = data + "'" + b[i] + "'" + ":${getString(" + b[i] + ")}"
+            data = data + '"' + b[i] + '"' + ":${getString(" + b[i] + ")}"
             if(i !== c-1) {
                 data += ","
             }
