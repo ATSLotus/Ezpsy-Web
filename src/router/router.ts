@@ -37,22 +37,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    // const target = to.path.split('/')[1]
     closePopup()
-    // if(target === '' || router.hasRoute(target)) {
-    //     if(to.meta.title) {
-    //         document.title = `${to.meta.title}`
-    //     }
-    //     next()
-    // } else {
-    //     tipPopup("warn", {
-    //         title: "访问失败",
-    //         tips: `/${target} 页面不存在!`,
-    //         closeTip: '-- 请点击空白处返回上一页 --'
-    //     }).then(() => {
-    //         next(from.path === '/' ? '/index' : from.path)
-    //     })
-    // }
     next()
 })
 

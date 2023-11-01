@@ -71,7 +71,7 @@
 </template>
 
 <style scoped lang="scss">
-    $trangleWidth: 10px; $trangleHeight: 10px; $color: #005795; $color-shadow: #00579533;
+    $trangleWidth: 10px; $trangleHeight: 10px; $color: #FFFFFF; $color-shadow: #0000001f;
     .toolbox_box {
         position: relative;
         cursor: pointer;
@@ -104,7 +104,7 @@
             border-radius: 8px;
             background: $color;
             opacity: .8;
-            filter: drop-shadow(4px 4px 4px $color);
+            filter: drop-shadow(0 2px 10px $color);
             padding: 10px 10px;
             .tooltip_content {
                 // color: #333333;
