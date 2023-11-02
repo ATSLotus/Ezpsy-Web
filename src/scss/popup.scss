@@ -12,6 +12,11 @@
     display: none; /* Chrome Safari */
 }
 
+.ats_container {
+    width: $APPWidth !important;
+    margin: auto !important;
+}
+
 .ats_ezpsy_container {
     width: calc($APPWidth - $EzpsyMenuWidth) !important;
     margin: auto !important;

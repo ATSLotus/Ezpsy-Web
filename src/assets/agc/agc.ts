@@ -1,31 +1,35 @@
-import initialize from "ezpsy-server" 
+import initialize, { AGC } from "ezpsy-server"
 import context from "./context.json"
 import schema from "./schema.json"
-import { closePopup, showProgress, tipPopup } from "../utils/popup"
+import { closePopup, hideloading, showProgress, showloading, tipPopup } from "../utils/popup"
 
-const agc = await initialize({
-    context,
-    authConfig: [
-        {
-            mode: 1,
-            saveMode: 0,
-            tag: "Ezpsy_Auth"
-        }
-    ],
-    DBZone: ["Ezpsy"],
-    schema
-})
+const agc = await (async () => {
+    showloading()
+    return await initialize({
+        context,
+        authConfig: [
+            {
+                mode: 1,
+                saveMode: 0,
+                tag: "Ezpsy_Auth"
+            }
+        ],
+        DBZone: ["Ezpsy"],
+        schema
+    })
+})()
+hideloading()
 
 agc.storage.setUploadPercent({
     next: (snapshot) => {
-        if(!snapshot){
+        if (!snapshot) {
             tipPopup("error", {
                 title: "上传错误",
                 tips: "上传结果为空"
             })
             return;
         }
-        if(snapshot.totalByteCount == 0){
+        if (snapshot.totalByteCount == 0) {
             tipPopup("error", {
                 title: "上传错误",
                 tips: "上传文件为空"
@@ -67,7 +71,7 @@ agc.storage.setUploadPercent({
                 timer: 1500
             }).then(() => {
                 closePopup()
-                const reload = agc.storage.funcs.get("reload") 
+                const reload = agc.storage.funcs.get("reload")
                 reload && reload()
             })
         }, 500)

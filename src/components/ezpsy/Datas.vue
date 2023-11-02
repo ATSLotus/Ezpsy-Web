@@ -12,6 +12,7 @@
     import { DIRECTION } from '@/assets/utils/config';
     import { ObjectListSort } from '@/assets/utils/sort';
     import storeImage from '@/assets/agc/storeImage';
+    import { getStorage, setStorage } from '@/assets/utils/storage';
 
     const storage = agc.storage
 
@@ -143,7 +144,7 @@
         showloading(1, 2)
         const listsRes = await storage.getFileListAll(data.type)
         if(listsRes.isSuccess){
-            const cacheStr = localStorage.getItem("EZPSY_DATA")
+            const cacheStr = getStorage("EZPSY_DATA")
             const hasCache = !!(cacheStr)
             let cache: Record<string, any> = {}
             if(hasCache) 
@@ -191,7 +192,7 @@
                     delete list["operations"]
                     newCache[list.name] = list
                 })
-                localStorage.setItem("EZPSY_DATA", JSON.stringify(newCache))
+                setStorage("EZPSY_DATA", JSON.stringify(newCache))
                 reload()
             }) 
         }

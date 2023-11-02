@@ -34,7 +34,7 @@
     onMounted(async () => {
         setContainer("spacial")
         const user = await getCurrentUser()
-        log.info(user)
+        // log.info(user)
         if(!user.isSuccess) {
             router.push("/index/login")
         } else {

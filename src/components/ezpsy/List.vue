@@ -249,9 +249,9 @@ import ToolTip from './ToolTip.vue';
                             :type="'text'"
                         ></ToolTip>
                         <div class="operate align" :class="item?.align" v-if="item.type === 'operate'">
-                            <button class="btn" :class="getBTNStyle(bt?.style)" v-for="bt in list[item.value]" @click="bt.func(list)">
+                            <div class="btn" :class="getBTNStyle(bt?.style)" v-for="bt in list[item.value]" @click="bt.func(list)">
                                 {{ bt.text }}
-                            </button>
+                            </div>
                         </div>
                         <div class="image align" :class="item?.align" v-if="item.type === 'image'">
                             <img :src="getBlob(list[item.value])" @click="openPreview(getBlob(list[item.value]))" />
@@ -299,8 +299,8 @@ import ToolTip from './ToolTip.vue';
     }
     .listbox {
         .btn {
-            border: 1px solid #cccccc;
-            color: #cccccc;
+            border-color: #999999;
+            color: #999999;
         }
         .btn:hover {
             border-color: #b2b2b2;
@@ -329,6 +329,14 @@ import ToolTip from './ToolTip.vue';
         .btn-blue:hover {
             color: #2395f8;
             border-color: #2395f8;
+        }
+        .btn-orange {
+            color: #ff5722;
+            border-color: #ff5722;
+        }
+        .btn-orange:hover {
+            color: #ff833a;
+            border-color: #ff833a;
         }
         .align {
             display: flex;
@@ -386,6 +394,7 @@ import ToolTip from './ToolTip.vue';
                     height: 32px;
                     line-height: 32px;
                     box-sizing: border-box;
+                    border: 1px solid;
                     border-radius: 4px;
                     display: flex;
                     justify-content: center;
@@ -484,12 +493,20 @@ import ToolTip from './ToolTip.vue';
                         .operate {
                             width: 100%;
                             .btn {
-                                background: none;
-                                outline: none;
+                                min-width: 40px;
+                                width: fit-content;
+                                padding: 2px 4px ;
+                                height: 24px;
+                                line-height: 24px;
+                                font-size: 14px;
                                 cursor: pointer;
                                 border-radius: 4px;
                                 margin: 0 5px;
+                                border: 1px solid;
                                 box-sizing: border-box;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
                             }
                             .btn:hover {
                                 border-width: 2px;

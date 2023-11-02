@@ -14,6 +14,7 @@
     import { DIRECTION } from "@/assets/utils/config"
     import { ObjectListSort } from "@/assets/utils/sort";
     import uuid from "@/assets/utils/uuid";
+    import { getStorage, setStorage } from "@/assets/utils/storage";
     
     interface LIST {
         path: string
@@ -127,7 +128,8 @@
                 router.replace({
                     query: {
                         menu: "ezpsy-block",
-                        xml: encrypt(item.xml)
+                        key: item.title
+                        // xml: encrypt(item.xml)
                     }
                 })
             },
@@ -197,6 +199,47 @@
             },
             style: "blue"
         },
+        share: {
+            text: "分享",
+            func: async (item: LIST) => {
+                const link_route = router.resolve({
+                    query: {
+                        menu: "ezpsy-block",
+                        xml: encrypt(item.xml)
+                    }
+                })
+                const link = `${location.host}/${link_route.href}`
+                await navigator.clipboard.writeText(link);
+                tipPopup("success", {
+                    title: "复制成功",
+                    closeTip: "点击空白处关闭",
+                    timer: 2000
+                })
+            },
+            style: "orange"
+        },
+        copy: {
+            text: "创建副本",
+            func: async (item: LIST) => {
+                // const json = {
+                //     data: encrypt(JSON.stringify({
+                //         creator: {
+                //             name: user.displayName,
+                //             avatar: user.photoUrl
+                //         },
+                //         description: value?.description ? value.description : "",
+                //         xml: data.xml,
+                //         code: data.code
+                //     }))
+                // }
+                // storage.uploadString({
+                //     str: JSON.stringify(json),
+                //     folder: `private/${user.uid}/ezBlock`,
+                //     name: value.title ? value.title : uuid.getUuid(),
+                //     extension: "json"
+                // })
+            }
+        },
         delete: {
             text: "删除",
             func: async (item: LIST) => {
@@ -213,7 +256,7 @@
         showloading(1, 2)
         const listsRes = await storage.getFileListAll(data.type)
         if(listsRes.isSuccess){
-            const cacheStr = localStorage.getItem("EZPSY_PRODUCTION")
+            const cacheStr = getStorage("EZPSY_PRODUCTION")
             const hasCache = !!(cacheStr)
             let cache: Record<string, any> = {}
             if(hasCache) 
@@ -263,7 +306,7 @@
                     delete list["operations"]
                     newCache[list.title] = list
                 })
-                localStorage.setItem("EZPSY_PRODUCTION", JSON.stringify(newCache))
+                setStorage("EZPSY_PRODUCTION", JSON.stringify(newCache))
                 reload()
             }) 
         }

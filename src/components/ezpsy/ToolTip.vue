@@ -104,11 +104,12 @@
             border-radius: 8px;
             background: $color;
             opacity: .8;
-            filter: drop-shadow(0 2px 10px $color);
             padding: 10px 10px;
+            filter: drop-shadow(0 2px 10px $color-shadow);
             .tooltip_content {
-                // color: #333333;
-                color: #FFFFFF;
+                // color: #000000;
+                // opacity: 1;
+                filter: drop-shadow(0px 0px 0px #1d1d1d);
             }
             .long-text {
                 text-align: justify;

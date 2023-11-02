@@ -14,6 +14,7 @@ const setContainer = (type: ContainerType) => {
             break
         case "fullscreen":
             container = "ats_full_container"
+            break
         default:
             container = "ats_container"
             break
@@ -23,6 +24,8 @@ interface POPUP {
     title?: string
     tips?: string
     timer?: number
+    confirmText?: string
+    cancelText?: string
     isUseConfirm?: boolean
     isUseCancel?: boolean
     isUseClose?: boolean
@@ -46,9 +49,15 @@ const getTipIcon = (type: TYPE) => {
 
 const tipPopup = (type: TYPE, opts?: POPUP) => {
     const timer = opts?.timer !== undefined ? opts.timer : undefined
-    const isUseConfirm = opts?.isUseConfirm ? opts.isUseConfirm : false
-    const isUseCancel = opts?.isUseCancel ? opts.isUseCancel : false
+    let isUseConfirm = opts?.isUseConfirm ? opts.isUseConfirm : false
+    let isUseCancel = opts?.isUseCancel ? opts.isUseCancel : false
     const isUseClose = opts?.isUseClose ? opts.isUseClose : false
+    const confirmText = opts?.confirmText ? opts.confirmText : "确认"
+    const cancelText = opts?.cancelText ? opts.cancelText : "取消"
+    if(opts?.confirmText) 
+        isUseConfirm = true
+    if(opts?.cancelText)
+        isUseCancel = true
     const titleObj = opts?.title ? {
         title: opts.title,
         display: "block"
@@ -104,9 +113,9 @@ const tipPopup = (type: TYPE, opts?: POPUP) => {
             ">${closeTipObj.closeTip}</div>
         `,
         showConfirmButton: isUseConfirm,
-        confirmButtonText: "确认",
+        confirmButtonText: confirmText,
         showCancelButton: isUseCancel,
-        cancelButtonText: "取消",
+        cancelButtonText: cancelText,
         showCloseButton: isUseClose,
         customClass: {
             container: container,
@@ -324,10 +333,10 @@ const inputPopup = (opts: inputOptions) => {
                 width: 75%;
                 outline: none;
                 min-height: 80px;
-                line-height: 40px;
+                line-height: 25px;
                 max-height: 200px;
                 overflow: auto;
-                text-align: left;
+                text-align: justify;
                 padding: 0;
                 border: 1px solid #cccccc;
                 border-radius: 5px;
@@ -340,13 +349,16 @@ const inputPopup = (opts: inputOptions) => {
                 content: attr(placeholder);
                 display: block;
                 width: 100%;
-                height: 40px;
-                line-height: 40px;
+                height: 25px;
+                line-height: 25px;
                 color: #888888;
+                text-indent: 0em;
             }
         </style>
     `
     html += `<div>${opts.title}</div>\n`
+    const requireStr = '<span style="margin-left: 5px;color: #FF0000">*</span>'
+    const requires = new Array<string>()
     opts.html.forEach((obj, i) => {
         const id = "input_" + uuid.getUuid()
         const v = storage[i]
@@ -355,6 +367,9 @@ const inputPopup = (opts: inputOptions) => {
                 const title = obj.props.title ? obj.props.title : ""
                 const placeholder = obj.props.placeholder ? obj.props.placeholder : "请输入内容"
                 const defaultValue = obj.props.default ? `${obj.props.default}` : ""
+                const require = obj.props.require ? obj.props.require : false
+                if(require)
+                    requires.push(id)
                 html += `
                     <div style="
                         width: 90%;
@@ -373,7 +388,9 @@ const inputPopup = (opts: inputOptions) => {
                             width: 15%;
                             flex-shrink: 1;
                             flex-grow: 1;
-                        ">${title}</div>
+                        ">
+                            ${title} ${require ? requireStr : ''} 
+                        </div>
                         <input style="
                             width: 75%;
                             height: 40px;
@@ -412,8 +429,8 @@ const inputPopup = (opts: inputOptions) => {
                             flex-shrink: 1;
                             flex-grow: 1;
                         ">${title}</div>
-                        <div class="ats-multiline" style="
-                        " id="${id}" contenteditable="true" 
+                        <div class="ats-multiline no_scroll_bar"
+                        id="${id}" contenteditable="true" 
                         placeholder="${placeholder}"
                         >${v ? v : defaultValue}</div>
                     </div>
@@ -590,7 +607,7 @@ const inputPopup = (opts: inputOptions) => {
         opts.storageId && localStorage.setItem(opts.storageId, JSON.stringify(res))
         return res
     }
-    return Swal.fire({
+    const result = Swal.fire({
         html: html,
         confirmButtonText: "确认",
         cancelButtonText: "取消",
@@ -609,6 +626,50 @@ const inputPopup = (opts: inputOptions) => {
         },
         preConfirm: opts.preConfirm(getValue)
     })
+
+    const confirmButton = Swal.getConfirmButton() as HTMLButtonElement
+
+    const max = requires.length
+    const SET = new Set()
+
+    const judgeIsConfirm = () => {
+        if(SET.size !== max) {
+            confirmButton.setAttribute("disabled", "true")
+            confirmButton.style.cursor = "not-allowed"
+        } else {
+            confirmButton.removeAttribute("disabled")
+            confirmButton.style.cursor = "pointer"
+        }
+    }
+
+    const changeIndex = (dom: HTMLInputElement, oldCss: string) => {
+        if(!(dom.value)) {
+            dom.style.cssText = oldCss + `
+                border-color: #FF0000;
+            `
+            SET.delete(dom.id)
+        } else {
+            dom.style.cssText = oldCss + ''
+            SET.add(dom.id)
+        }
+    }
+
+    requires.forEach(id => {
+        const dom = document.getElementById(id) as HTMLInputElement
+        if(dom) {
+            const oldCss = dom.style.cssText
+            if(dom.value) {
+                SET.add(dom)
+            }
+            dom.addEventListener('input', () => {
+                changeIndex(dom, oldCss)
+                judgeIsConfirm()
+            })
+        }
+    })
+    judgeIsConfirm()
+
+    return result
 }
 
 export {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import log from "@/assets/utils/log"
   	import router from '@/router/router';
-	import { getCurrentUser } from '@/assets/index/auth';
+	
 </script>
 
 <template>

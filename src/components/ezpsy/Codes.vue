@@ -14,6 +14,7 @@
     import { DIRECTION } from "@/assets/utils/config"
     import { ObjectListSort } from "@/assets/utils/sort";
     import uuid from "@/assets/utils/uuid";
+    import { getStorage, setStorage } from "@/assets/utils/storage"
     
     interface LIST {
         path: string
@@ -172,7 +173,7 @@
         showloading(1, 2)
         const listsRes = await storage.getFileListAll(data.type)
         if(listsRes.isSuccess){
-            const cacheStr = localStorage.getItem("EZPSY_CODES")
+            const cacheStr = getStorage("EZPSY_CODES")
             const hasCache = !!(cacheStr)
             let cache: Record<string, any> = {}
             if(hasCache) 
@@ -222,7 +223,7 @@
                     delete list["operations"]
                     newCache[list.title] = list
                 })
-                localStorage.setItem("EZPSY_CODES", JSON.stringify(newCache))
+                setStorage("EZPSY_CODES", JSON.stringify(newCache))
                 reload()
             }) 
         }

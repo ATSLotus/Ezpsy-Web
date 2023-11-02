@@ -23,6 +23,7 @@
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
     import ContextMenu from "@/components/ezpsy/ContextMenu.vue"
     import storeImage from '@/assets/agc/storeImage';
+    import { getStorage, setStorage } from '@/assets/utils/storage';
 
     const route = useRoute()  
 
@@ -87,7 +88,12 @@
             x: 0,
             y: 0
         } as POSITION,
-        contextItem: {} as LIST
+        contextItem: {} as LIST,
+        isStorage: false,
+        storage: {
+            title: "",
+            description: ""
+        } 
     })
 
     const reloadLibirary = () => {
@@ -201,11 +207,55 @@
         javascriptInit(data.Blockly as typeof BLK)
         defaultInit(data.Blockly as typeof BLK)
         await init()
-        if(route.query?.xml) {
+        if(route.query?.key) {
+            const key = route.query.key as string
+            const storages = getStorage("EZPSY_PRODUCTION")
+            let productions = {}
+            let isStorage = true
+            if(storages) {
+                productions = JSON.parse(storages)
+                if(!(key in productions)) {
+                    isStorage = false
+                }
+            } 
+            if(isStorage) {
+                const production = productions[key]
+                const xml = production.xml
+                setXml(xml)
+                data.storage = {
+                    title: key,
+                    description: production.description
+                }
+            } else {
+                // @ts-ignore
+                const fileRes = await storage.getFileData(`/private/${user?.uid}/ezBlock/${key}`)
+                if(fileRes.isSuccess) {
+                    const json = fileRes.data
+                    json.data = JSON.parse(decrypt(json.data))
+                    const xml = json.data.xml
+                    setXml(xml)
+                    data.storage = {
+                        title: key,
+                        description: json.data.description
+                    }
+                } else {
+                    tipPopup("error", {
+                        title: `项目 ${key} 不存在`,
+                        tips: `未查询到项目 ${key}`,
+                        closeTip: "点击空白处关闭"
+                    }).then(() => {
+                        router.replace({
+                            query: {
+                                menu: "ezpsy-block"
+                            }
+                        })
+                    })
+                }
+            }
+        } else if(route.query?.xml) {
             // data.xml = decrypt(route.query.xml as string, true)
             const xml = decrypt(route.query.xml as string)
-            const xmlDom = data.Blockly.utils.xml.textToDom(xml)
-            data.Blockly.Xml.appendDomToWorkspace(xmlDom, data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
+            setXml(xml)
         }
         getFileList()
         data.contextMenu = [
@@ -235,7 +285,13 @@
             }
         ]
         storage.setInsertFunc("reload", getFileList)
+        data.isStorage = !!(data.storage.title)
     })
+
+    const setXml = (xml: string) => {
+        const xmlDom = data.Blockly.utils.xml.textToDom(xml)
+        data.Blockly.Xml.appendDomToWorkspace(xmlDom, data.Blockly.getMainWorkspace() as BLK.WorkspaceSvg)
+    }
 
     const showJS = () => {
         showMsg("JavaScript Code", formatJavaScriptCode(data.code))
@@ -276,8 +332,9 @@
 
     const save = async () => {
         const res = await getCurrentUser()
-        log.info(res)
         if(res.isSuccess) {
+            const user = res.data.user
+            const listsRes = storage.getFileListAll(`/private/${user?.uid}/ezBlock/`)
             inputPopup({
                 title: "请输入相关信息",
                 html: [
@@ -285,14 +342,17 @@
                         type: "input",
                         props: {
                             title: "文件名",
-                            placeholder: "请输入"
+                            placeholder: "请输入",
+                            default: data.storage.title,
+                            require: true
                         }
                     },
                     {
                         type: "multiline",
                         props: {
                             title: "描述",
-                            placeholder: "请输入"
+                            placeholder: "请输入",
+                            default: data.storage.description
                         }
                     }
                 ],
@@ -305,12 +365,29 @@
                         }
                     }
                 }
-            }).then((result) => {
+            }).then(async (result) => {
                 if(result.isConfirmed) {
                     closePopup()
                     const value = result.value
-                    const user = res.data.user
-                    // log.info(user)
+                    const RES = await listsRes
+                    if(!(data.isStorage) && RES.isSuccess) {
+                        const set = new Set(RES.data.fileList.map((item: any) => {
+                            return item.name.replace(".json", "")
+                        }))
+                        log.info(set)
+                        if(set.has(value.title)) {
+                            const isCover = await tipPopup("warn", {
+                                title: `资源 ${value.title} 已存在`,
+                                tips: `是否覆盖资源 ${value.title}`,
+                                confirmText: "覆盖",
+                                isUseCancel: true
+                            })
+                            if(!(isCover.isConfirmed)) {
+                                save()
+                                return
+                            }
+                        }
+                    }
                     const json = {
                         // ctime: Date.now(),
                         // mtime: Date.now(),
@@ -372,7 +449,7 @@
         const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ezImage/`)
         console.log(listsRes)
         if(listsRes.isSuccess){
-            const cacheStr = localStorage.getItem("EZPSY_IMAGE")
+            const cacheStr = getStorage("EZPSY_IMAGE")
             const hasCache = !!(cacheStr)
             let cache: Record<string, any> = {}
             if(hasCache) 
@@ -418,7 +495,7 @@
                     delete list["selected"]
                     newCache[list.name] = list
                 })
-                localStorage.setItem("EZPSY_IMAGE", JSON.stringify(newCache))
+                setStorage("EZPSY_IMAGE", JSON.stringify(newCache))
                 reloadLibirary()
             }) 
         }
@@ -627,7 +704,7 @@
                     <img src="@/assets/image/ezpsy/icons/redo.svg">重做
                 </button>
                 <button type="button" class="btn" @click="load">
-                    <img src="@/assets/image/ezpsy/icons/upload.svg">加载
+                    <img src="@/assets/image/ezpsy/icons/upload.svg">上传
                 </button>
                 <button type="button" class="btn" @click="fullscreen">
                     <img 
