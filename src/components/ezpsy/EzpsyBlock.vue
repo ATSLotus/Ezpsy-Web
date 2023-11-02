@@ -335,80 +335,101 @@
         if(res.isSuccess) {
             const user = res.data.user
             const listsRes = storage.getFileListAll(`/private/${user?.uid}/ezBlock/`)
-            inputPopup({
-                title: "请输入相关信息",
-                html: [
-                    {
-                        type: "input",
-                        props: {
-                            title: "文件名",
-                            placeholder: "请输入",
-                            default: data.storage.title,
-                            require: true
-                        }
-                    },
-                    {
-                        type: "multiline",
-                        props: {
-                            title: "描述",
-                            placeholder: "请输入",
-                            default: data.storage.description
-                        }
-                    }
-                ],
-                preConfirm: (getValue) => {
-                    return () => {
-                        const res = getValue()
-                        return {
-                            title: res[0],
-                            description: res[1]
-                        }
-                    }
+            if(data.isStorage) {
+                const json = {
+                    data: encrypt(JSON.stringify({
+                        creator: {
+                            name: user.displayName,
+                            avatar: user.photoUrl
+                        },
+                        description: data.storage.description,
+                        xml: data.xml,
+                        code: data.code
+                    }))
                 }
-            }).then(async (result) => {
-                if(result.isConfirmed) {
-                    closePopup()
-                    const value = result.value
-                    const RES = await listsRes
-                    if(!(data.isStorage) && RES.isSuccess) {
-                        const set = new Set(RES.data.fileList.map((item: any) => {
-                            return item.name.replace(".json", "")
-                        }))
-                        log.info(set)
-                        if(set.has(value.title)) {
-                            const isCover = await tipPopup("warn", {
-                                title: `资源 ${value.title} 已存在`,
-                                tips: `是否覆盖资源 ${value.title}`,
-                                confirmText: "覆盖",
-                                isUseCancel: true
-                            })
-                            if(!(isCover.isConfirmed)) {
-                                save()
-                                return
+                storage.uploadString({
+                    str: JSON.stringify(json),
+                    folder: `private/${user.uid}/ezBlock`,
+                    name: data.storage.title,
+                    extension: "json"
+                })
+            } else {
+                inputPopup({
+                    title: "请输入相关信息",
+                    html: [
+                        {
+                            type: "input",
+                            props: {
+                                title: "文件名",
+                                placeholder: "请输入",
+                                default: data.storage.title,
+                                require: true
+                            }
+                        },
+                        {
+                            type: "multiline",
+                            props: {
+                                title: "描述",
+                                placeholder: "请输入",
+                                default: data.storage.description
+                            }
+                        }
+                    ],
+                    preConfirm: (getValue) => {
+                        return () => {
+                            const res = getValue()
+                            return {
+                                title: res[0],
+                                description: res[1]
                             }
                         }
                     }
-                    const json = {
-                        // ctime: Date.now(),
-                        // mtime: Date.now(),
-                        data: encrypt(JSON.stringify({
-                            creator: {
-                                name: user.displayName,
-                                avatar: user.photoUrl
-                            },
-                            description: value?.description ? value.description : "",
-                            xml: data.xml,
-                            code: data.code
-                        }))
+                }).then(async (result) => {
+                    if(result.isConfirmed) {
+                        closePopup()
+                        const value = result.value
+                        const RES = await listsRes
+                        if(RES.isSuccess) {
+                            const set = new Set(RES.data.fileList.map((item: any) => {
+                                return item.name.replace(".json", "")
+                            }))
+                            log.info(set)
+                            if(set.has(value.title)) {
+                                const isCover = await tipPopup("warn", {
+                                    title: `资源 ${value.title} 已存在`,
+                                    tips: `是否覆盖资源 ${value.title}`,
+                                    confirmText: "覆盖",
+                                    isUseCancel: true
+                                })
+                                if(!(isCover.isConfirmed)) {
+                                    save()
+                                    return
+                                }
+                            }
+                        }
+                        const json = {
+                            // ctime: Date.now(),
+                            // mtime: Date.now(),
+                            data: encrypt(JSON.stringify({
+                                creator: {
+                                    name: user.displayName,
+                                    avatar: user.photoUrl
+                                },
+                                description: value?.description ? value.description : "",
+                                xml: data.xml,
+                                code: data.code
+                            }))
+                        }
+                        storage.uploadString({
+                            str: JSON.stringify(json),
+                            folder: `private/${user.uid}/ezBlock`,
+                            name: value.title ? value.title : uuid.getUuid(),
+                            extension: "json"
+                        })
                     }
-                    storage.uploadString({
-                        str: JSON.stringify(json),
-                        folder: `private/${user.uid}/ezBlock`,
-                        name: value.title ? value.title : uuid.getUuid(),
-                        extension: "json"
-                    })
-                }
-            })
+                })
+            }
+            
         } else {
             tipPopup("error", {
                 title: "请登录",

@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import List from "@/components/ezpsy/List.vue"
     import log from '@/assets/utils/log'
-    import { nextTick, onBeforeMount, reactive, ref } from "vue";
+    import { nextTick, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref } from "vue";
     import { getCurrentUser } from "@/assets/index/auth";
     import { UserStore } from "@/store/store";
     import agc from "@/assets/agc/agc";
@@ -135,6 +135,13 @@
             },
             style: "green"
         },
+        modify: {
+            text: "修改",
+            func: (item: LIST) => {
+
+            },
+            style: "yellow"
+        },
         release: {
             text: "发布",
             func: async (item: LIST) => {
@@ -221,23 +228,26 @@
         copy: {
             text: "创建副本",
             func: async (item: LIST) => {
-                // const json = {
-                //     data: encrypt(JSON.stringify({
-                //         creator: {
-                //             name: user.displayName,
-                //             avatar: user.photoUrl
-                //         },
-                //         description: value?.description ? value.description : "",
-                //         xml: data.xml,
-                //         code: data.code
-                //     }))
-                // }
-                // storage.uploadString({
-                //     str: JSON.stringify(json),
-                //     folder: `private/${user.uid}/ezBlock`,
-                //     name: value.title ? value.title : uuid.getUuid(),
-                //     extension: "json"
-                // })
+                const json = {
+                    data: encrypt(JSON.stringify({
+                        creator: {
+                            // @ts-ignore
+                            name: user.displayName,
+                            // @ts-ignore
+                            avatar: user.photoUrl
+                        },
+                        description: item.description,
+                        xml: item.xml,
+                        code: item.js
+                    }))
+                }
+                storage.uploadString({
+                    str: JSON.stringify(json),
+                    // @ts-ignore
+                    folder: `private/${user.uid}/ezBlock`,
+                    name: item.title + '_' + uuid.getUuid(),
+                    extension: "json"
+                })
             }
         },
         delete: {
@@ -315,6 +325,14 @@
 
     onBeforeMount(async () => {
         await getFileList()
+    })
+
+    onMounted(async () => {
+        storage.setInsertFunc("reload", getFileList)
+    })
+
+    onBeforeUnmount(async () => {
+        storage.deleteInsertFunc("reload")
     })
     
 </script>

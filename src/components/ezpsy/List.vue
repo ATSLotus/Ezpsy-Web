@@ -338,6 +338,14 @@ import ToolTip from './ToolTip.vue';
             color: #ff833a;
             border-color: #ff833a;
         }
+        .btn-yellow {
+            color: #FFC107;
+            border-color: #FFC107;
+        }
+        .btn-yellow:hover {
+            color: #FFA000;
+            border-color: #FFA000;
+        }
         .align {
             display: flex;
             justify-content: center;
@@ -492,6 +500,7 @@ import ToolTip from './ToolTip.vue';
                         }
                         .operate {
                             width: 100%;
+                            flex-wrap: wrap;
                             .btn {
                                 min-width: 40px;
                                 width: fit-content;
