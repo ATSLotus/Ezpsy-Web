@@ -138,7 +138,70 @@
         modify: {
             text: "修改",
             func: (item: LIST) => {
-
+                inputPopup({
+                    title: "请输入相关信息",
+                    html: [
+                        {
+                            type: "input",
+                            props: {
+                                title: "文件名",
+                                placeholder: "请输入",
+                                default: item.title,
+                                require: true
+                            }
+                        },
+                        {
+                            type: "multiline",
+                            props: {
+                                title: "描述",
+                                placeholder: "请输入",
+                                default: item.description
+                            }
+                        }
+                    ],
+                    preConfirm: (getValue) => {
+                        return () => {
+                            const res = getValue()
+                            return {
+                                title: res[0],
+                                description: res[1]
+                            }
+                        }
+                    }
+                }).then(result => {
+                    if(result.isConfirmed) {
+                        closePopup()
+                        const value = result.value
+                        if(value.title === item.title && value.description === item.description) {
+                            return
+                        } else {
+                            if(value.title !== item.title) {
+                                storage.deleteFile(decrypt(item.path))
+                            }
+                            const json = {
+                                data: encrypt(JSON.stringify({
+                                    creator: {
+                                        // @ts-ignore
+                                        name: user.displayName,
+                                        // @ts-ignore
+                                        avatar: user.photoUrl
+                                    },
+                                    description: value?.description ? value.description : "",
+                                    xml: item.xml,
+                                    code: item.js
+                                }))
+                            }
+                            storage.uploadString({
+                                str: JSON.stringify(json),
+                                // @ts-ignore
+                                folder: `private/${user.uid}/ezBlock`,
+                                name: value.title ? value.title : uuid.getUuid(),
+                                extension: "json"
+                            })
+                        }
+                        
+                    }
+                })
             },
             style: "yellow"
         },

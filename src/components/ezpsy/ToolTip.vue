@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import log from '@/assets/utils/log'
-    import { onMounted, reactive } from 'vue';
+    import { onMounted, reactive, ref } from 'vue';
 
     const props = defineProps({
         content: {
@@ -54,9 +54,9 @@
             data.top = box.clientHeight + "px"
         }
 
-        if(props.content === "") {
-            data.canShow = false
-        }
+        // if(props.content === "") {
+        //     data.canShow = false
+        // }
     })
     
 </script>
@@ -71,6 +71,7 @@
 </template>
 
 <style scoped lang="scss">
+    @import "../../scss/app.scss";
     $trangleWidth: 10px; $trangleHeight: 10px; $color: #FFFFFF; $color-shadow: #0000001f;
     .toolbox_box {
         position: relative;
@@ -80,6 +81,7 @@
             overflow: hidden; 
             white-space: nowrap; 
             text-overflow: ellipsis;
+            z-index: $ZIndex1;
         }
         .toolbox_text_multi {
             max-width: 100%;
@@ -91,6 +93,7 @@
             text-indent: 2em;
             text-align: justify;
             white-space: pre-wrap;
+            z-index: $ZIndex1;
         }
         .tooltip {
             width: v-bind("data.props.width");
@@ -103,13 +106,14 @@
             justify-content: center;
             border-radius: 8px;
             background: $color;
-            opacity: .8;
             padding: 10px 10px;
+            z-index: $ZIndex2;
             filter: drop-shadow(0 2px 10px $color-shadow);
             .tooltip_content {
                 // color: #000000;
                 // opacity: 1;
-                filter: drop-shadow(0px 0px 0px #1d1d1d);
+                width: 100%;
+                filter: drop-shadow(0px 0px 0px #1d1d1d33);
             }
             .long-text {
                 text-align: justify;

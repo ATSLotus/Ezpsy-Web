@@ -496,7 +496,7 @@ import ToolTip from './ToolTip.vue';
                         }
                         .long-text {
                             width: 100%;
-                            height: 100%;
+                            max-height: 100%;
                         }
                         .operate {
                             width: 100%;
