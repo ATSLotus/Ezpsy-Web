@@ -60,6 +60,11 @@
                 return target
             }
         },
+        reload: {
+            func: () => {
+                getFileList()
+            }
+        },
         operations: {
             delete: {
                 title: "删除",

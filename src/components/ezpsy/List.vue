@@ -184,6 +184,13 @@ import ToolTip from './ToolTip.vue';
             </div>
             <div class="right">
                 <div 
+                    class="reload" 
+                    v-if="props.searchOpts && 'reload' in props.searchOpts"
+                    @click="props.searchOpts.reload.func()"
+                >
+                    <img class="reloadIcon" src="@/assets/image/ezpsy/icons/reload.svg" />
+                </div>
+                <div 
                     v-for="item in props.searchOpts?.operations"
                     class="btn"
                     :class="getBTNStyle(item?.style)"
@@ -236,9 +243,16 @@ import ToolTip from './ToolTip.vue';
                         image: 默认center
                     -->
                     <div class="li-item" :style="item.style" v-for="item in data.header">
-                        <div class="text align" :class="item?.align" v-if="item.type === 'text'">
+                        <!-- <div class="text align" :class="item?.align" v-if="item.type === 'text'">
                             {{ list[item.value] }}
-                        </div>
+                        </div> -->
+                        <ToolTip 
+                            class="text align" 
+                            :class="item?.align" 
+                            v-if="item.type === 'text'"
+                            :content="list[item.value]"
+                            :type="'text'"
+                        ></ToolTip>
                         <!-- <div class="long-text" :title="list[item.value]" v-if="item.type === 'long-text'">
                             {{ list[item.value] }}
                         </div> -->
@@ -246,7 +260,7 @@ import ToolTip from './ToolTip.vue';
                             class="long-text" 
                             v-if="item.type === 'long-text'"
                             :content="list[item.value]"
-                            :type="'text'"
+                            :type="'long-text'"
                         ></ToolTip>
                         <div class="operate align" :class="item?.align" v-if="item.type === 'operate'">
                             <div class="btn" :class="getBTNStyle(bt?.style)" v-for="bt in list[item.value]" @click="bt.func(list)">
@@ -256,9 +270,17 @@ import ToolTip from './ToolTip.vue';
                         <div class="image align" :class="item?.align" v-if="item.type === 'image'">
                             <img :src="getBlob(list[item.value])" @click="openPreview(getBlob(list[item.value]))" />
                         </div>
-                        <div class="link align" :class="item?.align" v-if="item.type === 'link'" @click="item.action && item.action(list)">
+                        <!-- <div class="link align" :class="item?.align" v-if="item.type === 'link'" @click="item.action && item.action(list)">
                             {{ list[item.value] }}
-                        </div>
+                        </div> -->
+                        <ToolTip 
+                            class="link align" 
+                            :class="item?.align" 
+                            v-if="item.type === 'link'" 
+                            @click="item.action && item.action(list)"
+                            :content="list[item.value]"
+                            :type="'text'"
+                        ></ToolTip>
                         <ToolTip 
                             class="code" 
                             v-if="item.type === 'code'"
@@ -365,6 +387,8 @@ import ToolTip from './ToolTip.vue';
         }
     }
 
+    $ITEMWIDTH: 95%;
+
     .listbox {
         width: 90%;
         height: 90%;
@@ -397,6 +421,23 @@ import ToolTip from './ToolTip.vue';
                 display: flex;
                 align-items: center;
                 justify-content: end;
+                .reload {
+                    width: 32px;
+                    height: 32px;
+                    margin: 0 5px;
+                    border: 1px solid #8a8a8a;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    box-sizing: border-box;
+                    .reloadIcon {
+                        width: 80%;
+                        height: 80%;
+                        margin: 10% 10%;
+                    }
+                }
+                .reload:hover {
+                    border-width: 2px;
+                }
                 .btn {
                     width: 50px;
                     height: 32px;
@@ -489,17 +530,14 @@ import ToolTip from './ToolTip.vue';
                         justify-content: center;
                         align-items: center;
                         .text {
-                            width: 100%;
-                            overflow: hidden; 
-                            white-space: nowrap; 
-                            text-overflow: ellipsis;
+                            width: $ITEMWIDTH;
                         }
                         .long-text {
-                            width: 100%;
+                            width: $ITEMWIDTH;
                             max-height: 100%;
                         }
                         .operate {
-                            width: 100%;
+                            width: $ITEMWIDTH;
                             flex-wrap: wrap;
                             .btn {
                                 min-width: 40px;
@@ -534,16 +572,16 @@ import ToolTip from './ToolTip.vue';
                             }
                         }
                         .link {
-                            width: 100%;
-                            overflow: hidden; 
-                            white-space: nowrap; 
-                            text-overflow: ellipsis;
+                            width: $ITEMWIDTH;
+                            // overflow: hidden; 
+                            // white-space: nowrap; 
+                            // text-overflow: ellipsis;
                             color: #0073bb;
                             cursor: pointer;
                         }
 
                         .code {
-                            width: 100%;
+                            width: $ITEMWIDTH;
                             height: 100%;
                             display: flex;
                             justify-content: center;
