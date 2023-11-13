@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import log from '@/assets/utils/log'
-    import { onBeforeMount, reactive } from 'vue';
-    import { tipPopup } from '@/assets/utils/popup';
+    import { onBeforeMount, onBeforeUnmount, reactive } from 'vue';
+    import { setContainer, tipPopup } from '@/assets/utils/popup';
     import router from '@/router/router';
     import { getCurrentUser, getVerifyCode, loginByCode, loginByPsd } from '@/assets/index/auth';
 
@@ -160,11 +160,16 @@
     }
 
     onBeforeMount(async () => {
+        setContainer("fullscreen")
         const user = await getCurrentUser()
         console.log("USER", user)
         if(user.isSuccess) {
             router.push("/ezpsy/console")
         }
+    })
+
+    onBeforeUnmount(async () => {
+        setContainer("normal")
     })
     
 </script>
@@ -241,6 +246,7 @@
                                 'cursor: pointer' : 
                                 'color: #007dff88;cursor: not-allowed'
                             "
+                            :disabled="!data.allowGetCode"
                             @click="getValidateCode"
                         >{{ data.validateText }}</span>
                     </div>
@@ -376,7 +382,7 @@
                 color: #ffffff;
                 outline: none;
                 border: none;
-                background: #ca141d;
+                background: #005795;
                 margin-top: 10px;
                 text-align: center;
             }

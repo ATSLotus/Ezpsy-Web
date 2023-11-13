@@ -35,10 +35,17 @@ const updateProfile = async (user: profileParameter[0], obj: profileParameter[1]
     return res
 }
 
+const resetPassword = async (opts: Parameters<typeof auth.resetPassword>[0]) => {
+    const res = await auth.resetPassword(opts)
+    return res
+}
+
 export {
     getCurrentUser,
     getVerifyCode,
     registerAuth,
     loginByPsd,
-    loginByCode
+    loginByCode,
+    updateProfile,
+    resetPassword
 }

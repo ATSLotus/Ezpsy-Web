@@ -540,21 +540,24 @@
     }
 
     const load = () => {
-        // const workspace = data.Blockly.getMainWorkspace() as BLK.Workspace
-        // const blocks = workspace.getBlocksByType("msgDlg", true)
-        // if(blocks.length > 0) {
-        //     const block = blocks[0]
-        //     const chilren = block.getChildren(true)
-        //     const child = chilren[0].getChildren(true)[0].inputList[0]
-        //     const text = child.fieldRow[1]
-        //     text.setValue("1")
-        // }
-        
-        // blocklyBlockCanvas
-        // const svgElements = document.getElementsByClassName('blocklySvg');
-        // const svgElement = svgElements[0]
-        
-        
+        const input = document.createElement("input")
+        input.type = "file"
+        input.accept = ".xml"
+        input.click()
+        input.addEventListener("change", () => {
+            const files = input.files
+            if(files) {
+                const file = files[0]
+                const reader = new FileReader()
+                reader.onload = () => {
+                    const result = reader.result as string | null
+                    if(result) {
+                        setXml(result)
+                    }
+                }
+                reader.readAsText(file)
+            } 
+        })
     }
 
     const run = () => {
@@ -712,6 +715,7 @@
                         '' :
                         'button_denied'
                     " 
+                    :disabled="!data.isAllowUndo"
                     type="button" class="btn" @click="undo">
                     <img src="@/assets/image/ezpsy/icons/back.svg">撤消
                 </button>
@@ -721,6 +725,7 @@
                         '' :
                         'button_denied'
                     " 
+                    :disabled="!data.isAllowRedo"
                     type="button" class="btn" @click="redo">
                     <img src="@/assets/image/ezpsy/icons/redo.svg">重做
                 </button>

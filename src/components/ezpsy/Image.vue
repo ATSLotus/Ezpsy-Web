@@ -56,6 +56,11 @@
                 return target
             }
         },
+        reload: {
+            func: () => {
+                getFileList()
+            }
+        },
         operations: {
             add: {
                 title: "增加",

@@ -16,14 +16,18 @@ const getRouters = (): Array<Object> => {
     Object.keys(routersOBJ).forEach(key => {
         const obj = routersOBJ[key]
         obj.forEach((name: string) => {
-            routers.push({
+            const router_obj = {
                 path: `/${key}/${name}`,
                 name: `${name}`,
                 component: () => import(`@/pages/${key}/${name}.vue`),
                 meta: {
                     title: 'Ezpsy: ' + name
                 }
-            })
+            }
+            if(name === "index") {
+                router_obj.path = `/${name}`
+            }
+            routers.push(router_obj)
         })
     })
     return routers

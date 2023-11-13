@@ -37,3 +37,14 @@ export const deepClone = (obj: any, map = new Map()) => {
 export const getReg = (value: string) => {
     return new RegExp(`(.*)(${value.split('').join(')(.*)(')})(.*)`, 'i')
 }
+
+export const addMosaic = (str: string, num: number = 4, start: number = 2) => {
+    const result = str.split("").map((item, index) => {
+        if(index >= start && index < start + num) {
+            return "*"
+        } else {
+            return item
+        }
+    }).join("")
+    return result
+}

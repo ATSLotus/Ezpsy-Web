@@ -12,9 +12,12 @@
     import Codes from "@/components/ezpsy/Codes.vue"
     import Datas from "@/components/ezpsy/Datas.vue"
     import { getCurrentUser } from "@/assets/index/auth";
-    import { setContainer } from "@/assets/utils/popup";
+    import { setContainer, tipPopup } from "@/assets/utils/popup";
+    import agc from '@/assets/agc/agc'
+    import { PhoneAuth } from "ezpsy-server"
 
     const route = useRoute()
+    const auth = agc.getAuth("Ezpsy_Auth") as PhoneAuth
 
     const data = reactive({
         store: EzpsyMenuStore(),
@@ -56,7 +59,20 @@
     onBeforeUnmount(async () => {
         setContainer("normal")
     })
+
+    const reset = () => {
+        router.push("/index/reset")
+    }
     
+    const logout = () => {
+        auth.logout(() => {
+            tipPopup("success", {
+                title: "已注销"
+            }).then(() => {
+                router.push("/index")
+            })
+        })
+    }
     
 </script>
 
@@ -64,7 +80,10 @@
     <div class="console">
         <EzpsyMenu></EzpsyMenu>
         <div class="content-box">
-            <div class="header"></div>
+            <div class="header">
+                <div @click="reset">重置密码</div>
+                <div @click="logout">注销</div>
+            </div>
             <div
                 class="box"
                 v-for="item in menus"
@@ -94,6 +113,17 @@
             .header {
                 width: 100%;
                 height: 60px;
+                line-height: 60px;
+                display: flex;
+                justify-content: flex-end;
+                div {
+                    width: fit-content;
+                    cursor: pointer;
+                    margin: 0 5px;
+                }
+                div:hover {
+                    color: red;
+                }
             }
             .box {
                 width: 100%;
@@ -109,8 +139,6 @@
                     background-color: white;
                 }
             }
-            
         }
-        
     }
 </style>

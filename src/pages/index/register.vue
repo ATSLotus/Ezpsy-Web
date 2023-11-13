@@ -221,6 +221,7 @@
                                 'cursor: pointer' : 
                                 'color: #007dff88;cursor: not-allowed'
                             "
+                            :disabled="!data.allowGetCode"
                             @click="getValidateCode"
                         >{{ data.validateText }}</span>
                     </div>
@@ -260,7 +261,7 @@
                 <div v-if="!data.confirmIsTrue" class="Error">
                     <img src="@/assets/image/index/auth/warn.svg" width="12" height="12" >
                     <span style="margin-left: 5px;">
-                        前后密码不一致
+                        密码不一致
                     </span>
                 </div>
                 <div 
@@ -406,7 +407,7 @@
                 color: #ffffff;
                 outline: none;
                 border: none;
-                background: #ca141d;
+                background: #005795;
                 margin-top: 20px;
             }
             .question {

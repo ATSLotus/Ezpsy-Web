@@ -3,10 +3,6 @@
     import ResetPSDBox from "@/components/index/ResetPSDBox.vue";
     import { reactive, ref } from 'vue';
 
-    const title = ref("输入Ezpsy账号")
-    const tips = ref("请输入注册账号的手机号")
-    const step = ref(0)
-
     const data = reactive({
         
     })
@@ -16,11 +12,7 @@
 <template>
     <div>
         <div class="reset">
-            <ResetPSDBox 
-                :title="title"
-                :tips="tips"
-                :step="step"
-            ></ResetPSDBox>
+            <ResetPSDBox></ResetPSDBox>
         </div>
     </div>
 </template>

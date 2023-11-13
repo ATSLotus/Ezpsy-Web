@@ -6,7 +6,7 @@
     import { deepClone } from '@/assets/utils/utils';
     import { nextTick, onMounted, reactive, ref, watch } from 'vue';
     import { ObjectListSort } from "@/assets/utils/sort"    
-import ToolTip from './ToolTip.vue';
+    import ToolTip from './ToolTip.vue';
 
     const props = defineProps({
         searchOpts: {
@@ -29,7 +29,7 @@ import ToolTip from './ToolTip.vue';
         origin: props.lists,
         cache: new Array(),
         lists: deepClone(props.lists),
-        numPerPage: 12,
+        numPerPage: 9,
         index: 1,
         pages: 0,
         checkedList: new Set<any>(),
@@ -188,7 +188,22 @@ import ToolTip from './ToolTip.vue';
                     v-if="props.searchOpts && 'reload' in props.searchOpts"
                     @click="props.searchOpts.reload.func()"
                 >
-                    <img class="reloadIcon" src="@/assets/image/ezpsy/icons/reload.svg" />
+                    <svg 
+                        class="reloadIcon"
+                        t="1699856267558" 
+                        viewBox="0 0 1024 1024" 
+                        version="1.1" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        p-id="4830" 
+                        width="128" 
+                        height="128"
+                    >
+                            <path 
+                                d="M257.6 462.4c28.8 1.6 43.2-11.2 43.2-36.8 0-25.6-17.6-43.2-43.2-43.2H150.4C201.6 208 358.4 84.8 542.4 84.8c187.2 0 348.8 128 395.2 310.4 4.8 20.8 30.4 38.4 51.2 30.4 20.8-4.8 38.4-30.4 30.4-51.2C958.4 153.6 763.2 0 537.6 0 337.6 0 163.2 123.2 80 305.6v-92.8c0-22.4-9.6-43.2-35.2-43.2S1.6 187.2 0 212.8v200c1.6 30.4 25.6 51.2 57.6 49.6h200zM966.4 590.4H779.2c-12.8 0-27.2 3.2-36.8 11.2-11.2 8-19.2 20.8-19.2 36.8 0 20.8 19.2 32 43.2 32h105.6c-59.2 163.2-208 265.6-374.4 265.6-174.4 0-326.4-110.4-382.4-280-8-20.8-30.4-33.6-56-25.6-20.8 8-33.6 30.4-25.6 56C104 888 286.4 1024 499.2 1024c187.2 0 352-105.6 444.8-272v97.6c1.6 24 9.6 43.2 35.2 43.2s43.2-17.6 44.8-43.2V649.6c-1.6-28.8-27.2-54.4-57.6-59.2z"
+                                p-id="4831"
+                            ></path>
+                    </svg>
+                    <!-- <img class="reloadIcon" src="@/assets/image/ezpsy/icons/reload.svg" /> -->
                 </div>
                 <div 
                     v-for="item in props.searchOpts?.operations"
@@ -293,17 +308,19 @@ import ToolTip from './ToolTip.vue';
             </div>
         </div>
         <div class="index">
-            <div 
+            <button 
                 class="box left" 
                 :class="data.index === 1 ? 'disable' : ''"
+                :disabled="data.index === 1"
                 @click="changeIndex(false)"
-            ></div>
+            ></button>
             <div class="box item">{{ data.index }}</div>
-            <div 
+            <button 
                 class="box right" 
                 :class="data.index === data.pages ? 'disable' : ''"
+                :disabled="data.index === data.pages"
                 @click="changeIndex(true)"
-            ></div>
+            ></button>
         </div>
     </div>
 </template>
@@ -421,18 +438,23 @@ import ToolTip from './ToolTip.vue';
                 display: flex;
                 align-items: center;
                 justify-content: end;
+                $RELOAD_SIZE: 32px; $RELOAD_RATIO: 75%;
+                $RELOAD_COLOR: #007dff;
                 .reload {
-                    width: 32px;
-                    height: 32px;
+                    width: $RELOAD_SIZE;
+                    height: $RELOAD_SIZE;
                     margin: 0 5px;
-                    border: 1px solid #8a8a8a;
+                    border: 1px solid $RELOAD_COLOR;
                     border-radius: 4px;
                     cursor: pointer;
                     box-sizing: border-box;
                     .reloadIcon {
-                        width: 80%;
-                        height: 80%;
-                        margin: 10% 10%;
+                        width: $RELOAD_RATIO;
+                        height: $RELOAD_RATIO;
+                        margin: 0.5*(100% - $RELOAD_RATIO) 0.5*(100% - $RELOAD_RATIO);
+                        path {
+                            fill: $RELOAD_COLOR;
+                        }
                     }
                 }
                 .reload:hover {
@@ -605,14 +627,14 @@ import ToolTip from './ToolTip.vue';
                 border-radius: 4px;
                 margin: 0 5px;
                 box-sizing: border-box;
-            }
-            .left {
                 border: 1px solid;
                 border-color: #000000;
-                background: url("./src/assets/image/index/list/arrow_left.svg");
-                background-position: center center;
                 background-size: 18px 18px;
                 cursor: pointer;
+            }
+            .left {
+                background: url("./src/assets/image/index/list/arrow_left.svg");
+                background-position: center center;
             }
             .item {
                 background: #005795;
@@ -622,12 +644,8 @@ import ToolTip from './ToolTip.vue';
                 color: #ffffff;
             }
             .right {
-                border: 1px solid;
-                border-color: #000000;
                 background: url("./src/assets/image/index/list/arrow_right.svg");
                 background-position: center center;
-                background-size: 18px 18px;
-                cursor: pointer;
             }
             .disable {
                 // pointer-events: none;
