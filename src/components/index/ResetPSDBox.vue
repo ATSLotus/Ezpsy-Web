@@ -4,6 +4,7 @@
     import { addMosaic } from "@/assets/utils/utils"
     import { getVerifyCode, resetPassword } from '@/assets/index/auth';
     import { tipPopup } from '@/assets/utils/popup';
+    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
     const phone = ref(null) as Ref<HTMLInputElement | null>
     const verify = ref(null) as Ref<HTMLInputElement | null>
@@ -68,7 +69,8 @@
         steps: steps,
         step: 2,
         max: steps.length - 1,
-        min: 0
+        min: 0,
+        errorList: [ false, false, [ false, false ] ]
     })
 
     const getVCode = async () => {
@@ -124,6 +126,34 @@
         })
     }
 
+    const validate = (step: number, dynamic: boolean = false) => {
+        if(dynamic) {
+            if(data.steps[step].validate()) {
+                data.errorList[step] = false
+            }
+        } else {
+            if(data.steps[step].validate()) {
+                data.errorList[step] = false
+            } else {
+                data.errorList[step] = true
+            }
+        }
+    }
+
+    const validate_password = (step: number, dynamic: boolean = false) => {
+        if(dynamic) {
+            if(data.steps[3].validate()) {
+                data.errorList[3][step] = false
+            }
+        } else {
+            if(data.steps[3].validate()) {
+                data.errorList[3][step] = false
+            } else {
+                data.errorList[3][step] = true
+            }
+        }
+    }
+
     onUpdated(() => {
         reload()
     })
@@ -137,22 +167,43 @@
             <div class="box">
                 <div class="title">{{ data.steps[data.step].title }}</div>
                 <div class="tips">{{ data.steps[data.step].tips }}</div>
-                <div v-if="data.step === 0" class="input">
+                <div 
+                    v-if="data.step === 0" 
+                    class="input"
+                    :class="data.errorList[data.step] ? 'errorInputBox' : ''"
+                >
+                    <div v-if="data.errorList[data.step]" class="Error">
+                        <font-awesome-icon class="item-icon" icon="circle-exclamation" />
+                        <span style="margin-left: 5px;">手机号码格式不正确</span>
+                    </div>
                     <input 
                         class="phoneContent" 
+                        :class="data.errorList[data.step] ? 'errorInput' : ''"
                         placeholder="请输入手机号" 
                         v-model="msg.phone"
                         ref="phone"
+                        @change="validate(data.step)"
+                        @input="validate(data.step, true)"
                     />
                 </div>
-                <div v-if="data.step === 1" class="input">
-                    <div class="verifyContent">
+                <div 
+                    v-if="data.step === 1" 
+                    class="input"
+                    :class="data.errorList[data.step] ? 'errorInputBox' : ''"
+                >
+                    <div v-if="data.errorList[data.step]" class="Error">
+                        <font-awesome-icon class="item-icon" icon="circle-exclamation" />
+                        <span style="margin-left: 5px;">请输入6位验证码</span>
+                    </div>
+                    <div class="verifyContent" :class="data.errorList[data.step] ? 'errorInput' : ''">
                         <input 
                             type="text"
                             class="verify"
                             placeholder="请输入验证码"
                             v-model="msg.verify"
                             ref="verify"
+                            @change="validate(data.step)"
+                            @input="validate(data.step, true)"
                         />
                         <span class="verifyTips" @click="getVCode">
                             {{ msg.verify_tips }}
@@ -161,6 +212,10 @@
                 </div>
                 <div v-if="data.step === 2" class="input">
                     <div class="newPassword">
+                        <div v-if="data.errorList[data.step]" class="Error">
+                            <font-awesome-icon class="item-icon" icon="circle-exclamation" />
+                            <span style="margin-left: 5px;">密码格式错误</span>
+                        </div>
                         <input
                             :type="msg.password0IsShow ? 'text' : 'password'"
                             class="password"
@@ -194,6 +249,9 @@
                             @click="msg.password1IsShow = !msg.password1IsShow"
                         ></div>
                     </div>
+                    <div class="passwordTips">
+                        
+                    </div>
                 </div>
             </div>
             <div class="operate">
@@ -216,6 +274,10 @@
 </template>
 
 <style scoped lang="scss">
+    .item-icon {
+        width: 12px;
+        height: 12px;
+    }
     .reset {
         width: 100%;
         height: 100%;
@@ -248,17 +310,19 @@
                     font-size: 14px;
                     color: #999999;
                 }
+                $errorTipHeight: 16px;
+                $marginTop: 36px;
                 .input {
                     width: 100%;
+                    margin: $marginTop 0;
                     .phoneContent {
                         width: 100%;
                         height: 42px;
                         line-height: 42px;
                         outline: none;
                         padding: 0;
-                        margin: 20px 0;
                         box-sizing: border-box;
-                        border: none;
+                        border: 1px solid #FFFFFF;
                         background: #f7f7f7;
                         border-radius: 8px;
                         text-indent: 1.2em;
@@ -267,9 +331,8 @@
                         width: 100%;
                         height: 42px;
                         line-height: 42px;
-                        margin: 20px 0;
                         box-sizing: border-box;
-                        border: none;
+                        border: 1px solid #FFFFFF;
                         background: #f7f7f7;
                         border-radius: 8px;
                         display: flex;
@@ -299,13 +362,13 @@
                         height: 42px;
                         line-height: 42px;
                         padding: 0;
-                        margin: 20px 0;
                         box-sizing: border-box;
                         border: none;
                         background: #f7f7f7;
                         border-radius: 8px;
                         text-indent: 20px;
                         display: flex;
+                        margin-bottom: $marginTop;
                         .password {
                             width: calc(100% - 42px);
                             height: 42px;
@@ -327,6 +390,22 @@
                             transition: background-image .4s;
                         }
                     }
+                    .Error{
+                        width: 100%;
+                        line-height: $errorTipHeight;
+                        color: #d81e06;
+                        font-size: 12px;
+                        display: flex;
+                        align-items: center;
+                        margin-top: 2px;
+                        margin-bottom: 2px;
+                    }
+                    .errorInput {
+                        border-color: #FF0000;
+                    }
+                }
+                .errorInputBox {
+                    margin: calc($marginTop -  $errorTipHeight) 0;
                 }
             }
             .operate {

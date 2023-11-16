@@ -13,7 +13,8 @@ import {
     faFileExcel, 
     faList, 
     faPuzzlePiece,
-    faXmark
+    faXmark,
+    faCircleExclamation
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -22,7 +23,8 @@ library.add(
     faFileExcel, 
     faList, 
     faPuzzlePiece,
-    faXmark
+    faXmark,
+    faCircleExclamation
 )
 
 const app = createApp(App)
