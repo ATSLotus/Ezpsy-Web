@@ -112,7 +112,7 @@
                 // @ts-ignore
                 const res = await agc.storage.getFileData(`/private/${user?.uid}/ezBlock/${list.origin}.json`)
                 if(res.isSuccess) {
-                    console.log(res)
+                    log.info(res)
                     const result = JSON.parse(decrypt(res.data.data))
                     router.replace({
                         query: {

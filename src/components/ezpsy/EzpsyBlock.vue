@@ -468,7 +468,7 @@
     const getFileList = async () => {
         // @ts-ignore
         const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ezImage/`)
-        console.log(listsRes)
+        log.info(listsRes)
         if(listsRes.isSuccess){
             const cacheStr = getStorage("EZPSY_IMAGE")
             const hasCache = !!(cacheStr)

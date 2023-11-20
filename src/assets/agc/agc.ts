@@ -1,3 +1,4 @@
+import log from "@/assets/utils/log"
 import initialize, { AGC } from "ezpsy-server"
 import context from "./context.json"
 import schema from "./schema.json"
@@ -38,22 +39,22 @@ agc.storage.setUploadPercent({
         }
         const progress = Math.floor((snapshot.bytesTransferred / snapshot.totalByteCount) * 10000) / 100
         showProgress(progress)
-        console.log('Upload is ' + progress.toFixed(1) + '% done')
+        log.info('Upload is ' + progress.toFixed(1) + '% done')
         switch (snapshot.state) {
             case 'paused':
-                console.log('Upload is paused')
+                log.info('Upload is paused')
                 break
             case 'running':
-                console.log('Upload is running')
+                log.info('Upload is running')
                 break
             case 'success':
-                console.log('Upload is success')
+                log.info('Upload is success')
                 break
             case 'canceled':
-                console.log('Upload is canceled')
+                log.info('Upload is canceled')
                 break
             case 'error':
-                console.log('Upload is error')
+                log.info('Upload is error')
                 break
         }
     },
