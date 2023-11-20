@@ -2,9 +2,11 @@
     import log from '@/assets/utils/log'
     import { Ref, nextTick, onUpdated, reactive, ref } from 'vue';
     import { addMosaic } from "@/assets/utils/utils"
-    import { getVerifyCode, resetPassword } from '@/assets/index/auth';
+    import { getVerifyCode, resetPassword, logout } from '@/assets/index/auth';
     import { tipPopup } from '@/assets/utils/popup';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+    import router from '@/router/router';
+    import { encrypt } from '@/assets/utils/crypto';
 
     const phone = ref(null) as Ref<HTMLInputElement | null>
     const verify = ref(null) as Ref<HTMLInputElement | null>
@@ -25,7 +27,7 @@
         {
             title: "输入Ezpsy账号",
             tips: "请输入注册账号的手机号",
-            validate: (): boolean => {
+            validate: (step: number = 0): boolean => {
                 const phoneDom = phone.value
                 if(phoneDom) {
                     const reg = /^1(3[0-9]|4[01456879]|5[0-35-9]|6[2567]|7[0-8]|8[0-9]|9[0-35-9])\d{8}$/
@@ -42,7 +44,7 @@
         {
             title: "手机号找回密码",
             tips: `若您的手机号 ${addMosaic(msg.phone)} 现在可以收到短信, 请点击获取验证码。`,
-            validate: (): boolean => {
+            validate: (step: number = 1): boolean => {
                 const verifyDom = verify.value
                 if(verifyDom) {
                     if(verifyDom.value.length === 6) {
@@ -58,8 +60,42 @@
         {
             title: "设置新密码",
             tips: "如果您有其他设备使用此账号, 设置新密码后需要重新登录, 以保证正常使用Ezpsy服务。",
-            validate: (): boolean => {
-                return true
+            validate: (step: number = -1): boolean => {
+                const validate0 = () => {
+                    const psdDom = new_password0.value
+                    if(psdDom) {
+                        const psd = msg.newPassword
+                        switch(true) {
+                            case psd.length < 8:
+                            case psd.length > 16:
+                            case !(psd.match(/[0-9a-zA-Z]/)):
+                                return false
+                            default:
+                                return true
+                        }
+                    } else {
+                        return false
+                    }
+                }
+                const validate1 = () => {
+                    const psd = new_password1.value
+                    if(psd) {
+                        if(msg.newPassword !== msg.newPassword1) {
+                            return false
+                        } else {
+                            return true
+                        }
+                    } else {
+                        return false
+                    }
+                }
+                if(step === 0) {
+                    return validate0()
+                } else if(step === 1) {
+                    return validate1()
+                } else {
+                    return validate0() && validate1()
+                }
             }
         }
     ]
@@ -67,7 +103,7 @@
     const data = reactive({
         hasPrevious: false,
         steps: steps,
-        step: 2,
+        step: 0,
         max: steps.length - 1,
         min: 0,
         errorList: [ false, false, [ false, false ] ]
@@ -123,6 +159,39 @@
             phoneNumber: msg.phone,
             verifyCode: msg.verify,
             newPassword: msg.newPassword
+        }).then(res => {
+            if(res.isSuccess) {
+                tipPopup("success",{
+                    title: "密码重置成功",
+                    timer: 1000
+                }).then(() => {
+                    logout().then(res => {
+                        if(res) {
+                            router.push({
+                                path: "/index/login",
+                                query: {
+                                    msg: encrypt(JSON.stringify({
+                                        phone: msg.phone,
+                                        password: msg.newPassword
+                                    }))
+                                }
+                            })
+                        }
+                    })
+                })
+            } else {
+                tipPopup("error", {
+                    title: "密码重置失败",
+                    tips: "请检查网络状态",
+                    closeTip: "点击空白处关闭"
+                }).then(() => {
+                    data.step = 0
+                    msg.phone = ""
+                    msg.verify = ""
+                    msg.newPassword = ""
+                    msg.newPassword1 = ""
+                })
+            }
         })
     }
 
@@ -141,17 +210,24 @@
     }
 
     const validate_password = (step: number, dynamic: boolean = false) => {
+        if(step === 0 && dynamic && msg.newPassword1 !== '') {
+            msg.newPassword1 = ''
+        }
         if(dynamic) {
-            if(data.steps[3].validate()) {
-                data.errorList[3][step] = false
+            if(data.steps[2].validate(step)) {
+                data.errorList[2][step] = false
             }
         } else {
-            if(data.steps[3].validate()) {
-                data.errorList[3][step] = false
+            if(data.steps[2].validate(step)) {
+                data.errorList[2][step] = false
             } else {
-                data.errorList[3][step] = true
+                data.errorList[2][step] = true
             }
         }
+    }
+
+    const back = () => {
+        router.back()
     }
 
     onUpdated(() => {
@@ -163,7 +239,12 @@
 <template>
     <div class="reset">
         <div class="resetBox">
-            <div class="Title"> 找回密码 </div>
+            <div class="Header">
+                <div class="back" @click="back"> 
+                    <font-awesome-icon icon="angles-left" /> 返回 
+                </div>
+                <div class="Title"> 找回密码 </div> 
+            </div>
             <div class="box">
                 <div class="title">{{ data.steps[data.step].title }}</div>
                 <div class="tips">{{ data.steps[data.step].tips }}</div>
@@ -210,17 +291,27 @@
                         </span>
                     </div>
                 </div>
-                <div v-if="data.step === 2" class="input">
-                    <div class="newPassword">
-                        <div v-if="data.errorList[data.step]" class="Error">
-                            <font-awesome-icon class="item-icon" icon="circle-exclamation" />
-                            <span style="margin-left: 5px;">密码格式错误</span>
-                        </div>
+                <div 
+                    v-if="data.step === 2" 
+                    class="input"
+                    :class="data.errorList[data.step][0] ? 'errorInputBox' : ''"
+                >
+                    <div v-if="data.errorList[data.step][0]" class="Error">
+                        <font-awesome-icon class="item-icon" icon="circle-exclamation" />
+                        <span style="margin-left: 5px;">密码格式错误</span>
+                    </div>
+                    <div 
+                        class="newPassword newPassword0"
+                        :class="(data.errorList[data.step][1] ? 'newPassword1_err' : '') + ' ' + (data.errorList[data.step][0] ? 'errorInput' : '')"
+                    >
                         <input
                             :type="msg.password0IsShow ? 'text' : 'password'"
                             class="password"
                             placeholder="密码"
                             v-model="msg.newPassword"
+                            ref="new_password0"
+                            @change="validate_password(0)"
+                            @input="validate_password(0, true)"
                         >
                         <div 
                             class="showPassword"
@@ -232,12 +323,22 @@
                             @click="msg.password0IsShow = !msg.password0IsShow"
                         ></div>
                     </div>
-                    <div class="newPassword">
+                    <div v-if="data.errorList[data.step][1]" class="Error">
+                        <font-awesome-icon class="item-icon" icon="circle-exclamation" />
+                        <span style="margin-left: 5px;">前后密码不一致密码</span>
+                    </div>
+                    <div 
+                        class="newPassword"
+                        :class="data.errorList[data.step][1] ? 'errorInput' : ''"
+                    >
                         <input
                             :type="msg.password1IsShow ? 'text' : 'password'"
                             class="password"
                             placeholder="确认密码"
                             v-model="msg.newPassword1"
+                            ref="new_password1"
+                            @change="validate_password(1)"
+                            @input="validate_password(1, true)"
                         >
                         <div 
                             class="showPassword"
@@ -250,7 +351,9 @@
                         ></div>
                     </div>
                     <div class="passwordTips">
-                        
+                        <div class="tipsTitle">密码要求:</div>
+                        <div class="pTips passwordTips0">密码不得少于8个字符，不得超过16个字符</div>
+                        <div class="pTips passwordTips1">密码必须包含字母和数字</div>
                     </div>
                 </div>
             </div>
@@ -265,6 +368,7 @@
                     :class="!data.steps[data.step].validate() ? 'denyClick' : ''"
                     :disabled="!data.steps[data.step].validate()"
                     @click="data.step === data.max ? complete() : next()"
+                    @keyup.enter="data.step === data.max && complete()"
                 >
                     {{ data.step === data.max ? "完成" : "下一步" }}
                 </button>
@@ -285,16 +389,34 @@
             width: 50%;
             height: 50%;
             background: #ffffff;
-            .Title {
-                width: 100%;
-                height: 50px;
-                font-size: 24px;
+            
+            .Header {
+                width: 80%;
+                margin: auto;
                 display: flex;
-                justify-content: center;
-                align-items: center;
                 border-bottom: 1px solid #ededed;
                 box-sizing: border-box;
+                .back {
+                    width: 10%;
+                    height: 50px;
+                    line-height: 50px;
+                    text-align: center;
+                    font-size: 16px;
+                    cursor: pointer;
+                }
+                .back:hover {
+                    color: #007dff;
+                }
+                .Title {
+                    width: 80%;
+                    height: 50px;
+                    font-size: 24px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
             }
+            
             .box {
                 width: 80%;
                 height: calc(100% - 50px - 50px);
@@ -357,21 +479,27 @@
                             cursor: pointer;
                         }
                     }
+                    $newPSDGap: 30px;
+                    .newPassword0 {
+                        margin-bottom: $newPSDGap;
+                    }
+                    .newPassword1_err {
+                        margin-bottom: calc($newPSDGap -  $errorTipHeight);
+                    }
                     .newPassword {
                         width: 100%;
                         height: 42px;
                         line-height: 42px;
                         padding: 0;
                         box-sizing: border-box;
-                        border: none;
+                        border: 1px solid #FFFFFF;
                         background: #f7f7f7;
                         border-radius: 8px;
                         text-indent: 20px;
                         display: flex;
-                        margin-bottom: $marginTop;
                         .password {
                             width: calc(100% - 42px);
-                            height: 42px;
+                            height: 100%;
                             padding: 0;
                             border: 0;
                             background: #f7f7f7;
@@ -381,7 +509,7 @@
                         }
                         .showPassword {
                             width: 42px;
-                            height: 42px;
+                            height: 100%;
                             background-size: 50% 50%;
                             background-position: center center;
                             background-repeat: no-repeat;
@@ -402,6 +530,19 @@
                     }
                     .errorInput {
                         border-color: #FF0000;
+                    }
+                    .passwordTips {
+                        margin-top: $marginTop;
+                        .tipsTitle {
+                            font-size: 16px;
+                            font-weight: 800;
+                        }
+                        .pTips {
+                            font-size: 14px;
+                            margin: 10px 0;
+                            text-indent: 1.2em;
+                            color: #d81e06;
+                        }
                     }
                 }
                 .errorInputBox {

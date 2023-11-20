@@ -4,6 +4,10 @@
     import { setContainer, tipPopup } from '@/assets/utils/popup';
     import router from '@/router/router';
     import { getCurrentUser, getVerifyCode, loginByCode, loginByPsd } from '@/assets/index/auth';
+    import { useRoute } from 'vue-router';
+    import { decrypt } from '@/assets/utils/crypto';
+
+    const route = useRoute() 
 
     const data = reactive({
         isUsePassWord: true,
@@ -156,7 +160,7 @@
     }
 
     const forget = () => {
-        router.push("/index/resetPSD")
+        router.push("/index/reset")
     }
 
     onBeforeMount(async () => {
@@ -165,6 +169,14 @@
         console.log("USER", user)
         if(user.isSuccess) {
             router.push("/ezpsy/console")
+        }
+        console.log(route.query)
+        if("msg" in route.query) {
+            const msg = route.query.msg as string
+            const { phone, password } = JSON.parse(decrypt(msg))
+            data.isUsePassWord = true
+            data.phone = phone
+            data.code = password
         }
     })
 

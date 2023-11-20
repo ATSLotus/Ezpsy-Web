@@ -40,6 +40,11 @@ const resetPassword = async (opts: Parameters<typeof auth.resetPassword>[0]) => 
     return res
 }
 
+const logout = async () => {
+    const res = await auth.logout()
+    return res
+}
+
 export {
     getCurrentUser,
     getVerifyCode,
@@ -47,5 +52,6 @@ export {
     loginByPsd,
     loginByCode,
     updateProfile,
-    resetPassword
+    resetPassword,
+    logout
 }
