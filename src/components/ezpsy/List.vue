@@ -7,6 +7,8 @@
     import { nextTick, onMounted, reactive, ref, watch } from 'vue';
     import { ObjectListSort } from "@/assets/utils/sort"    
     import ToolTip from './ToolTip.vue';
+import { js } from 'js-beautify';
+import { type } from 'os';
 
     const props = defineProps({
         searchOpts: {
@@ -34,7 +36,14 @@
         pages: 0,
         checkedList: new Set<any>(),
         normalLists: deepClone(props.lists),
-        defaultSort: -1
+        defaultSort: -1,
+        grid_matrix: {
+            matrix: new Array(),
+            max: 0
+        },
+        grid_matrix_max: 0
+        // grid_col: new Array(),
+        // grid_row: new Array()
     })
 
     const getStyle = (obj: Record<string, string>) => {
@@ -66,9 +75,11 @@
                 text: props.headers?.[item]["text"],
                 style: getStyle(props.headers?.[item]["style"]),
                 align: props.headers?.[item]["align"],
+                grid: props.headers?.[item]["grid"],
                 sort: sort,
                 action: props.headers?.[item]["action"]
             })
+            
         })
         const length = data.lists.length
         data.pages = Math.ceil(length/data.numPerPage)
@@ -166,6 +177,55 @@
         else
             return ""
     }
+
+    const getGridRange = (list: {[key: string]: any}, type: "row" | "col") => {
+        const max = 
+            props.headers?.operations?.grid.max ? 
+            props.headers.operations.grid.max : 4
+        if(type === "row") {
+            const operations = list.operations as Array<OPERATE>
+            const len = Object.keys(operations).length
+            const _num = Math.floor(len/max)
+            const num = len%max > 0 ? _num + 1: _num
+            return Array.from({length: num}, (_, index) => index)
+        } else {
+            return Array.from({length: max}, (_, index) => index)
+        }
+    }
+
+    const getOperationValue = (list: {[key: string]: any}, num: number, key: string) => {
+        const operations = list.operations as Array<OPERATE>
+        const keys = Object.keys(operations)
+        const operation = operations[keys[num]] 
+        if(key === "*") {
+            return !!(operation)
+        } else {
+           return operation?.[key] 
+        }
+    }
+
+    const getGridMatrix = (list: Record<string, any>, item: HEADER) => {
+        const max = 
+            item["grid"]?.max ? 
+            item["grid"].max : 4
+        data.grid_matrix_max = max
+        const operations = list?.operations as Array<OPERATE>
+        let i = 0
+        const grid_matrix = new Array
+        operations?.forEach((operation, idx) => {
+            if(i === 0) {
+                const matrix = new Array()
+                matrix.push(operation)
+                data.grid_matrix.matrix.push(matrix)
+            } else {    
+                data.grid_matrix.matrix[Math.floor(idx/max)].push(operation)
+            }
+            i++
+            if(i >= max) {
+                i = 0
+            }
+        })
+    } 
     
 </script>
 
@@ -256,11 +316,10 @@
                         long-text: 无对齐方式
                         operate： 默认center
                         image: 默认center
+                        link: 默认center
+                        code: 无对齐方式
                     -->
                     <div class="li-item" :style="item.style" v-for="item in data.header">
-                        <!-- <div class="text align" :class="item?.align" v-if="item.type === 'text'">
-                            {{ list[item.value] }}
-                        </div> -->
                         <ToolTip 
                             class="text align" 
                             :class="item?.align" 
@@ -268,26 +327,62 @@
                             :content="list[item.value]"
                             :type="'text'"
                         ></ToolTip>
-                        <!-- <div class="long-text" :title="list[item.value]" v-if="item.type === 'long-text'">
-                            {{ list[item.value] }}
-                        </div> -->
                         <ToolTip 
                             class="long-text" 
                             v-if="item.type === 'long-text'"
                             :content="list[item.value]"
                             :type="'long-text'"
                         ></ToolTip>
-                        <div class="operate align" :class="item?.align" v-if="item.type === 'operate'">
-                            <div class="btn" :class="getBTNStyle(bt?.style)" v-for="bt in list[item.value]" @click="bt.func(list)">
-                                {{ bt.text }}
-                            </div>
+                        <div 
+                            class="operate align" 
+                            :class="item?.align" 
+                            v-if="item.type === 'operate' && !(item?.grid)"
+                        >
+                            <div 
+                                class="btn" 
+                                :class="getBTNStyle(bt?.style)" 
+                                v-for="bt in list[item.value]" 
+                                @click="bt.func(list)"
+                            >{{ bt.text }}</div>
+                        </div>
+                        <div 
+                            class="operate align-grid" 
+                            v-if="item.type === 'operate' && !!(item?.grid)"
+                        >
+                            <!-- <div 
+                                class="grid align"
+                                :class="item?.align"
+                                @load="getGridMatrix(list, item)"
+                                v-for="(row, rIndex) in "
+                            >
+                                <div 
+                                    class="btn-box"
+                                    :class="'grid-center'"
+                                >
+                                    <div 
+                                        class="btn"
+                                        :class="getBTNStyle(getOperationValue(list, 4*row+col, 'style'))"
+                                        v-if="getOperationValue(list, 4*row+col, '*')"
+                                    >
+                                        {{ getOperationValue(list, 4*row+col, "text") }}
+                                    </div>
+                                </div>
+                            </div> -->
+                            <!-- <div 
+                                class="btn-box"
+                                :class="'grid-' + item.grid?.align ? item.grid.align : 'center' "
+                                v-for="bt in list[item.value]" 
+                                @click="bt.func(list)"
+                            >
+                                <div 
+                                    class="btn" 
+                                    :class="getBTNStyle(bt?.style)" 
+                                >{{ bt.text }}</div>
+                            </div> -->
                         </div>
                         <div class="image align" :class="item?.align" v-if="item.type === 'image'">
                             <img :src="getBlob(list[item.value])" @click="openPreview(getBlob(list[item.value]))" />
                         </div>
-                        <!-- <div class="link align" :class="item?.align" v-if="item.type === 'link'" @click="item.action && item.action(list)">
-                            {{ list[item.value] }}
-                        </div> -->
                         <ToolTip 
                             class="link align" 
                             :class="item?.align" 
@@ -401,6 +496,34 @@
         }
         .justify {
            justify-content: space-between; 
+        }
+        .align-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            .grid {
+                width: 100%;
+                display: flex;
+                .btn-box {
+                    width: 25%;
+                    display: flex;
+                }
+                .btn {
+                    margin: 0;
+                }
+            }
+            .align {
+                flex-wrap: wrap;
+            }
+            .grid-start {
+                justify-content: start;
+            }
+            .grid-center {
+                justify-content: center;
+            }
+            .grid-end {
+                justify-content: end;
+            }
         }
     }
 

@@ -122,6 +122,10 @@
             text: "操作",
             style: {
                 width: "30%"
+            },
+            grid: {
+                align: "center",
+                max: 4
             }
         }
     }
@@ -294,7 +298,7 @@
             style: "orange"
         },
         copy: {
-            text: "创建副本",
+            text: "复制",
             func: async (item: LIST) => {
                 const json = {
                     data: encrypt(JSON.stringify({

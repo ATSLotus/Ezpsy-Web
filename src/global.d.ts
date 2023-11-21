@@ -12,6 +12,10 @@ declare interface OPTS_HEADER {
     style: Record<string, string>
     sort?: DIRECTION | boolean
     align?: "center" | "start" | "end"
+    grid?: {
+        align?: "center" | "start" | "end",
+        max?: number
+    }
     action?: (list: LIST) => void
 }
 
