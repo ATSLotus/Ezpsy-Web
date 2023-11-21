@@ -93,7 +93,8 @@
         storage: {
             title: "",
             description: ""
-        } 
+        },
+        isGoto: false
     })
 
     const reloadLibirary = () => {
@@ -253,9 +254,28 @@
                 }
             }
         } else if(route.query?.xml) {
-            // data.xml = decrypt(route.query.xml as string, true)
             const xml = decrypt(route.query.xml as string)
-            setXml(xml)
+            try {
+                setXml(xml)
+                const isSave = (route.query.isSave as string)
+                console.log(isSave)
+                if(isSave === "true") {
+                    save(true)
+                }
+            } catch (error) {
+                tipPopup("error", {
+                    title: "文件错误",
+                    tips: "您上传的文件有误, 请上传由ezpsy生成的xml文件!",
+                    closeTip: "点击空白处关闭"
+                }).then(() => {
+                    router.replace({
+                        query: {
+                            menu: "production"
+                        }
+                    })
+                })
+            }
+            
         }
         getFileList()
         data.contextMenu = [
@@ -330,7 +350,7 @@
         data.isFullScreen ? changeToNormal() : changeToFull()
     }
 
-    const save = async () => {
+    const save = async (isGoto: boolean = false) => {
         const res = await getCurrentUser()
         if(res.isSuccess) {
             const user = res.data.user
@@ -420,6 +440,7 @@
                                 code: data.code
                             }))
                         }
+                        data.isGoto = isGoto
                         storage.uploadString({
                             str: JSON.stringify(json),
                             folder: `private/${user.uid}/ezBlock`,
@@ -466,6 +487,13 @@
     }
 
     const getFileList = async () => {
+        if(data.isGoto) {
+            router.replace({
+                query: {
+                    menu: "production"
+                }
+            })
+        }
         // @ts-ignore
         const listsRes = await storage.getFileListAll(`/private/${user?.uid}/ezImage/`)
         log.info(listsRes)
@@ -697,7 +725,7 @@
                 <button type="button" class="btn" @click="showJS">
                     <img src="@/assets/image/ezpsy/icons/javascript.svg">
                 </button>  
-                <button type="button" class="btn" @click="save">
+                <button type="button" class="btn" @click="save()">
                     <img src="@/assets/image/ezpsy/icons/save.svg">保存
                 </button>
                 <button type="button" class="btn" @click="showKeyCode">

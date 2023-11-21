@@ -7,8 +7,6 @@
     import { nextTick, onMounted, reactive, ref, watch } from 'vue';
     import { ObjectListSort } from "@/assets/utils/sort"    
     import ToolTip from './ToolTip.vue';
-import { js } from 'js-beautify';
-import { type } from 'os';
 
     const props = defineProps({
         searchOpts: {
@@ -37,13 +35,10 @@ import { type } from 'os';
         checkedList: new Set<any>(),
         normalLists: deepClone(props.lists),
         defaultSort: -1,
-        grid_matrix: {
-            matrix: new Array(),
-            max: 0
-        },
-        grid_matrix_max: 0
-        // grid_col: new Array(),
-        // grid_row: new Array()
+        grid: {
+            max: 4,
+            align: "center"
+        }
     })
 
     const getStyle = (obj: Record<string, string>) => {
@@ -79,11 +74,19 @@ import { type } from 'os';
                 sort: sort,
                 action: props.headers?.[item]["action"]
             })
-            
+            if(item === "operations" && !!(props.headers?.[item]["grid"])) {
+                const grid = props.headers[item]["grid"]
+                if(grid.max) {
+                    data.grid.max = grid.max
+                }
+                if(grid.align) {
+                    data.grid.align = grid.align
+                }
+            } 
         })
         const length = data.lists.length
         data.pages = Math.ceil(length/data.numPerPage)
-        data.lists = sliceLists(data.origin as [])
+        // data.lists = sliceLists(data.origin as [])
         if(data.defaultSort !== -1) {
             const head = data.header[data.defaultSort]
             if(head.sort === DIRECTION.NORMAL) {
@@ -96,6 +99,7 @@ import { type } from 'os';
                 }) 
             }
         }
+        data.lists = sliceLists(data.lists)
     })
 
     const checkAll = () => {
@@ -162,11 +166,11 @@ import { type } from 'os';
                 key: head.value
             }) 
         }
+        data.lists = sliceLists(data.lists)
         data.header.forEach(H => {
             if(H.sort !== undefined) {
                 if(head !== H)
                     H.sort = DIRECTION.NORMAL
-                
             }
         })
     }
@@ -178,53 +182,25 @@ import { type } from 'os';
             return ""
     }
 
-    const getGridRange = (list: {[key: string]: any}, type: "row" | "col") => {
-        const max = 
-            props.headers?.operations?.grid.max ? 
-            props.headers.operations.grid.max : 4
-        if(type === "row") {
-            const operations = list.operations as Array<OPERATE>
-            const len = Object.keys(operations).length
-            const _num = Math.floor(len/max)
-            const num = len%max > 0 ? _num + 1: _num
-            return Array.from({length: num}, (_, index) => index)
-        } else {
-            return Array.from({length: max}, (_, index) => index)
-        }
-    }
-
-    const getOperationValue = (list: {[key: string]: any}, num: number, key: string) => {
-        const operations = list.operations as Array<OPERATE>
-        const keys = Object.keys(operations)
-        const operation = operations[keys[num]] 
-        if(key === "*") {
-            return !!(operation)
-        } else {
-           return operation?.[key] 
-        }
-    }
-
-    const getGridMatrix = (list: Record<string, any>, item: HEADER) => {
-        const max = 
-            item["grid"]?.max ? 
-            item["grid"].max : 4
-        data.grid_matrix_max = max
+    const getGridMatrix = (list: Record<string, any>) => {
+        const max = data.grid.max
         const operations = list?.operations as Array<OPERATE>
         let i = 0
-        const grid_matrix = new Array
-        operations?.forEach((operation, idx) => {
+        const matrix = new Array()
+        Object.keys(operations)?.forEach((key, idx) => {
             if(i === 0) {
-                const matrix = new Array()
-                matrix.push(operation)
-                data.grid_matrix.matrix.push(matrix)
+                const m = new Array()
+                m.push(operations[key])
+                matrix.push(m)
             } else {    
-                data.grid_matrix.matrix[Math.floor(idx/max)].push(operation)
+                matrix[Math.floor(idx/max)].push(operations[key])
             }
             i++
             if(i >= max) {
                 i = 0
             }
         })
+        return matrix
     } 
     
 </script>
@@ -319,7 +295,11 @@ import { type } from 'os';
                         link: 默认center
                         code: 无对齐方式
                     -->
-                    <div class="li-item" :style="item.style" v-for="item in data.header">
+                    <div 
+                        class="li-item" 
+                        :style="item.style" 
+                        v-for="item in data.header"
+                    >
                         <ToolTip 
                             class="text align" 
                             :class="item?.align" 
@@ -349,36 +329,25 @@ import { type } from 'os';
                             class="operate align-grid" 
                             v-if="item.type === 'operate' && !!(item?.grid)"
                         >
-                            <!-- <div 
+                            <div 
                                 class="grid align"
                                 :class="item?.align"
-                                @load="getGridMatrix(list, item)"
-                                v-for="(row, rIndex) in "
+                                v-for="bts in getGridMatrix(list)"
                             >
                                 <div 
                                     class="btn-box"
-                                    :class="'grid-center'"
+                                    :class="'grid-' + data.grid.align"
+                                    v-for="bt in bts"
                                 >
                                     <div 
                                         class="btn"
-                                        :class="getBTNStyle(getOperationValue(list, 4*row+col, 'style'))"
-                                        v-if="getOperationValue(list, 4*row+col, '*')"
+                                        :class="getBTNStyle(bt?.style)"
+                                        @click="bt.func(list)"
                                     >
-                                        {{ getOperationValue(list, 4*row+col, "text") }}
+                                        {{ bt?.text }}
                                     </div>
                                 </div>
-                            </div> -->
-                            <!-- <div 
-                                class="btn-box"
-                                :class="'grid-' + item.grid?.align ? item.grid.align : 'center' "
-                                v-for="bt in list[item.value]" 
-                                @click="bt.func(list)"
-                            >
-                                <div 
-                                    class="btn" 
-                                    :class="getBTNStyle(bt?.style)" 
-                                >{{ bt.text }}</div>
-                            </div> -->
+                            </div>
                         </div>
                         <div class="image align" :class="item?.align" v-if="item.type === 'image'">
                             <img :src="getBlob(list[item.value])" @click="openPreview(getBlob(list[item.value]))" />
@@ -480,6 +449,14 @@ import { type } from 'os';
             color: #FFA000;
             border-color: #FFA000;
         }
+        .btn-brown {
+            color: #8B4513;
+            border-color: #8B4513;
+        }
+        .btn-brown:hover {
+            color: #9c7d61;
+            border-color: #9c7d61;
+        }
         .align {
             display: flex;
             justify-content: center;
@@ -507,9 +484,6 @@ import { type } from 'os';
                 .btn-box {
                     width: 25%;
                     display: flex;
-                }
-                .btn {
-                    margin: 0;
                 }
             }
             .align {
@@ -561,7 +535,7 @@ import { type } from 'os';
                 display: flex;
                 align-items: center;
                 justify-content: end;
-                $RELOAD_SIZE: 32px; $RELOAD_RATIO: 75%;
+                $RELOAD_SIZE: 32px; $RELOAD_RATIO: 60%;
                 $RELOAD_COLOR: #007dff;
                 .reload {
                     width: $RELOAD_SIZE;
@@ -584,7 +558,7 @@ import { type } from 'os';
                     border-width: 2px;
                 }
                 .btn {
-                    width: 50px;
+                    width: 42px;
                     height: 32px;
                     line-height: 32px;
                     box-sizing: border-box;
@@ -596,6 +570,7 @@ import { type } from 'os';
                     cursor: pointer;
                     // font-weight: 600;
                     margin: 0 5px;
+                    font-size: 14px;
                 }
                 .btn:hover {
                     border-width: 2px;

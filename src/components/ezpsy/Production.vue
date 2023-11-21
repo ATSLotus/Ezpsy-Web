@@ -66,6 +66,36 @@
             }
         },
         operations: {
+            upload: {
+                title: "上传",
+                style: "green",
+                func: async () => {
+                    const input = document.createElement("input")
+                    input.type = "file"
+                    input.accept = ".xml"
+                    input.click()
+                    input.addEventListener("change", () => {
+                        const files = input.files
+                        if(files) {
+                            const file = files[0]
+                            const reader = new FileReader()
+                            reader.onload = () => {
+                                const result = reader.result as string | null
+                                if(result) {
+                                    router.replace({
+                                        query: {
+                                            menu: "ezpsy-block",
+                                            xml: encrypt(result),
+                                            isSave: "true"
+                                        }
+                                    })
+                                }
+                            }
+                            reader.readAsText(file)
+                        } 
+                    })
+                }
+            },
             delete: {
                 title: "删除",
                 style: "red",
@@ -138,7 +168,6 @@
                     query: {
                         menu: "ezpsy-block",
                         key: item.title
-                        // xml: encrypt(item.xml)
                     }
                 })
             },
@@ -296,6 +325,29 @@
                 })
             },
             style: "orange"
+        },
+        download: {
+            text: "下载",
+            func: async (item: LIST) => {
+                let blob = new Blob([item.xml], {
+                    type: "text/xml;charset=utf-8"
+                });
+                let reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onload = function(e) {
+                    const target = e.target
+                    if(target) {
+                        let a = document.createElement('a');
+                        a.download = uuid.getUuid();
+                        a.href = target.result as string;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
+                    
+                }
+            },
+            style: "brown"
         },
         copy: {
             text: "复制",
