@@ -1,17 +1,20 @@
 <script setup lang="ts">
     import log from '@/assets/utils/log'
-    import { Ref, nextTick, onUpdated, reactive, ref } from 'vue';
+    import { Ref, nextTick, onMounted, onUpdated, reactive, ref } from 'vue';
     import { addMosaic } from "@/assets/utils/utils"
     import { getVerifyCode, resetPassword, logout } from '@/assets/index/auth';
     import { tipPopup } from '@/assets/utils/popup';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
     import router from '@/router/router';
-    import { encrypt } from '@/assets/utils/crypto';
+    import { decrypt, encrypt } from '@/assets/utils/crypto';
+    import { useRoute } from 'vue-router';
 
     const phone = ref(null) as Ref<HTMLInputElement | null>
     const verify = ref(null) as Ref<HTMLInputElement | null>
     const new_password0 = ref(null) as Ref<HTMLInputElement | null>
     const new_password1 = ref(null) as Ref<HTMLInputElement | null>
+
+    const route = useRoute()
 
     const msg = reactive({
         phone: "",
@@ -229,6 +232,12 @@
     const back = () => {
         router.back()
     }
+
+    onMounted(async () => {
+        if(route.query && "phone" in route.query) {
+            msg.phone = decrypt(route.query.phone as string, true)
+        } 
+    })
 
     onUpdated(() => {
         reload()

@@ -2,10 +2,6 @@
     import log from '@/assets/utils/log'
     import ResetPSDBox from "@/components/index/ResetPSDBox.vue";
     import { reactive, ref } from 'vue';
-
-    const data = reactive({
-        
-    })
     
 </script>
 

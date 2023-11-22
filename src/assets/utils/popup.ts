@@ -1,6 +1,7 @@
 import Swal from "sweetalert2"
 import ATSSelectElement from "../elem/atsselect"
 import uuid from "./uuid"
+import { getBase64 } from "./image"
 
 let container = "ats_container"
 type ContainerType = "normal" | "spacial" | "fullscreen"
@@ -299,7 +300,14 @@ const showProgress = (percent: number) => {
     }
 }
 
-type inputTypes = "input" | "multiline" | "checkbox" | "select" | "file"
+type inputTypes = 
+    "input" | 
+    "multiline" | 
+    "checkbox" | 
+    "select" | 
+    "file" |
+    "image"
+
 interface inputObject {
     type: inputTypes
     props: {
@@ -318,6 +326,8 @@ interface inputOptions {
 }
 
 const inputPopup = (opts: inputOptions) => {
+    let cache_variety = ""
+
     let storage = new Array<string|boolean>()
     if(opts.storageId) {
         const st = localStorage.getItem(opts.storageId)
@@ -569,6 +579,61 @@ const inputPopup = (opts: inputOptions) => {
                     })()" />
                 </div>
                 `
+                break
+            }
+            case "image": {
+                const title = obj.props.title ? obj.props.title : ""
+                const default_img = obj.props.default ? obj.props.default : ""
+                html += `
+                <div style="
+                    position: relative;
+                    width: 100%;
+                    margin-top: 15px;
+                ">
+                    <div style="
+                        font-size: 14px;
+                        width: 90%;
+                        margin: auto;
+                        text-align: start;
+                    ">${title}</div>
+                    <div style="
+                        width: 90%;
+                        aspect-ratio: 1/1;
+                        margin: auto;
+                        margin-top: 10px;
+                    "> 
+                        <img style="
+                            width: 100%;
+                            height: 100%;
+                            cursor: pointer;
+                        " src="${default_img}" id="${id}"
+                        onclick="(async () => {
+                            const img = document.getElementById('${id}')
+                            const input = document.createElement('input')
+                            input.type = 'file',
+                            input.accept = 'image/*'
+                            input.onchange = () => {
+                                if(input.files && input.files?.length > 0){
+                                    const file = input.files[0]
+                                    if(file){
+                                        const reader = new FileReader()
+                                        reader.onload = () => {
+                                            img.src = reader.result
+                                        }
+                                        reader.readAsDataURL(file)
+                                    } else {
+                                        img.src = '${default_img}'
+                                    }
+                                } else {
+                                    img.src = '${default_img}'
+                                }
+                            }
+                            input.click()
+                        })()" />
+                    </div>
+                </div>
+                `
+                break
             }
             default:
                 break
@@ -599,6 +664,14 @@ const inputPopup = (opts: inputOptions) => {
                 case "file":
                     const file_list = (<HTMLInputElement>dom).files
                     res.push(file_list ? file_list[0]: "")
+                    break
+                case "image":
+                    const img_src = (<HTMLImageElement>dom).src
+                    if(/data:image\/.{3,4};base64,/.test(img_src)) {
+                        res.push(img_src)
+                    } else {
+                        res.push("")
+                    }
                     break
                 default:
                     break
@@ -659,7 +732,7 @@ const inputPopup = (opts: inputOptions) => {
         if(dom) {
             const oldCss = dom.style.cssText
             if(dom.value) {
-                SET.add(dom)
+                SET.add(dom.id)
             }
             dom.addEventListener('input', () => {
                 changeIndex(dom, oldCss)

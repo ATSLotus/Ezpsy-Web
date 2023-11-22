@@ -3,14 +3,16 @@
     import router from '@/router/router';
     import { reactive } from 'vue';
     import { tipPopup } from '@/assets/utils/popup';
-    import { getVerifyCode, registerAuth } from '@/assets/index/auth'
+    import { getVerifyCode, registerAuth, updateProfile } from '@/assets/index/auth'
+    import { encrypt } from '@/assets/utils/crypto';
+    import { auth_default_logo } from '@/assets/utils/config';
 
     const data = reactive({
         phone: "",
         code: "",
         password: "",
         passwordConfirm: "",
-        validateText: "",
+        validateText: "获取验证码",
         codetips: "",
         passwordtips: "",
         allowSubmit: false,
@@ -140,14 +142,18 @@
         })
         if(res.isSuccess) {
             tipPopup("success", {
-                title: "登录成功",
+                title: "注册成功",
                 timer: 1000
-            }).then(() => {
+            }).then(async () => {
+                await updateProfile(res.data.user, {
+                    displayName: data.phone,
+                    photoUrl: "default"
+                })
                 router.push("/index/login")
             })
         } else {
             tipPopup("error", {
-                title: "登录失败",
+                title: "注册失败",
                 tips: `${res.data}`
             })
         }
@@ -283,8 +289,8 @@
                             class="showPassword"
                             :style="
                                 data.passwordIsShow1 ? 
-                                'background-image: url(./index/auth/eye.svg)' : 
-                                'background-image: url(./index/auth/eye-slash.svg)'
+                                'background-image: url(./src/assets/image/index/auth/eye.svg)' : 
+                                'background-image: url(./src/assets/image/index/auth/eye-slash.svg)'
                             "
                             @click="data.passwordIsShow1 = !data.passwordIsShow1"
                         ></div>

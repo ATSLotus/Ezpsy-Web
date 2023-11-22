@@ -36,25 +36,25 @@
         "CodeGenerator init",
         "Deprecated call to"
     ]
-    console.warn = message => {
-        if(typeof message === 'string') {
-            const res = ignores.filter(a => message.startsWith(a))
+    console.warn = (...data: any[]) => {
+        if(typeof data[0] === 'string') {
+            const res = ignores.filter(a => data[0].startsWith(a))
             if(res.length > 0) {
                 return
             } else {
-                tempConsoleWarn(message)
+                tempConsoleWarn(data)
             }
-        } else tempConsoleWarn(message);
+        } else tempConsoleWarn(data);
     }
-    console.log = message => {
-        if(typeof message === 'string') {
-            const res = ignores.filter(a => message.startsWith(a))
+    console.log = (...data: any[]) => {
+        if(typeof data[0] === 'string') {
+            const res = ignores.filter(a => data[0].startsWith(a))
             if(res.length > 0) {
                 return
             } else {
-                tempConsoleLog(message)
+                tempConsoleLog(data)
             }
-        } else tempConsoleLog(message);
+        } else tempConsoleLog(data);
     }
 
     const storage = agc.storage
@@ -258,7 +258,6 @@
             try {
                 setXml(xml)
                 const isSave = (route.query.isSave as string)
-                console.log(isSave)
                 if(isSave === "true") {
                     save(true)
                 }
@@ -554,7 +553,6 @@
         data.imgIsShow = true
         if(data.lists.length === 0) 
             getFileList()
-        // console.log(data.lists)
     }
 
     const undo = () => {

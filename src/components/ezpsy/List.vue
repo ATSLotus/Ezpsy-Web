@@ -19,7 +19,8 @@
         },
         lists: {
             type: Array<{[key: string]: any}>,
-            require: true
+            require: true,
+            default: []
         }
     })
 
@@ -161,7 +162,7 @@
             data.lists = deepClone(data.normalLists)
         } else {
             data.lists = ObjectListSort({
-                list: data.lists,
+                list: data.origin,
                 method: head.sort,
                 key: head.value
             }) 
@@ -731,7 +732,7 @@
                 cursor: pointer;
             }
             .left {
-                background: url("./src/assets/image/index/list/arrow_left.svg");
+                background: url("/src/assets/image/index/list/arrow_left.svg");
                 background-position: center center;
             }
             .item {
@@ -742,7 +743,7 @@
                 color: #ffffff;
             }
             .right {
-                background: url("./src/assets/image/index/list/arrow_right.svg");
+                background: url("/src/assets/image/index/list/arrow_right.svg");
                 background-position: center center;
             }
             .disable {

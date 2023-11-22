@@ -3,9 +3,10 @@
     import { onBeforeMount, onBeforeUnmount, reactive } from 'vue';
     import { setContainer, tipPopup } from '@/assets/utils/popup';
     import router from '@/router/router';
-    import { getCurrentUser, getVerifyCode, loginByCode, loginByPsd } from '@/assets/index/auth';
+    import { getCurrentUser, getVerifyCode, loginByCode, loginByPsd, updateProfile } from '@/assets/index/auth';
     import { useRoute } from 'vue-router';
-    import { decrypt } from '@/assets/utils/crypto';
+    import { decrypt, encrypt } from '@/assets/utils/crypto';
+    import { auth_default_logo, auth_default_mark } from '@/assets/utils/config';
 
     const route = useRoute() 
 
@@ -166,11 +167,9 @@
     onBeforeMount(async () => {
         setContainer("fullscreen")
         const user = await getCurrentUser()
-        console.log("USER", user)
         if(user.isSuccess) {
             router.push("/ezpsy/console")
         }
-        console.log(route.query)
         if("msg" in route.query) {
             const msg = route.query.msg as string
             const { phone, password } = JSON.parse(decrypt(msg))
