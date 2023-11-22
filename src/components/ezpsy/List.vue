@@ -28,13 +28,13 @@
         searchValue: "",
         header: new Array<HEADER>(),
         origin: props.lists,
-        cache: new Array(),
+        cache: deepClone(props.lists),
         lists: deepClone(props.lists),
         numPerPage: 9,
         index: 1,
         pages: 0,
         checkedList: new Set<any>(),
-        normalLists: deepClone(props.lists),
+        // normalLists: deepClone(props.lists),
         defaultSort: -1,
         grid: {
             max: 4,
@@ -87,20 +87,19 @@
         })
         const length = data.lists.length
         data.pages = Math.ceil(length/data.numPerPage)
-        // data.lists = sliceLists(data.origin as [])
         if(data.defaultSort !== -1) {
             const head = data.header[data.defaultSort]
             if(head.sort === DIRECTION.NORMAL) {
-                data.lists = deepClone(data.normalLists)
+                data.lists = deepClone(data.cache)
             } else {
-                data.lists = ObjectListSort({
-                    list: data.lists,
+                data.cache = ObjectListSort({
+                    list: data.cache,
                     method: head.sort,
                     key: head.value
                 }) 
             }
         }
-        data.lists = sliceLists(data.lists)
+        data.lists = sliceLists(data.cache)
     })
 
     const checkAll = () => {
@@ -131,7 +130,7 @@
             data.index > 1 && data.index--
         }
         data.checkedList.clear()
-        data.lists = sliceLists(data.origin as [])
+        data.lists = sliceLists(data.cache)
     }
 
     const searchLists = () => {
@@ -151,7 +150,7 @@
 
     const sort = (event: Event, head: HEADER) => {
         if(head.sort === DIRECTION.NORMAL) {
-            data.normalLists = deepClone(data.lists)
+            data.cache = deepClone(data.cache)
             head.sort = DIRECTION.FORWARD
         } else if(head.sort === DIRECTION.FORWARD) {
             head.sort = DIRECTION.REVERSE
@@ -159,15 +158,15 @@
             head.sort = DIRECTION.NORMAL
         }
         if(head.sort === DIRECTION.NORMAL) {
-            data.lists = deepClone(data.normalLists)
+            data.lists = deepClone(data.cache)
         } else {
-            data.lists = ObjectListSort({
-                list: data.origin,
+            data.cache = ObjectListSort({
+                list: data.cache,
                 method: head.sort,
                 key: head.value
             }) 
         }
-        data.lists = sliceLists(data.lists)
+        data.lists = sliceLists(data.cache)
         data.header.forEach(H => {
             if(H.sort !== undefined) {
                 if(head !== H)
