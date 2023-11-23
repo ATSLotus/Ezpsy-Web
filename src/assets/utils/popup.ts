@@ -325,9 +325,8 @@ interface inputOptions {
     preConfirm: (getValue: () => Array<boolean|File|string>) => () => any
 }
 
-const inputPopup = (opts: inputOptions) => {
-    let cache_variety = ""
 
+const inputPopup = (opts: inputOptions) => {
     let storage = new Array<string|boolean>()
     if(opts.storageId) {
         const st = localStorage.getItem(opts.storageId)
@@ -364,11 +363,25 @@ const inputPopup = (opts: inputOptions) => {
                 color: #888888;
                 text-indent: 0em;
             }
+            .ats-mask {
+                
+            }
+            .ats-mask::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 50%;
+                height: 50%;
+                background: #FFFFFF;
+                mix-blend-mode: overlay;
+            }
         </style>
     `
     html += `<div>${opts.title}</div>\n`
     const requireStr = '<span style="margin-left: 5px;color: #FF0000">*</span>'
     const requires = new Array<string>()
+    const crops = new Array<string>()
     opts.html.forEach((obj, i) => {
         const id = "input_" + uuid.getUuid()
         const v = storage[i]
@@ -584,6 +597,7 @@ const inputPopup = (opts: inputOptions) => {
             case "image": {
                 const title = obj.props.title ? obj.props.title : ""
                 const default_img = obj.props.default ? obj.props.default : ""
+                const crop_border_size = 10
                 html += `
                 <div style="
                     position: relative;
@@ -594,20 +608,15 @@ const inputPopup = (opts: inputOptions) => {
                         font-size: 14px;
                         width: 90%;
                         margin: auto;
-                        text-align: start;
-                    ">${title}</div>
-                    <div style="
-                        width: 90%;
-                        aspect-ratio: 1/1;
-                        margin: auto;
-                        margin-top: 10px;
-                    "> 
-                        <img style="
-                            width: 100%;
-                            height: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                    ">
+                        <div style="user-select: none;">${title}</div>
+                        <div style="
                             cursor: pointer;
-                        " src="${default_img}" id="${id}"
-                        onclick="(async () => {
+                            color: #0073bb;
+                            user-select: none;
+                        " onclick="(async () => {
                             const img = document.getElementById('${id}')
                             const input = document.createElement('input')
                             input.type = 'file',
@@ -629,10 +638,109 @@ const inputPopup = (opts: inputOptions) => {
                                 }
                             }
                             input.click()
-                        })()" />
+                        })()" >选择图片</div>
+                    </div>
+                    <div style="
+                        width: 90%;
+                        aspect-ratio: 1/1;
+                        margin: auto;
+                        margin-top: 10px;
+                        position: relative;
+                        background: #FFFFFF;
+                    "> 
+                        <div style="
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+                            background: #00000088;
+                        " id="${id}_crop_box">
+                            <div style="
+                                position: absolute;
+                                top: 25%;
+                                left: 25%;
+                                width: 50%;
+                                height: 50%;
+                                background: #FFFFFF;
+                                mix-blend-mode: overlay;
+                               cursor: pointer;
+                            " id="${id}_crop">
+                                <div style="
+                                    width: ${crop_border_size}px;
+                                    height: ${crop_border_size}px;
+                                    position: absolute;
+                                    top: ${ - 0.5 * crop_border_size}px;
+                                    left: ${ - 0.5 * crop_border_size}px;
+                                    cursor: nwse-resize;
+                                " id="${id}_left-top"></div>
+                                <div style="
+                                    width: calc(100% - ${crop_border_size}px);
+                                    height: ${crop_border_size}px;
+                                    position: absolute;
+                                    top: ${ - 0.5 * crop_border_size}px;
+                                    left: ${ 0.5 * crop_border_size}px;
+                                    cursor: ns-resize;
+                                " id="${id}_top"></div>
+                                <div style="
+                                    width: ${crop_border_size}px;
+                                    height: ${crop_border_size}px;
+                                    position: absolute;
+                                    top: ${ - 0.5 * crop_border_size}px;
+                                    left: calc(100% - ${ 0.5 * crop_border_size }px);
+                                    cursor: nesw-resize;
+                                " id="${id}_right-top"></div>
+                                <div style="
+                                    width: ${crop_border_size}px;
+                                    height: calc(100% - ${crop_border_size}px);
+                                    position: absolute;
+                                    top: ${ 0.5 * crop_border_size }px;
+                                    left: calc(100% - ${ 0.5 * crop_border_size }px);
+                                    cursor: ew-resize;
+                                " id="${id}_right"></div>
+                                <div style="
+                                    width: ${crop_border_size}px;
+                                    height: ${crop_border_size}px;
+                                    position: absolute;
+                                    top: calc(100% - ${ 0.5 * crop_border_size}px);
+                                    left: calc(100% - ${ 0.5 * crop_border_size }px);
+                                    cursor: nwse-resize;
+                                " id="${id}_right-bottom"></div>
+                                <div style="
+                                    width: calc(100% - ${crop_border_size}px);
+                                    height: ${crop_border_size}px;
+                                    position: absolute;
+                                    top: calc(100% - ${ 0.5 * crop_border_size}px);
+                                    left: ${ 0.5 * crop_border_size}px;
+                                    cursor: ns-resize;
+                                " id="${id}_bottom"></div>
+                                <div style="
+                                    width: ${crop_border_size}px;
+                                    height: ${crop_border_size}px;
+                                    position: absolute;
+                                    top: calc(100% - ${ 0.5 * crop_border_size}px);
+                                    left: ${ - 0.5 * crop_border_size}px;
+                                    cursor: nesw-resize;
+                                " id="${id}_left-bottom"></div>
+                                <div style="
+                                    width: ${crop_border_size}px;
+                                    height: calc(100% - ${crop_border_size}px);
+                                    position: absolute;
+                                    top: ${ 0.5 * crop_border_size }px;
+                                    left: ${ - 0.5 * crop_border_size }px;
+                                    cursor: ew-resize;
+                                " id="${id}_left"></div>
+                            </div>
+                        </div>
+                        <img style="
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                            display: block;
+                            user-select: none;
+                        " src="${default_img}" id="${id}"/>
                     </div>
                 </div>
                 `
+                crops.push(id)
                 break
             }
             default:
@@ -668,7 +776,18 @@ const inputPopup = (opts: inputOptions) => {
                 case "image":
                     const img_src = (<HTMLImageElement>dom).src
                     if(/data:image\/.{3,4};base64,/.test(img_src)) {
-                        res.push(img_src)
+                        const cropper = document.getElementById(`${item.id}_crop`)
+                        if(cropper) {
+                            const x = cropper.offsetLeft
+                            const y = cropper.offsetHeight
+                            const w = cropper.offsetWidth 
+                            const h = cropper.offsetHeight
+                            const canvas = document.createElement("canvas")
+                            const ctx = canvas.getContext("2d")
+                             
+                        } else {
+                            res.push(img_src)
+                        }
                     } else {
                         res.push("")
                     }
@@ -741,6 +860,242 @@ const inputPopup = (opts: inputOptions) => {
         }
     })
     judgeIsConfirm()
+
+    crops.forEach(crop => {
+        const key = "isCropping"
+        const key_top = "data-top"
+        const key_left = "data-left"
+        const position = {
+            x: 0,
+            y: 0,
+            w: 0,
+            h: 0
+        }
+        const methods = [
+            "left-top",
+            "top",
+            "right-top",
+            "right",
+            "right-bottom",
+            "bottom",
+            "left-bottom",
+            "left"
+        ]
+        const crop_box = document.getElementById(`${crop}_crop_box`)
+        const cropper_box = document.getElementById(`${crop}_crop`)
+        if(crop_box && cropper_box) {
+            const W = crop_box.offsetWidth
+            const H = crop_box.offsetHeight
+
+            cropper_box.addEventListener("mousedown", (event) => {
+                cropper_box.style.cursor = "move"
+                cropper_box.setAttribute(key, "true")
+                position.x = event.clientX
+                position.y = event.clientY
+                position.w = cropper_box.offsetWidth
+                position.h = cropper_box.offsetHeight
+            })
+
+            cropper_box.addEventListener("mousemove", (event) => {
+                if(cropper_box.getAttribute(key) === "true") {
+                    const left = cropper_box.offsetLeft
+                    const top = cropper_box.offsetTop
+                    if(top > 0 && left > 0) {
+                        const x = event.clientX - position.x
+                        const y = event.clientY - position.y
+                        if(top + y > 0 && top + position.h < H && left + x > 0 && left + position.w < W)
+                        cropper_box.style.transform = `translate(${x}px, ${y}px)`
+                        cropper_box.setAttribute(key_left, `${x}`)
+                        cropper_box.setAttribute(key_top, `${y}`)
+                    }
+                }
+            })
+
+            cropper_box.addEventListener("mouseup", () => {
+                if(cropper_box.getAttribute(key) === "true") {
+                    cropper_box.removeAttribute(key)
+                    cropper_box.style.cursor = "pointer"
+                    const top = cropper_box.getAttribute(key_top)
+                    const left = cropper_box.getAttribute(key_left)
+                    cropper_box.removeAttribute(key_top)
+                    cropper_box.removeAttribute(key_left)
+                    const old_top = cropper_box.offsetTop
+                    const old_left = cropper_box.offsetLeft
+                    cropper_box.style.transform = ""
+                    if(top) {
+                        if(/-/.test(top)) {
+                            cropper_box.style.top = `${old_top - parseInt(top.replace("-", ""))}px`
+                        } else {
+                            cropper_box.style.top = `${old_top + parseInt(top)}px`
+                        }
+                    }
+                    if(left) {
+                        if(/-/.test(left)) {
+                            cropper_box.style.left = `${old_left - parseInt(left.replace("-", ""))}px`
+                        } else {
+                            cropper_box.style.left = `${old_left + parseInt(left)}px`
+                        }
+                    }
+                }
+            })
+
+            methods.forEach(method => {
+                const cropper = document.getElementById(`${crop}_${method}`)
+                cropper?.addEventListener("mousedown", (event) => {
+                    cropper.setAttribute(key, "true")
+                    position.x = event.clientX
+                    position.y = event.clientY
+                    position.w = cropper_box.offsetWidth
+                    position.h = cropper_box.offsetHeight
+                })
+                cropper?.addEventListener("mousemove", (event) => {
+                    const isCropping = cropper.getAttribute(key) === "true"
+                    if(isCropping){
+                        switch(method) {
+                            case "left-top": {
+                                const left = cropper_box.offsetLeft
+                                const top = cropper_box.offsetTop
+                                if(top > 0 && left > 0) {
+                                    const x = event.clientX - position.x
+                                    const w = position.w - x
+                                    const y = event.clientY - position.y
+                                    const h = position.h - y
+                                    if(top + y > 0 && h > 0 && left + x > 0 && w > 0) {
+                                        cropper_box.style.width = `${w}px`
+                                        cropper_box.style.height = `${h}px`
+                                        cropper_box.style.transform = `translate(${x}px, ${y}px)`
+                                        cropper_box.setAttribute(key_left, `${x}`)
+                                        cropper_box.setAttribute(key_top, `${y}`)
+                                    }
+                                }
+                                break
+                            }
+                            case "top": {
+                                const top = cropper_box.offsetTop
+                                if(top > 0) {
+                                    const y = event.clientY - position.y
+                                    const h = position.h - y
+                                    if(top + y > 0 && h > 0) {
+                                        cropper_box.style.height = `${h}px`
+                                        cropper_box.style.transform = `translate(0px, ${y}px)`
+                                        cropper_box.setAttribute(key_top, `${y}`)
+                                    }
+                                }
+                                break
+                            }
+                            case "right-top": {
+                                const left = cropper_box.offsetLeft
+                                const top = cropper_box.offsetTop
+                                if(top > 0) {
+                                    const x = event.clientX - position.x
+                                    const w = position.w + x
+                                    const y = event.clientY - position.y
+                                    const h = position.h - y
+                                    if(top + y > 0 && h > 0 && w > 0 && left + w < W) {
+                                        cropper_box.style.width = `${w}px`
+                                        cropper_box.style.height = `${h}px`
+                                        cropper_box.style.transform = `translate(0px, ${y}px)`
+                                        cropper_box.setAttribute(key_top, `${y}`)
+                                    }
+                                }
+                                break
+                            }
+                            case "right": {
+                                const x = event.clientX - position.x
+                                const w = position.w + x
+                                const left = cropper_box.offsetLeft
+                                if(w > 0 && left + w < W) {
+                                    cropper_box.style.width = `${w}px`
+                                }
+                                break
+                            }
+                            case "right-bottom": {
+                                const left = cropper_box.offsetLeft
+                                const top = cropper_box.offsetTop
+                                const x = event.clientX - position.x
+                                const w = position.w + x
+                                const y = event.clientY - position.y
+                                const h = position.h + y
+                                if(h > 0 && top + h < H && w > 0 && left + w < W) {
+                                    cropper_box.style.width = `${w}px`
+                                    cropper_box.style.height = `${h}px`
+                                }
+                                break
+                            }
+                            case "bottom": {
+                                const y = event.clientY - position.y
+                                const h = position.h + y
+                                const top = cropper_box.offsetTop
+                                if(h > 0 && top + h < H) {
+                                    cropper_box.style.height = `${h}px`
+                                }
+                                break
+                            }
+                            case "left-bottom": {
+                                const left = cropper_box.offsetLeft
+                                const top = cropper_box.offsetTop
+                                if(left > 0) {
+                                    const x = event.clientX - position.x
+                                    const w = position.w - x
+                                    const y = event.clientY - position.y
+                                    const h = position.h + y
+                                    if(h > 0 && top + h < H && left + x > 0 && w > 0) {
+                                        cropper_box.style.width = `${w}px`
+                                        cropper_box.style.height = `${h}px`
+                                        cropper_box.style.transform = `translate(${x}px, 0px)`
+                                        cropper_box.setAttribute(key_left, `${x}`)
+                                    }
+                                }
+                                break
+                            }
+                            case "left": {
+                                const left = cropper_box.offsetLeft
+                                if(left > 0) {
+                                    const x = event.clientX - position.x
+                                    const w = position.w - x
+                                    if(left + x > 0 && w > 0) {
+                                        cropper_box.style.width = `${w}px`
+                                        cropper_box.style.transform = `translate(${x}px, 0px)`
+                                        cropper_box.setAttribute(key_left, `${x}`)
+                                    }
+                                }
+                                break
+                            }
+                            default:
+                                break
+                        }
+                    }
+                })
+                const reset = (event: Event) => {
+                    if(cropper?.getAttribute(key) === "true") {
+                        cropper?.removeAttribute(key)
+                        const top = cropper_box.getAttribute(key_top)
+                        const left = cropper_box.getAttribute(key_left)
+                        cropper_box.removeAttribute(key_top)
+                        cropper_box.removeAttribute(key_left)
+                        const old_top = cropper_box.offsetTop
+                        const old_left = cropper_box.offsetLeft
+                        cropper_box.style.transform = ""
+                        if(top) {
+                            if(/-/.test(top)) {
+                                cropper_box.style.top = `${old_top - parseInt(top.replace("-", ""))}px`
+                            } else {
+                                cropper_box.style.top = `${old_top + parseInt(top)}px`
+                            }
+                        }
+                        if(left) {
+                            if(/-/.test(left)) {
+                                cropper_box.style.left = `${old_left - parseInt(left.replace("-", ""))}px`
+                            } else {
+                                cropper_box.style.left = `${old_left + parseInt(left)}px`
+                            }
+                        }
+                    }
+                }
+                document.body.addEventListener("mouseup", reset)
+            })
+        }
+    })
 
     return result
 }

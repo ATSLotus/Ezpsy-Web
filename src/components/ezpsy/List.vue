@@ -4,7 +4,7 @@
     import log from '@/assets/utils/log'
     import { showImg } from '@/assets/utils/popup';
     import { deepClone } from '@/assets/utils/utils';
-    import { nextTick, onMounted, reactive, ref, watch } from 'vue';
+    import { Ref, nextTick, onMounted, reactive, ref, watch } from 'vue';
     import { ObjectListSort } from "@/assets/utils/sort"    
     import ToolTip from './ToolTip.vue';
 
@@ -24,6 +24,14 @@
         }
     })
 
+    const list_body = ref(null) as Ref<HTMLDivElement | null>
+    const goto = ref(null) as Ref<HTMLDivElement | null>
+
+    const screenMsg = reactive({
+        item_height: 60,
+        list_body_height: 0
+    })
+
     const data = reactive({
         searchValue: "",
         header: new Array<HEADER>(),
@@ -39,7 +47,8 @@
         grid: {
             max: 4,
             align: "center"
-        }
+        },
+        goto_index: 1,
     })
 
     const getStyle = (obj: Record<string, string>) => {
@@ -48,6 +57,12 @@
 
     const sliceLists = (origin: Array<any>) => {
         return origin.slice(data.numPerPage*(data.index-1), data.numPerPage*data.index)
+    }
+
+    const calculateNumPerPage= (value: HTMLDivElement) => {
+        screenMsg.list_body_height = value.clientHeight
+        data.numPerPage = Math.floor(screenMsg.list_body_height/screenMsg.item_height)
+        data.lists = sliceLists(data.cache)
     }
 
     onMounted(async () => {
@@ -100,6 +115,13 @@
             }
         }
         data.lists = sliceLists(data.cache)
+        if(list_body.value) {
+            const dom = list_body.value
+            const resizeObserver = new ResizeObserver(entries => {
+                calculateNumPerPage(dom)
+            });
+            resizeObserver.observe(dom)
+        }
     })
 
     const checkAll = () => {
@@ -202,6 +224,35 @@
         })
         return matrix
     } 
+
+    const validateGoto = () => {
+        const gotoDom = goto.value
+        if(gotoDom) {
+            let value = gotoDom.innerHTML
+            if(/[0-9]+/.test(value)) {
+                const num = parseInt(value)
+                if(num > data.pages) {
+                    value = `${data.pages}`
+                }
+            } else {
+                value = value.replace(/\D/g, "")
+            }
+            data.goto_index = value == "" ? data.index : parseInt(value)
+            gotoDom.innerHTML = `${data.goto_index}`
+        }
+    }
+
+    const Go = () => {
+        data.index = data.goto_index
+        data.checkedList.clear()
+        data.lists = sliceLists(data.cache)
+    }
+
+    watch(list_body, (value) => {
+        if(value) {
+            calculateNumPerPage(value)
+        }
+    })
     
 </script>
 
@@ -275,7 +326,7 @@
                     </div>
                 </div>
             </div>
-            <div class="list-body">
+            <div class="list-body" ref="list_body">
                 <div 
                     class="list-li" 
                     v-for="list, index in data.lists"
@@ -372,6 +423,9 @@
             </div>
         </div>
         <div class="index">
+            <div class="index-info">
+                当前页面: {{ data.index }} / {{ data.pages }}
+            </div>
             <button 
                 class="box left" 
                 :class="data.index === 1 ? 'disable' : ''"
@@ -385,6 +439,16 @@
                 :disabled="data.index === data.pages"
                 @click="changeIndex(true)"
             ></button>
+            <div 
+                class="box goto-input"
+                contenteditable="true"
+                @input="validateGoto"
+                ref="goto"
+            >{{ data.goto_index }}</div>
+            <div 
+                class="goto"
+                @click="Go"
+            >跳转</div>
         </div>
     </div>
 </template>
@@ -719,6 +783,10 @@
             display: flex;
             justify-content: end;
             align-items: center;
+            .index-info {
+                font-size: 14px;
+                margin: 0 20px;
+            }
             .box {
                 width: 24px;
                 height: 24px;
@@ -736,6 +804,7 @@
             }
             .item {
                 background: #005795;
+                border-color: #005795;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -744,6 +813,21 @@
             .right {
                 background: url("/src/assets/image/index/list/arrow_right.svg");
                 background-position: center center;
+            }
+            .goto-input {
+                min-width: 36px;
+                width: fit-content;
+                cursor: text;
+                text-align: center;
+                border: 1px solid #FFFFFF;
+                border-bottom: 1px solid #cccccc;
+                outline: none;
+                padding: 0 12px;
+            }
+            .goto {
+                color: #0073bb;
+                font-size: 14px;
+                cursor: pointer;
             }
             .disable {
                 // pointer-events: none;
