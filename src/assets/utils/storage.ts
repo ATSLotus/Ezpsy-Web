@@ -1,5 +1,6 @@
 type KEY = 
     "EZPSY_PRODUCTION" | 
+    "EZPSY_TABLE" |
     "EZPSY_CODES" | 
     "EZPSY_DATA" |
     "EZPSY_IMAGE"
