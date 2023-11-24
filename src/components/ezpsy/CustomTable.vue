@@ -4,7 +4,7 @@
     import log from '@/assets/utils/log'
     import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
     import { IDomEditor } from "@wangeditor/editor"
-    import { Ref, ShallowRef, onMounted, reactive, ref, shallowRef, nextTick } from 'vue'
+    import { Ref, ShallowRef, onMounted, reactive, ref, shallowRef, nextTick, onBeforeUnmount } from 'vue'
     import editorConfig from "@/assets/editor/editorConfig"
     import toolbarConfig from "@/assets/editor/toolbarConfig"
     import { hideloading, inputPopup, showloading } from '@/assets/utils/popup';
@@ -54,6 +54,10 @@
                 hideloading()
             }
         }, 100)
+    })
+
+    onBeforeUnmount(() =>{
+        editorRef.value.destroy()
     })
 
     const handleCreated = (editor: IDomEditor) => {
