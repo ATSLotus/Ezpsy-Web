@@ -15,7 +15,9 @@ import {
     faPuzzlePiece,
     faXmark,
     faCircleExclamation,
-    faAnglesLeft
+    faAnglesLeft,
+    faFilePen,
+    faFileWord,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -26,7 +28,9 @@ library.add(
     faPuzzlePiece,
     faXmark,
     faCircleExclamation,
-    faAnglesLeft
+    faAnglesLeft,
+    faFilePen,
+    faFileWord
 )
 
 const app = createApp(App)
