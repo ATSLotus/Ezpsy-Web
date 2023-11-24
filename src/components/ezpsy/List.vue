@@ -164,10 +164,7 @@
     }
 
     const openPreview = (str: string) => {
-        showImg(str, {
-            width: 98,
-            height: 98
-        })
+        showImg(str)
     }
 
     const sort = (event: Event, head: HEADER) => {

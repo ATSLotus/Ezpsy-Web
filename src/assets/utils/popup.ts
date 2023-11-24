@@ -1,7 +1,7 @@
 import Swal from "sweetalert2"
 import ATSSelectElement from "../elem/atsselect"
 import uuid from "./uuid"
-import { getBase64 } from "./image"
+import { getBase64, getContainedImageSize, getImgTypeByBase64 } from "./image"
 
 let container = "ats_container"
 type ContainerType = "normal" | "spacial" | "fullscreen"
@@ -216,20 +216,107 @@ const showMsg = (title: string, Msg: string) => {
     })
 }
 
-const showImg = (img: string, opts?: {
-    width?: number
-    height?: number
-}) => {
-    const width = opts && opts.width ? `${opts.width}%` : `100%`
-    const height = opts && opts.height ? `${opts.height}%` : `100%`
+const showImg = (img: string) => {
+    const id = "image_" + uuid.getUuid()
     Swal.fire({
         html: `
-            <img style="
-                max-width: ${width};
-                max-height: ${height};
-                display: block;
-                margin: auto
-            " src="${img}" />
+            <div style="
+                width: 90%;
+                aspect-ratio: 1/1;
+                margin: auto;
+                overflow: hidden;
+            " id="${id}_box"
+            onmouseout="(()=>{
+                const img = document.getElementById('${id}')
+                if(img.getAttribute('data-move') === 'true') {
+                    const left = parseFloat(img.getAttribute('data-left'))
+                    const top = parseFloat(img.getAttribute('data-top'))
+                    const cache_left = parseFloat(img.getAttribute('data-cache-left'))
+                    const cache_top = parseFloat(img.getAttribute('data-cache-top'))
+                    img.style.cursor = 'pointer'
+                    img.setAttribute('data-move', 'false')
+                    img.setAttribute('data-left', (left + cache_left).toString())
+                    img.setAttribute('data-top', (top + cache_top).toString()) 
+                }
+            })()">
+                <img style="
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    display: block;
+                    margin: auto;
+                    cursor: pointer;
+                    user-select: none;
+                " src="${img}" id="${id}" draggable="false" 
+                data-x="0" data-y="0" data-move="false"
+                data-cache-left="0" data-cache-top="0"
+                data-scale="1" data-left="0" data-top="0"
+                onwheel="((event) => {
+                    event.preventDefault();
+                    const img = document.getElementById('${id}')
+                    const ratio = 0.05;
+                    let scale = parseFloat(img.getAttribute('data-scale'))
+                    const top = parseFloat(img.getAttribute('data-top'))
+                    const left = parseFloat(img.getAttribute('data-left'))
+                    if(event.deltaY > 0) {
+                        scale -= ratio
+                    } else if(event.deltaY < 0) {
+                        scale += ratio
+                    }
+                    img.setAttribute('data-scale', scale.toString())
+                    img.style.transform = 
+                        'scale(' + scale + ')' + 
+                        ' ' + 
+                        'translate(' + left +  'px, ' + top + 'px)'
+                })(event)"
+                onmousedown="((event)=>{
+                    const img = document.getElementById('${id}')
+                    img.style.cursor = 'move'
+                    img.setAttribute('data-x', event.clientX.toString())
+                    img.setAttribute('data-y', event.clientY.toString())
+                    img.setAttribute('data-move', 'true')
+                })(event)" 
+                onmousemove="((event)=>{
+                    const img = document.getElementById('${id}')
+                    if(img.getAttribute('data-move') === 'true') {
+                        const box = document.getElementById('${id}_box')
+                        const W = box.clientWidth
+                        const H = box.clientHeight
+                        const x = parseFloat(img.getAttribute('data-x'))
+                        const y = parseFloat(img.getAttribute('data-y'))
+                        const scale = parseFloat(img.getAttribute('data-scale'))
+                        const old_left = parseFloat(img.getAttribute('data-left'))
+                        const old_top = parseFloat(img.getAttribute('data-top'))
+                        const x_new = event.clientX
+                        const y_new = event.clientY
+                        const left = x_new - x
+                        const top = y_new - y
+                        const new_left = old_left + left
+                        const new_top = old_top + top
+                        if(new_left < W && new_top < H) {
+                            const new_left_str = (old_left + left).toString()
+                            const new_top_str = (old_top + top).toString()
+                            img.style.transform = 
+                                'scale(' + scale + ')' + 
+                                ' ' + 
+                                'translate(' + new_left_str +  'px, ' + new_top_str + 'px)'
+                            img.setAttribute('data-cache-left', left.toString())
+                            img.setAttribute('data-cache-top', top.toString()) 
+                        }
+                    }
+                })(event)"
+                onmouseup="((event)=>{
+                    const img = document.getElementById('${id}')
+                    const left = parseFloat(img.getAttribute('data-left'))
+                    const top = parseFloat(img.getAttribute('data-top'))
+                    const cache_left = parseFloat(img.getAttribute('data-cache-left'))
+                    const cache_top = parseFloat(img.getAttribute('data-cache-top'))
+                    img.style.cursor = 'pointer'
+                    img.setAttribute('data-move', 'false')
+                    img.setAttribute('data-left', (left + cache_left).toString())
+                    img.setAttribute('data-top', (top + cache_top).toString()) 
+                })(event)"/>
+            </div>
         `,
         showConfirmButton: false,
         showCancelButton: true,
@@ -362,19 +449,6 @@ const inputPopup = (opts: inputOptions) => {
                 line-height: 25px;
                 color: #888888;
                 text-indent: 0em;
-            }
-            .ats-mask {
-                
-            }
-            .ats-mask::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 50%;
-                height: 50%;
-                background: #FFFFFF;
-                mix-blend-mode: overlay;
             }
         </style>
     `
@@ -777,14 +851,33 @@ const inputPopup = (opts: inputOptions) => {
                     const img_src = (<HTMLImageElement>dom).src
                     if(/data:image\/.{3,4};base64,/.test(img_src)) {
                         const cropper = document.getElementById(`${item.id}_crop`)
-                        if(cropper) {
+                        const cropper_box = document.getElementById(`${item.id}_crop_box`)
+                        if(cropper && cropper_box) {
                             const x = cropper.offsetLeft
-                            const y = cropper.offsetHeight
+                            const y = cropper.offsetTop
                             const w = cropper.offsetWidth 
                             const h = cropper.offsetHeight
                             const canvas = document.createElement("canvas")
-                            const ctx = canvas.getContext("2d")
-                             
+                            document.body.append(canvas)
+                            canvas.width = cropper_box.clientWidth
+                            canvas.height = cropper_box.clientHeight
+                            const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
+                            const size = getContainedImageSize(cropper_box, (<HTMLImageElement>dom))
+                            ctx.drawImage(
+                                (<HTMLImageElement>dom), 
+                                (canvas.width - size.width) / 2,
+                                (canvas.height - size.height) / 2,
+                                size.width,
+                                size.height
+                            )
+                            const img_data = ctx.getImageData(x, y, w, h)
+                            ctx.clearRect(0, 0, canvas.width, canvas.height)
+                            canvas.width = w
+                            canvas.height = h
+                            ctx.putImageData(img_data, 0, 0)
+                            const type = getImgTypeByBase64(img_src)
+                            const bs64 = canvas.toDataURL(type)
+                            res.push(bs64)
                         } else {
                             res.push(img_src)
                         }
@@ -911,7 +1004,7 @@ const inputPopup = (opts: inputOptions) => {
                 }
             })
 
-            cropper_box.addEventListener("mouseup", () => {
+            cropper_box.addEventListener("mouseup", (event) => {
                 if(cropper_box.getAttribute(key) === "true") {
                     cropper_box.removeAttribute(key)
                     cropper_box.style.cursor = "pointer"
@@ -942,6 +1035,7 @@ const inputPopup = (opts: inputOptions) => {
             methods.forEach(method => {
                 const cropper = document.getElementById(`${crop}_${method}`)
                 cropper?.addEventListener("mousedown", (event) => {
+                    event.stopPropagation()
                     cropper.setAttribute(key, "true")
                     position.x = event.clientX
                     position.y = event.clientY
@@ -949,6 +1043,7 @@ const inputPopup = (opts: inputOptions) => {
                     position.h = cropper_box.offsetHeight
                 })
                 cropper?.addEventListener("mousemove", (event) => {
+                    event.stopPropagation()
                     const isCropping = cropper.getAttribute(key) === "true"
                     if(isCropping){
                         switch(method) {
@@ -1067,6 +1162,7 @@ const inputPopup = (opts: inputOptions) => {
                     }
                 })
                 const reset = (event: Event) => {
+                    event.stopPropagation()
                     if(cropper?.getAttribute(key) === "true") {
                         cropper?.removeAttribute(key)
                         const top = cropper_box.getAttribute(key_top)

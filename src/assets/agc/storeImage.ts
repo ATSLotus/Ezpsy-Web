@@ -25,9 +25,10 @@ const storeImage = (user: any) => {
                 }
             },
             {
-                type: "file",
+                type: "image",
                 props: {
-                    accept: "image/*"
+                    default: "/src/assets/image/imgs/uploadImg.svg",
+                    title: "图像:"
                 }
             }
         ],
@@ -37,7 +38,7 @@ const storeImage = (user: any) => {
                 return {
                     title: res[0] as string,
                     description: res[1] as string,
-                    file: res[2] as File
+                    img: res[2] as string
                 }
             }
         }
@@ -45,37 +46,33 @@ const storeImage = (user: any) => {
         if(res.isConfirmed) {
             const title = res.value.title ? res.value.title : uuid.getUuid()
             const description = res.value.description ? res.value.description : ""
-            const file = res.value.file ? res.value.file : null
-            const reader = new FileReader()
-            if(file) {
-                reader.onload = () => {
-                    const json = {
-                        data: encrypt(JSON.stringify({
-                            creator: {
-                                // @ts-ignore
-                                name: user.displayName,
-                                // @ts-ignore
-                                avatar: user.photoUrl
-                            },
-                            description: description,
-                            image: getBase64(reader.result as string)
-                        }))
-                    }
-                    storage.uploadString({
-                        str: JSON.stringify(json),
-                        // @ts-ignore
-                        folder: `private/${user.uid}/ezImage`,
-                        name: title,
-                        extension: "json"
-                    })
+            const img = res.value.img ? res.value.img : ""
+            if(img) {
+                const json = {
+                    data: encrypt(JSON.stringify({
+                        creator: {
+                            // @ts-ignore
+                            name: user.displayName,
+                            // @ts-ignore
+                            avatar: user.photoUrl
+                        },
+                        description: description,
+                        image: getBase64(img)
+                    }))
                 }
-                reader.readAsDataURL(file)
+                storage.uploadString({
+                    str: JSON.stringify(json),
+                    // @ts-ignore
+                    folder: `private/${user.uid}/ezImage`,
+                    name: title,
+                    extension: "json"
+                })
             } else {
                 tipPopup("error", {
                     title: "上传失败",
                     tips: "请选择需要上传的图片",
                     closeTip: "点击空白处关闭弹窗"
-                })
+                }) 
             }
         }
     })
