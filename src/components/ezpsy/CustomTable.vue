@@ -324,6 +324,9 @@
                     height: calc(100% - v-bind("data.preview.header.height"));
                     padding: 10px;
                     box-sizing: border-box;
+                    p {
+                        display: inline-block;
+                    }
                 }
             }
             .expend {
@@ -340,7 +343,7 @@
         }
     }
 </style>
-<style>
+<style lang="scss"> 
     .w-e-select-list {
         scrollbar-width: none; /* firefox */
         -ms-overflow-style: none; /* IE 10+ */
@@ -362,6 +365,11 @@
     .w-e-scroll::-webkit-scrollbar {
         display: none; /* Chrome Safari */
     }
+    .previewContent {
+        p {
+            display: inline-block;
+        }
+    }
     .ezpsy-editor-block {
         background: #2988e6;
         color: #FFFFFF;
@@ -371,6 +379,11 @@
         cursor: pointer;
     }
     .ezpsy-editor-singleline-block {
-        
+        min-width: 200px;
+        max-width: 100%;
+        width: fit-content;
+        border-bottom: 1px solid #CCCCCC;
+        outline: none;
+        display: inline-block;
     }
 </style>
