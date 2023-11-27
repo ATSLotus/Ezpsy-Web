@@ -5,13 +5,17 @@
     import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
     import { IDomEditor } from "@wangeditor/editor"
     import { Ref, ShallowRef, onMounted, reactive, ref, shallowRef, nextTick, onBeforeUnmount } from 'vue'
+    import initBlock from "@/assets/editor/initBlock"
     import editorConfig from "@/assets/editor/editorConfig"
     import toolbarConfig from "@/assets/editor/toolbarConfig"
+    import handleHtml from "@/assets/editor/handleHtml"
     import { hideloading, inputPopup, showloading } from '@/assets/utils/popup';
     import { encrypt } from '@/assets/utils/crypto';
     import { UserStore } from '@/store/store';
     import agc from '@/assets/agc/agc';
     import uuid from '@/assets/utils/uuid';
+
+    initBlock()
 
     const editorRef = shallowRef() as ShallowRef<IDomEditor>
     const valueHtml = ref("")
@@ -94,7 +98,7 @@
     }
 
     const handleChange = (editor: IDomEditor) => {
-        data.data.html = editor.getHtml()
+        data.data.html = handleHtml(editor.getHtml())
         data.data.json = JSON.stringify(editor.children)
     }
 
@@ -357,5 +361,16 @@
     }
     .w-e-scroll::-webkit-scrollbar {
         display: none; /* Chrome Safari */
+    }
+    .ezpsy-editor-block {
+        background: #2988e6;
+        color: #FFFFFF;
+        margin: 0 2px;
+        padding: 2px 4px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .ezpsy-editor-singleline-block {
+        
     }
 </style>

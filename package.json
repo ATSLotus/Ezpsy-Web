@@ -29,6 +29,7 @@
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
     "pinia": "^2.1.6",
+    "snabbdom": "^3.5.1",
     "sweetalert2": "^11.7.27",
     "vue": "^3.2.47",
     "vue-router": "^4.2.4"
