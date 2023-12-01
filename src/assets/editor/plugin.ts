@@ -6,13 +6,15 @@ function withBlock<T extends IDomEditor>(editor: T) {
 
     newEditor.isInline = elem => {
         const type = DomEditor.getNodeType(elem)
-        if(type === "block") return true
+        if(type === "block") return false
+        if(type === "inline-block") return true
         return isInline(elem)
     }
 
     newEditor.isVoid = elem => {
         const type = DomEditor.getNodeType(elem)
         if(type === "block") return true
+        if(type === "inline-block") return true
         return isVoid(elem) 
     } 
 

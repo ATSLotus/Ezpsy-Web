@@ -13,7 +13,6 @@
     import { encrypt } from '@/assets/utils/crypto';
     import { UserStore } from '@/store/store';
     import agc from '@/assets/agc/agc';
-    import uuid from '@/assets/utils/uuid';
 
     initBlock()
 
@@ -99,6 +98,7 @@
 
     const handleChange = (editor: IDomEditor) => {
         data.data.html = handleHtml(editor.getHtml())
+        // data.data.html = editor.getHtml()
         data.data.json = JSON.stringify(editor.children)
     }
 
@@ -218,13 +218,13 @@
                     @onChange="handleChange"
                 />
             </div>
-            <div class="preview" v-if="data.preview.isShow" ref="preview">
+            <div id="ezpsy-editor-preview" class="preview" v-if="data.preview.isShow" ref="preview">
                 <div 
                     class="previewHeader" 
                     :class="data.editor.isFull ? 'previewHeader0' : ''"
                 >预览</div>
                 <div 
-                    class="previewContent ats_no_scroll_bar" 
+                    class="previewContent ezpsy-editor-content ats_no_scroll_bar" 
                     v-html="data.data.html"
                 ></div>
             </div>
@@ -283,12 +283,13 @@
             border: 1px solid #cccccc;
             display: flex;
             position: relative;
+            overflow: hidden;
             .wangeditor {
                 width: v-bind("data.editor.width");
                 height: 100%;
                 .editor {
                     height: calc(100% - v-bind("data.preview.header.height")) !important;
-                    border-bottom: 1px solid #ccc;
+                    // border-bottom: 1px solid #ccc;
                     scrollbar-width: none; /* firefox */
                     -ms-overflow-style: none; /* IE 10+ */
                     overflow-x: hidden;
@@ -322,7 +323,7 @@
                 .previewContent {
                     width: 100%;
                     height: calc(100% - v-bind("data.preview.header.height"));
-                    padding: 10px;
+                    padding: 0 10px;
                     box-sizing: border-box;
                     p {
                         display: inline-block;
@@ -344,6 +345,7 @@
     }
 </style>
 <style lang="scss"> 
+    @import "@/scss/editor-table.scss";
     .w-e-select-list {
         scrollbar-width: none; /* firefox */
         -ms-overflow-style: none; /* IE 10+ */
@@ -365,25 +367,7 @@
     .w-e-scroll::-webkit-scrollbar {
         display: none; /* Chrome Safari */
     }
-    .previewContent {
-        p {
-            display: inline-block;
-        }
-    }
-    .ezpsy-editor-block {
-        background: #2988e6;
-        color: #FFFFFF;
-        margin: 0 2px;
-        padding: 2px 4px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    .ezpsy-editor-singleline-block {
-        min-width: 200px;
-        max-width: 100%;
-        width: fit-content;
-        border-bottom: 1px solid #CCCCCC;
-        outline: none;
-        display: inline-block;
+    .w-e-text-container [data-slate-editor] {
+        position: relative;
     }
 </style>

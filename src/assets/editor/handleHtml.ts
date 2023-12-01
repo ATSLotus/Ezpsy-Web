@@ -1,7 +1,7 @@
-const REG = /<span data-block="(singleline|multiline|radio|checkbox)" data-key="[a-zA-Z0-9_]+" data-w-e-is-void(="")? data-w-e-is-inline(="")? data-value="[a-zA-Z0-9_]+">[a-zA-Z0-9_]+<\/span>/g
+const REG = /<span data-block="(singleline|multiline|radio|checkbox)" data-key="[a-zA-Z0-9_]+" data-w-e-is-void(="")?( data-w-e-is-inline(="")?)? data-value="[^<>\\"']*">[a-zA-Z0-9_]+<\/span>/g
 
 const handleHtml = (html: string) => {
-    console.log("START", html)
+    console.log(html)
     const blocks = html.match(REG)
     blocks && blocks.forEach(block => {
         const dom_box = document.createElement("div")
@@ -14,15 +14,26 @@ const handleHtml = (html: string) => {
         const cls = `ezpsy-editor-${block_type}-block`
         switch(block_type) {
             case "singleline":
-                replace += `&nbsp;<div class="${cls}" contenteditable="true">`
-                replace += `</div>&nbsp;`
+                replace += `<span class="${cls}" `
+                replace += `contenteditable="true" `
+                replace += `data-status="inline-block" `
+                replace += `onfocus="((event)=>{event.target.setAttribute('data-status', 'none');event.target.focus()})(event)" `
+                replace += `onblur="((event)=>{event.target.setAttribute('data-status', 'inline-block')})(event)" `
+                replace += `></span>`
+                break
+            case "multiline":
+                replace += `<span class="${cls} no_scroll_bar" `
+                replace += `contenteditable="true" `
+                replace += `placeholder="请输入" `
+                replace += `onfocus="((event)=>{event.target.setAttribute('placeholder', '');event.target.focus()})(event)" `
+                replace += `onblur="((event)=>{event.target.setAttribute('placeholder', '请输入')})(event)" `
+                replace += `></span>`
                 break
             default: 
                 replace = block
         }
         html = html.replace(block, replace)
     })
-    console.log("END", html)
     return html
 }
 

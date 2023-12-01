@@ -21,6 +21,28 @@ function parseBlockHtml(domElement: Element, children: SlateDescendant[], editor
     return AtBlock
 }
 
+function parseInlineBlockHtml(domElement: Element, children: SlateDescendant[], editor: IDomEditor): SlateElement {
+    
+    const block = domElement.getAttribute('data-block') || ''
+    const key = domElement.getAttribute('data-key') || ''
+    const value = domElement.getAttribute('data-value') || ''
+
+    const AtBlock = {
+        type: "inline-block",
+        block,
+        key,
+        value,
+        children: [
+            {
+                text: ""
+            }
+        ]
+    }
+
+    return AtBlock
+}
+
 export {
-    parseBlockHtml
+    parseBlockHtml,
+    parseInlineBlockHtml
 }

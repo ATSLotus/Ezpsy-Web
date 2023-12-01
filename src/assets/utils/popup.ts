@@ -412,7 +412,6 @@ interface inputOptions {
     preConfirm: (getValue: () => Array<boolean|File|string>) => () => any
 }
 
-
 const inputPopup = (opts: inputOptions) => {
     let storage = new Array<string|boolean>()
     if(opts.storageId) {
@@ -420,6 +419,7 @@ const inputPopup = (opts: inputOptions) => {
         if(st) 
             storage = JSON.parse(st) as Array<string|boolean>
     }
+    
     const ids = new Array<domIndex>()
     let html = ``
     html += `
@@ -450,12 +450,53 @@ const inputPopup = (opts: inputOptions) => {
                 color: #888888;
                 text-indent: 0em;
             }
+            .ats-tips-icon {
+                width: 16px;
+                height: 16px;
+                margin: 0 4px;
+                cursor: pointer;
+                position: relative;
+                background: url(./src/assets/image/popup/tips.svg) no-repeat;
+                background-size: 100%;
+            }
+            .ats-tips-icon:hover .ats-tips {
+                display: block;
+            }
+            .ats-tips {
+                display: none;
+                min-width: 100px;
+                width: fit-content;
+                max-width: 200px;
+                padding: 5px 10px;
+                position: absolute;
+                z-index: 1;
+                top: 24px;
+                left: -50px;
+                background: #FFFFFF;
+                filter: drop-shadow(0 2px 10px #CCCCCC);
+                text-align: justify;
+            }
+            .ats-tips:before {
+                content: "";
+                position: absolute;
+                width: 0;
+                height: 0;
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-bottom: 6px solid #FFFFFF;
+                top: -6px;
+                left: 50px;
+            }
         </style>
     `
     html += `<div>${opts.title}</div>\n`
     const requireStr = '<span style="margin-left: 5px;color: #FF0000">*</span>'
     const requires = new Array<string>()
     const crops = new Array<string>()
+    const regs = new Array<{
+        id: string,
+        reg: RegExp
+    }>()
     opts.html.forEach((obj, i) => {
         const id = "input_" + uuid.getUuid()
         const v = storage[i]
@@ -465,8 +506,22 @@ const inputPopup = (opts: inputOptions) => {
                 const placeholder = obj.props.placeholder ? obj.props.placeholder : "请输入内容"
                 const defaultValue = obj.props.default ? `${obj.props.default}` : ""
                 const require = obj.props.require ? obj.props.require : false
-                if(require)
+                const tips = obj.props.tips ? obj.props.tips : ""
+                const reg = obj.props.reg ? obj.props.reg : null
+                const tipsDom = `
+                    <div 
+                        class="ats-tips-icon"
+                    ><div class="ats-tips">${tips}</div></div>
+                `
+                if(reg) {
+                    regs.push({
+                        id,
+                        reg
+                    })
                     requires.push(id)
+                } else if(require) {
+                    requires.push(id)
+                }   
                 html += `
                     <div style="
                         width: 90%;
@@ -485,8 +540,10 @@ const inputPopup = (opts: inputOptions) => {
                             width: 15%;
                             flex-shrink: 1;
                             flex-grow: 1;
+                            position: relative;
                         ">
-                            ${title} ${require ? requireStr : ''} 
+                            ${title} ${require ? requireStr : ''} ${reg ? requireStr : ''}
+                            ${tips ? tipsDom : ""}
                         </div>
                         <input style="
                             width: 75%;
@@ -918,6 +975,7 @@ const inputPopup = (opts: inputOptions) => {
     const SET = new Set()
 
     const judgeIsConfirm = () => {
+        console.log()
         if(SET.size !== max) {
             confirmButton.setAttribute("disabled", "true")
             confirmButton.style.cursor = "not-allowed"
@@ -929,6 +987,18 @@ const inputPopup = (opts: inputOptions) => {
 
     const changeIndex = (dom: HTMLInputElement, oldCss: string) => {
         if(!(dom.value)) {
+            dom.style.cssText = oldCss + `
+                border-color: #FF0000;
+            `
+            SET.delete(dom.id)
+        } else {
+            dom.style.cssText = oldCss + ''
+            SET.add(dom.id)
+        }
+    }
+
+    const changeIndexWithReg = (dom: HTMLInputElement, reg: RegExp, oldCss: string) => {
+        if(!(reg.test(dom.value))) {
             dom.style.cssText = oldCss + `
                 border-color: #FF0000;
             `
@@ -952,7 +1022,6 @@ const inputPopup = (opts: inputOptions) => {
             })
         }
     })
-    judgeIsConfirm()
 
     crops.forEach(crop => {
         const key = "isCropping"
@@ -1192,6 +1261,22 @@ const inputPopup = (opts: inputOptions) => {
             })
         }
     })
+
+    regs.forEach(reg => {
+        const dom = document.getElementById(reg.id) as HTMLInputElement
+        if(dom) {
+            const oldCss = dom.style.cssText
+            if(reg.reg.test(dom.value)) {
+                SET.add(dom.id)
+            }
+            dom.addEventListener("input", () => {
+                changeIndexWithReg(dom, reg.reg, oldCss) 
+                judgeIsConfirm()
+            })
+        }
+    })
+
+    judgeIsConfirm()
 
     return result
 }

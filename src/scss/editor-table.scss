@@ -1,0 +1,87 @@
+$block-width: 400px;
+$inline-block-width: 200px;
+$line-height: 24px;
+.ezpsy-editor-block {
+    background: #2988e6;
+    color: #FFFFFF;
+    margin: 0 2px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: $block-width;
+    text-align: center;
+    display: inline-block;
+}
+.ezpsy-editor-inline-block {
+    background: #2988e6;
+    color: #FFFFFF;
+    margin: 0 2px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    width: $inline-block-width;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+}
+
+.ezpsy-editor-content {
+    p {
+        margin: 15px 0;
+        line-height: $line-height;
+    }
+    .ezpsy-editor-singleline-block {
+        min-width: $inline-block-width;
+        width: fit-content;
+        line-height: $line-height;
+        border-bottom: 1px solid #CCCCCC;
+        padding: 4px 8px;
+        margin: 0 4px;
+        outline: none;
+        box-sizing: border-box;
+        display: inline;
+    }
+    .ezpsy-editor-singleline-block:empty {
+        display: inline-block;
+    }
+
+    .ezpsy-editor-singleline-block:empty::before {
+        min-width: $inline-block-width;
+        height: 100%;
+        color: #888888;
+        cursor: text;
+    }
+
+    .ezpsy-editor-singleline-block[data-status="inline-block"]:empty::before {
+        content: "请输入";
+        display: inline-block;
+    }
+    
+    .ezpsy-editor-singleline-block[data-status="none"]:empty::before {
+        content: "none";
+        display: none;
+    }
+
+    .ezpsy-editor-multiline-block {
+        display: block;
+        width: $block-width;
+        min-height: 2 * $line-height;
+        max-height: 5 * $line-height;
+        line-height: $line-height;
+        overflow: auto;
+        border-radius: 5px;
+        box-sizing: border-box;
+        border: 1px solid #CCCCCC;
+        text-indent: 1.2em;
+        padding: 4px;
+        outline: none;
+    }
+
+    .ezpsy-editor-multiline-block:empty:before {
+        content: attr(placeholder);
+        display: block;
+        width: 100%;
+        height: $line-height;
+        line-height: $line-height;
+        color: #888888;
+    }
+}

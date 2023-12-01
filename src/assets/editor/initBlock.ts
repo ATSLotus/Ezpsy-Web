@@ -1,37 +1,56 @@
 import withBlock from "./plugin";
-import { renderBlock } from "./node";
-import { BlockToHtml } from "./nodeToHtml";
-import { parseBlockHtml } from "./parseNode";
+import { renderBlock, renderInlineBlock } from "./node";
+import { BlockToHtml, InlineBlockToHtml } from "./nodeToHtml";
+import { parseBlockHtml, parseInlineBlockHtml } from "./parseNode";
 import { Boot } from "@wangeditor/editor";
 
 const initBlock = () => {
-    const keyName = "block"
+    const block = "block"
+    const inline_block = "inline-block"
 
     const renderBlockConf = {
-        type: keyName, 
+        type: block, 
         renderElem: renderBlock,
     }
     
     const BlockToHtmlConf = {
-        type: keyName, 
+        type: block, 
         elemToHtml: BlockToHtml,
     }
     
     const parseBlockHtmlConf = {
-        selector: `span[data-type="${keyName}"]`, // CSS 选择器，匹配特定的 HTML 标签
+        selector: `span[data-type="${block}"]`, // CSS 选择器，匹配特定的 HTML 标签
         parseElemHtml: parseBlockHtml,
+    }
+
+    const renderInlineBlockConf = {
+        type: inline_block, 
+        renderElem: renderInlineBlock,
+    }
+    
+    const InlineBlockToHtmlConf = {
+        type: inline_block, 
+        elemToHtml: InlineBlockToHtml,
+    }
+    
+    const parseInlineBlockHtmlConf = {
+        selector: `span[data-type="${inline_block}"]`, // CSS 选择器，匹配特定的 HTML 标签
+        parseElemHtml: parseInlineBlockHtml,
     }
     
     const mod = {
         editorPlugin: withBlock,
         renderElems: [
-            renderBlockConf
+            renderBlockConf,
+            renderInlineBlockConf
         ],
         elemsToHtml: [
-            BlockToHtmlConf
+            BlockToHtmlConf,
+            InlineBlockToHtmlConf
         ],
         parseElemsHtml: [
-            parseBlockHtmlConf
+            parseBlockHtmlConf,
+            parseInlineBlockHtmlConf
         ]
     }
     
