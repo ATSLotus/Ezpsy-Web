@@ -393,7 +393,8 @@ type inputTypes =
     "checkbox" | 
     "select" | 
     "file" |
-    "image"
+    "image" |
+    "option"
 
 interface inputObject {
     type: inputTypes
@@ -497,6 +498,12 @@ const inputPopup = (opts: inputOptions) => {
         id: string,
         reg: RegExp
     }>()
+    // const options = new Array<{
+    //     id: string,
+    //     nonce: string,
+    //     default: number,
+    //     hasDefault: boolean
+    // }>()
     opts.html.forEach((obj, i) => {
         const id = "input_" + uuid.getUuid()
         const v = storage[i]
@@ -874,6 +881,75 @@ const inputPopup = (opts: inputOptions) => {
                 crops.push(id)
                 break
             }
+            // case "option": 
+            //     const title = obj.props.title ? obj.props.title : ""
+            //     const amount = obj.props.amount ? obj.props.amount : 3
+            //     const has_default = obj.props.hasDefault ? !!(obj.props.hasDefault) : true
+            //     const nonce = uuid.getUuid()
+            //     const addId = `${id}_add_${nonce}`
+            //     const optionId = `${id}_options_${nonce}`
+            //     options.push({
+            //         id,
+            //         nonce,
+            //         default: amount,
+            //         hasDefault: has_default
+            //     })
+            //     let default_str = ''
+            //     if(has_default) 
+            //         default_str = `
+            //             <div style="
+            //             font-size: 14px;
+            //             height: 40px;
+            //             display: flex;
+            //             align-items: center;
+            //             justify-content: center;
+            //             width: 40px;
+            //             position: relative;
+            //         ">默认</div>
+            //         `
+            //     html += `
+            //     <div style="
+            //         position: relative;
+            //         width: 100%;
+            //         margin-top: 15px;
+            //     ">
+            //         <div style="
+            //             width: 90%;
+            //             display: flex;
+            //             justify-content: space-between;
+            //             align-items: center;
+            //             margin: auto;
+            //         ">
+            //             <div style="
+            //                 font-size: 14px;
+            //                 height: 40px;
+            //                 display: flex;
+            //                 align-items: center;
+            //                 justify-content: left;
+            //                 width: 15%;
+            //                 flex-shrink: 1;
+            //                 flex-grow: 1;
+            //                 position: relative;
+            //             ">
+            //                 ${title}
+            //             </div>
+            //             <div style="
+            //                 width: 24px;
+            //                 height: 24px;
+            //                 background: url(./src/assets/image/popup/add.svg) no-repeat;
+            //                 background-size: 24px 24px;
+            //                 background-position: center;
+            //                 cursor: pointer;
+            //             " id="${addId}"></div>
+            //             ${default_str}
+            //         </div>
+            //         <div style="
+            //             width: 90%;
+            //             margin: auto;
+            //         " id="${optionId}"></div>
+            //     </div>
+            //     `
+            //     break
             default:
                 break
         }

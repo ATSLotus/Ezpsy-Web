@@ -1,7 +1,6 @@
 const REG = /<span data-block="(singleline|multiline|radio|checkbox)" data-key="[a-zA-Z_][0-9a-zA-Z_]*" data-w-e-is-void(="")?( data-w-e-is-inline(="")?)? data-value="[^<>\\"']*">[a-zA-Z_][0-9a-zA-Z_]*<\/span>/g
 
 const handleHtml = (html: string) => {
-    console.log(html)
     const blocks = html.match(REG)
     blocks && blocks.forEach(block => {
         const dom_box = document.createElement("div")

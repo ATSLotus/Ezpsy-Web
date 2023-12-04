@@ -6,6 +6,10 @@ export interface BlockElement extends SlateElement {
     value: string
 }
 
+export interface BlockElementWithId extends BlockElement {
+    id: string
+    block: "singleline" | "multiline" | "radio" | "checkbox"
+}
 export interface VALUE {
     value: string;
     text: string;
