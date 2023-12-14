@@ -124,9 +124,11 @@
         }
     })
 
-    const checkAll = () => {
+    const checkAll = (event: Event) => {
         if(data.checkedList.size === data.lists.length)  {
+            const target = event.target as HTMLInputElement
             data.checkedList.clear()
+            target.checked = false
         } else {
             data.lists.forEach((list: any) => {
                 data.checkedList.add(list)
@@ -301,7 +303,7 @@
         </div>
         <div class="list">
             <div class="header">
-                <input type="checkbox" @click="checkAll()" />
+                <input type="checkbox" @click="checkAll" />
                 <div
                     class="header-li"
                     :style="head.style"

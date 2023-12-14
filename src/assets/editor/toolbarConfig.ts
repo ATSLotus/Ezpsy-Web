@@ -102,7 +102,7 @@ const insertSelect = new DefaultSelect({
                                 const multiline_node = {
                                     type: "block",
                                     block: value,
-                                    key: "key_test0",
+                                    key: key,
                                     children: [{
                                         text: ""
                                     }]
@@ -134,19 +134,49 @@ const insertSelect = new DefaultSelect({
                                     require: true
                                 }
                             },
-                            // {
-                            //     type: "option",
-                            //     props: {
-                            //         title: "选项"
-                            //     }
-                            // }
+                            {
+                                type: "option",
+                                props: {
+                                    title: "选项"
+                                }
+                            }
                         ],
                         preConfirm: (getValue) => {
                             return () => {
                                 const res = getValue()
                                 return {
-                                    key: res[0] as string
+                                    key: res[0] as string,
+                                    title: res[1] as string,
+                                    options: res[2] as string
                                 }
+                            }
+                        }
+                    }).then(res => {
+                        if(res.isConfirmed) {
+                            const key = res.value.key
+                            if(key_store.validate(key)) {
+                                tipPopup("error", {
+                                    title: "关键词重复",
+                                    tips: `您使用的关键词 <span style="color: red;">${key}</span> 存在重复，请核对您的关键词`,
+                                    closeTip: "点击空白处关闭"
+                                })
+                            } else {
+                                const title = res.value.title
+                                const options = res.value.options 
+                                const multiline_node = {
+                                    type: "block",
+                                    block: value,
+                                    value: JSON.stringify({
+                                        title: title,
+                                        options: options
+                                    }),
+                                    key: key,
+                                    children: [{
+                                        text: ""
+                                    }]
+                                }
+                                editor.insertNode(multiline_node)
+                                insertBreak(editor)
                             }
                         }
                     })

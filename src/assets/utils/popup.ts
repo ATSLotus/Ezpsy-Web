@@ -498,12 +498,124 @@ const inputPopup = (opts: inputOptions) => {
         id: string,
         reg: RegExp
     }>()
-    // const options = new Array<{
-    //     id: string,
-    //     nonce: string,
-    //     default: number,
-    //     hasDefault: boolean
-    // }>()
+    const options = new Array<{
+        id: string
+        amount: number
+        hasDefault: boolean
+    }>()
+
+    const optionsList = new Map<string, Array<HTMLDivElement>>()
+
+    const setOption = ({
+        id,
+        hasDefault
+    }: {
+        id: string
+        hasDefault: boolean
+    }) => {
+        let input_width = hasDefault ? "90%" : "100%"
+        const option_item = document.createElement("div")
+        option_item.style.cssText = `
+            width: 100%;
+            height: 40px;
+            display: flex;
+            margin: 0 0 10px 0;
+        `
+        const input_item = document.createElement("div")
+        input_item.style.cssText = `
+            width: ${input_width};
+            height: 40px;
+            display: flex;
+        `
+        const input_dom = document.createElement('input')
+        input_dom.style.cssText = `
+            width: calc(100% - 80px);
+            height: 40px;
+            line-height: 40px;
+            outline: none;
+            padding: 0;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            text-indent: 0.8em;
+        `
+        input_dom.type = "text"
+        const add_dom = document.createElement("div")
+        add_dom.style.cssText = `
+            width: 40px;
+            height: 40px;
+            background: url(./src/assets/image/popup/add.svg) no-repeat;
+            background-size: 75%;
+            background-position: center;
+            cursor: pointer;
+        `
+        add_dom.addEventListener("click", () => {
+            const index = parseInt(option_item.getAttribute("data-index") as string)
+            const array = optionsList.get(id)
+            array?.splice(index + 1, 0, setOption({
+                id,
+                hasDefault
+            }))
+            const dom = document.getElementById(`${id}_option`) as HTMLElement
+            dom.innerHTML = '' 
+            array?.forEach((item, index) => {
+                item.setAttribute("data-index", index.toString())
+                dom.append(item)
+            })
+        })
+        const reduce_dom = document.createElement("div")
+        reduce_dom.style.cssText = `
+            width: 40px;
+            height: 40px;
+            background: url(./src/assets/image/popup/reduce.svg) no-repeat;
+            background-size: 75%;
+            background-position: center;
+            cursor: pointer;
+        `
+        reduce_dom.addEventListener("click", () => {
+            const index = parseInt(option_item.getAttribute("data-index") as string)
+            const array = optionsList.get(id)
+            array?.splice(index, 1)
+            const dom = document.getElementById(`${id}_option`) as HTMLElement
+            dom.innerHTML = '' 
+            array?.forEach((item, index) => {
+                item.setAttribute("data-index", index.toString())
+                dom.append(item)
+            })
+        })
+        input_item.append(input_dom, add_dom, reduce_dom)
+        option_item.append(input_item)
+        if(hasDefault) {
+            const default_body = document.createElement("div")
+            default_body.style.cssText = `
+                width: 10%;
+                height: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `
+            const checkbox_dom = document.createElement("input")
+            checkbox_dom.type = "checkbox"
+            checkbox_dom.style.cssText = `
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+            `
+            default_body.append(checkbox_dom)
+            option_item.append(default_body)
+            option_item.addEventListener("click", () => {
+                const array = optionsList.get(id)
+                array?.forEach(item => {
+                    const checkbox = item.querySelector("[type='checkbox']") as HTMLInputElement
+                    if(checkbox !== checkbox_dom) {
+                        checkbox.checked = false
+                    }
+                })
+            })
+        }
+        return option_item
+    }
+
     opts.html.forEach((obj, i) => {
         const id = "input_" + uuid.getUuid()
         const v = storage[i]
@@ -881,75 +993,59 @@ const inputPopup = (opts: inputOptions) => {
                 crops.push(id)
                 break
             }
-            // case "option": 
-            //     const title = obj.props.title ? obj.props.title : ""
-            //     const amount = obj.props.amount ? obj.props.amount : 3
-            //     const has_default = obj.props.hasDefault ? !!(obj.props.hasDefault) : true
-            //     const nonce = uuid.getUuid()
-            //     const addId = `${id}_add_${nonce}`
-            //     const optionId = `${id}_options_${nonce}`
-            //     options.push({
-            //         id,
-            //         nonce,
-            //         default: amount,
-            //         hasDefault: has_default
-            //     })
-            //     let default_str = ''
-            //     if(has_default) 
-            //         default_str = `
-            //             <div style="
-            //             font-size: 14px;
-            //             height: 40px;
-            //             display: flex;
-            //             align-items: center;
-            //             justify-content: center;
-            //             width: 40px;
-            //             position: relative;
-            //         ">默认</div>
-            //         `
-            //     html += `
-            //     <div style="
-            //         position: relative;
-            //         width: 100%;
-            //         margin-top: 15px;
-            //     ">
-            //         <div style="
-            //             width: 90%;
-            //             display: flex;
-            //             justify-content: space-between;
-            //             align-items: center;
-            //             margin: auto;
-            //         ">
-            //             <div style="
-            //                 font-size: 14px;
-            //                 height: 40px;
-            //                 display: flex;
-            //                 align-items: center;
-            //                 justify-content: left;
-            //                 width: 15%;
-            //                 flex-shrink: 1;
-            //                 flex-grow: 1;
-            //                 position: relative;
-            //             ">
-            //                 ${title}
-            //             </div>
-            //             <div style="
-            //                 width: 24px;
-            //                 height: 24px;
-            //                 background: url(./src/assets/image/popup/add.svg) no-repeat;
-            //                 background-size: 24px 24px;
-            //                 background-position: center;
-            //                 cursor: pointer;
-            //             " id="${addId}"></div>
-            //             ${default_str}
-            //         </div>
-            //         <div style="
-            //             width: 90%;
-            //             margin: auto;
-            //         " id="${optionId}"></div>
-            //     </div>
-            //     `
-            //     break
+            case "option": 
+                const title = obj.props.title ? obj.props.title : ""
+                const amount = obj.props.amount ? obj.props.amount : 3
+                const has_default = obj.props.hasDefault ? !!(obj.props.hasDefault) : true
+
+                options.push({
+                    id: id,
+                    amount: amount,
+                    hasDefault: has_default
+                })
+
+                optionsList.set(id, [])
+
+                let default_head = ""
+                let input_width = has_default ? "90%" : "100%"
+                if(has_default) {
+                    default_head = `
+                        <div style="
+                            width: 10%;
+                            height； 40px;
+                            line-height: 40px;
+                        ">默认</div>
+                    `
+                }
+
+                html += `
+                    <div style="
+                        width: 90%;
+                        margin: 15px auto 0 auto;
+                    " id="${id}">
+                        <div style="
+                            width: 100%;
+                            height； 40px;
+                            display: flex;
+                            align-items: center;
+                            font-size: 14px;
+                        ">
+                            <div style = "
+                                width: ${input_width};
+                                height: 40px;
+                                line-height: 40px;
+                                text-align: start;
+                            ">${title}</div>
+                            ${default_head}
+                        </div>
+                        <div style="
+                            width: 100%;
+                            height: auto;
+                            max-height: 220px;
+                        " class="ats_no_scroll_bar" id="${id}_option"></div>
+                    </div>
+                `
+                break
             default:
                 break
         }
@@ -1018,6 +1114,23 @@ const inputPopup = (opts: inputOptions) => {
                         res.push("")
                     }
                     break
+                case "option":
+                    const lists = optionsList.get(item.id)
+                    const options = new Array<{
+                        text: string
+                        checked: boolean
+                    }>()
+                    lists?.forEach(li => {
+                        const input = li.querySelector("[type='text']") as HTMLInputElement
+                        if(input.value) {
+                            const checkbox = li.querySelector("[type='checkbox']") as HTMLInputElement
+                            options.push({
+                                text: input.value,
+                                checked: checkbox.checked
+                            })
+                        }
+                    })
+                    res.push(JSON.stringify(options))
                 default:
                     break
             }
@@ -1349,6 +1462,20 @@ const inputPopup = (opts: inputOptions) => {
                 changeIndexWithReg(dom, reg.reg, oldCss) 
                 judgeIsConfirm()
             })
+        }
+    })
+
+    options.forEach((option) => {
+        const dom = document.getElementById(`${option.id}_option`)
+        const array = optionsList.get(option.id)
+        for(let i = 0; i < option.amount; i++) {
+            const opt = setOption({
+                id: option.id,
+                hasDefault: option.hasDefault
+            })
+            opt.setAttribute("data-index", i.toString())
+            array?.push(opt)
+            dom?.append(opt)
         }
     })
 
