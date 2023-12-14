@@ -1,7 +1,8 @@
-const REG = /<span data-block="(singleline|multiline|radio|checkbox)" data-key="[a-zA-Z_][0-9a-zA-Z_]*" data-w-e-is-void(="")?( data-w-e-is-inline(="")?)? data-value="[\s]*\{[\s\S]*\}[\s]*">[a-zA-Z_][0-9a-zA-Z_]*<\/span>/g
+import { base64ToString } from "../utils/utils"
+
+const REG = /<span data-block="(singleline|multiline|radio|checkbox)" data-key="[a-zA-Z_][0-9a-zA-Z_]*" data-w-e-is-void(="")?( data-w-e-is-inline(="")?)? data-value="[A-Za-z0-9+/=]*">[a-zA-Z_][0-9a-zA-Z_]*<\/span>/g
 
 const handleHtml = (html: string) => {
-    console.log(html)
     const blocks = html.match(REG)
     blocks && blocks.forEach(block => {
         const dom_box = document.createElement("div")
@@ -30,11 +31,11 @@ const handleHtml = (html: string) => {
                 replace += `></span>`
                 break
             case "radio":
-                console.info(value)
                 if(value) {
-                    // const radio_json = JSON.parse(value)
+                    const radio_json = JSON.parse(base64ToString(value))
                     replace += `<div class="${cls}">`
-                    // replace += `<div>${radio_json.title}</div>`
+                    replace += `<div>${radio_json.title}</div>`
+                    
                     replace += `</div>`
                 }
                 break

@@ -4,6 +4,7 @@ import { insertBreak } from "./utils"
 import { inputPopup, tipPopup } from "../utils/popup"
 import uuid from "../utils/uuid"
 import { EditorKeyStore } from "@/store/store"
+import { stringToBase64 } from "../utils/utils"
 
 const nonce = uuid.getUuid()
 const key_store = EditorKeyStore()
@@ -166,10 +167,10 @@ const insertSelect = new DefaultSelect({
                                 const multiline_node = {
                                     type: "block",
                                     block: value,
-                                    value: JSON.stringify({
+                                    value: stringToBase64(JSON.stringify({
                                         title: title,
                                         options: options
-                                    }),
+                                    })),
                                     key: key,
                                     children: [{
                                         text: ""
