@@ -18,7 +18,7 @@ $line-height: 24px;
     margin: 0 2px 2px 2px;
     padding: 2px 4px;
     border-radius: 4px;
-    width: $inline-block-width;
+    min-width: $inline-block-width;
     display: inline-block;
     text-align: center;
     cursor: pointer;
@@ -81,5 +81,51 @@ $line-height: 24px;
         height: $line-height;
         line-height: $line-height;
         color: #888888;
+    }
+
+    .ezpsy-editor-radio-block {
+        .ezpsy-editor-radio-block_title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .ezpsy-editor-radio-block_option {
+            width: 100%;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            .ezpsy-editor-radio-block_img {
+                width: 18px;
+                height: 18px;   
+                cursor: pointer;
+            }
+            .ezpsy-editor-radio-block_text {
+                font-size: 16px;
+                line-height: 18px;
+                margin-left: .8em;
+            }
+        }
+    }
+
+    .ezpsy-editor-checkbox-block {
+        .ezpsy-editor-checkbox-block_title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .ezpsy-editor-checkbox-block_option {
+            width: 100%;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            .ezpsy-editor-checkbox-block_checkbox {
+                width: 18px;
+                height: 18px;   
+                cursor: pointer;
+            }
+            .ezpsy-editor-checkbox-block_text {
+                font-size: 16px;
+                line-height: 18px;
+                margin-left: .8em;
+            }
+        }
     }
 }

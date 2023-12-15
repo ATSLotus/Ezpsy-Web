@@ -502,16 +502,28 @@ const inputPopup = (opts: inputOptions) => {
         id: string
         amount: number
         hasDefault: boolean
+        isMulti: boolean
+        default: Array<{
+            text: string,
+            checked: boolean
+        }>
     }>()
 
     const optionsList = new Map<string, Array<HTMLDivElement>>()
 
     const setOption = ({
         id,
-        hasDefault
+        hasDefault,
+        isMulti,
+        defaultValue
     }: {
         id: string
         hasDefault: boolean
+        isMulti: boolean
+        defaultValue?: {
+            text: string,
+            checked: boolean
+        }
     }) => {
         let input_width = hasDefault ? "90%" : "100%"
         const option_item = document.createElement("div")
@@ -554,7 +566,8 @@ const inputPopup = (opts: inputOptions) => {
             const array = optionsList.get(id)
             array?.splice(index + 1, 0, setOption({
                 id,
-                hasDefault
+                hasDefault,
+                isMulti
             }))
             const dom = document.getElementById(`${id}_option`) as HTMLElement
             dom.innerHTML = '' 
@@ -603,15 +616,22 @@ const inputPopup = (opts: inputOptions) => {
             `
             default_body.append(checkbox_dom)
             option_item.append(default_body)
-            option_item.addEventListener("click", () => {
-                const array = optionsList.get(id)
-                array?.forEach(item => {
-                    const checkbox = item.querySelector("[type='checkbox']") as HTMLInputElement
-                    if(checkbox !== checkbox_dom) {
-                        checkbox.checked = false
-                    }
+            if(!isMulti)
+                checkbox_dom.addEventListener("click", () => {
+                    const array = optionsList.get(id)
+                    array?.forEach(item => {
+                        const checkbox = item.querySelector("[type='checkbox']") as HTMLInputElement
+                        if(checkbox !== checkbox_dom) {
+                            checkbox.checked = false
+                        }
+                    })
                 })
-            })
+            if(defaultValue) {
+                checkbox_dom.checked = defaultValue.checked
+            }
+        }
+        if(defaultValue) {
+            input_dom.value = defaultValue.text
         }
         return option_item
     }
@@ -997,11 +1017,15 @@ const inputPopup = (opts: inputOptions) => {
                 const title = obj.props.title ? obj.props.title : ""
                 const amount = obj.props.amount ? obj.props.amount : 3
                 const has_default = obj.props.hasDefault ? !!(obj.props.hasDefault) : true
+                const isMulti = obj.props.isMulti ? !!(obj.props.isMulti) : false
+                const defaultValue = obj.props.default ? obj.props.default : null
 
                 options.push({
                     id: id,
                     amount: amount,
-                    hasDefault: has_default
+                    hasDefault: has_default,
+                    isMulti: isMulti,
+                    default: defaultValue
                 })
 
                 optionsList.set(id, [])
@@ -1468,14 +1492,29 @@ const inputPopup = (opts: inputOptions) => {
     options.forEach((option) => {
         const dom = document.getElementById(`${option.id}_option`)
         const array = optionsList.get(option.id)
-        for(let i = 0; i < option.amount; i++) {
-            const opt = setOption({
-                id: option.id,
-                hasDefault: option.hasDefault
+        if(option.default) {
+            option.default.forEach((def, index) => {
+                const opt = setOption({
+                    id: option.id,
+                    hasDefault: option.hasDefault,
+                    isMulti: option.isMulti,
+                    defaultValue: def
+                })
+                opt.setAttribute("data-index", index.toString())
+                array?.push(opt)
+                dom?.append(opt)
             })
-            opt.setAttribute("data-index", i.toString())
-            array?.push(opt)
-            dom?.append(opt)
+        } else {
+            for(let i = 0; i < option.amount; i++) {
+                const opt = setOption({
+                    id: option.id,
+                    hasDefault: option.hasDefault,
+                    isMulti: option.isMulti
+                })
+                opt.setAttribute("data-index", i.toString())
+                array?.push(opt)
+                dom?.append(opt)
+            }
         }
     })
 
