@@ -58,13 +58,22 @@ export const UserStore = defineStore({
     }
 })
 
+type blocks = "singleline" | "multiline" | "radio" | "checkbox"
 export const EditorKeyStore = defineStore({
     id: "editor_key",
     state: () => ({
-        keys: new Map<string, "singleline" | "multiline" | "radio" | "checkbox">()
+        keys: new Map<string, blocks>()
     }),
     getters: {
-        getKeys: (state) => state.keys
+        // getKeys: (state) => state.keys
+        getKeys: (state) => {
+            const keys = new Object() as Record<string, blocks>
+            const map = state.keys
+            map.forEach((value, key) => {
+                keys[key] = value
+            })
+            return JSON.stringify(keys)
+        }
     },
     actions: {
         update(editor: IDomEditor) {

@@ -1,0 +1,52 @@
+// @ts-nocheck
+import BLK from "blockly"
+import agc from '@/assets/agc/agc';
+import { UserStore } from "@/store/store";
+import { decrypt } from "@/assets/utils/crypto";
+
+interface MapObj {
+    html: string,
+    keys: Record<string, "singleline" | "multiline" | "radio" | "checkbox">
+}
+
+const table = async (Blockly: typeof BLK) => {
+    const userStorage = UserStore()
+    let userId = userStorage.getUser?.uid
+    const storage = agc.storage
+
+    const listsRes = await storage.getFileListAll(`/private/${userId}/ezTable/`)
+    let map = new Map<string, MapObj>()
+    if(listsRes.isSuccess) {
+        listsRes.data.fileList.forEach(async list => {
+            const fileRes = await storage.getFileData(list.path)
+            if(fileRes.isSuccess) {
+                const json = fileRes.data
+                json.data = JSON.parse(decrypt(json.data))
+                map.set(`'${list.name.split('.')[0]}'`, {
+                    html: json.data.html,
+                    keys: JSON.stringify(json.data.keys)
+                })
+            }
+        })
+    }
+    console.log("MAP", map)
+
+    Blockly.JavaScript['referenceTable'] = function (block) {
+        let value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
+        
+        console.log(value_name)
+        const json = map.get(value_name)
+        console.log(json.html)
+
+        var code = `
+            await Swal.fire({
+                html: ""
+            }).then(res => {
+
+            })
+        `;
+        return [code, Blockly.JavaScript.ORDER_ATOMIC];
+    };
+}
+
+export default table

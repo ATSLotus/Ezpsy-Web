@@ -1,6 +1,6 @@
-import { base64ToString } from "../utils/utils"
+import { decrypt } from "../utils/crypto"
 
-const REG = /<span data-block="(singleline|multiline|radio|checkbox)" data-key="[a-zA-Z_][0-9a-zA-Z_]*" data-w-e-is-void(="")?( data-w-e-is-inline(="")?)? data-value="[A-Za-z0-9+/=]*">[a-zA-Z_][0-9a-zA-Z_]*<\/span>/g
+const REG = /<span data-block="(singleline|multiline|radio|checkbox)" data-key="[a-zA-Z_][0-9a-zA-Z_]*" data-w-e-is-void(="")?( data-w-e-is-inline(="")?)? data-value="[A-Za-z0-9%]*">[a-zA-Z_][0-9a-zA-Z_]*<\/span>/g
 
 const handleHtml = (html: string) => {
     const blocks = html.match(REG)
@@ -32,13 +32,13 @@ const handleHtml = (html: string) => {
                 break
             case "radio":
                 if(value) {
-                    const radio_json = JSON.parse(base64ToString(value))
-                    replace += `<div class="${cls}">`
+                    const radio_json = JSON.parse(decrypt(value))
+                    replace += `<div id="ezpsy_editor_table_${key}" class="${cls}">`
                     replace += `<div class="${cls}_title">${radio_json.title}</div>`
                     let len = radio_json.options.length
                     for(let i = 0; i < len; i++) {
                         const option = radio_json.options[i]
-                        replace += `<div id="ezpsy_editor_table_${key}" class="${cls}_option">`
+                        replace += `<div class="${cls}_option">`
                         replace += `<img class="${cls}_img" `
                         replace += `onclick="((event)=>{
                             const target = event.target
@@ -63,13 +63,13 @@ const handleHtml = (html: string) => {
                 break
             case "checkbox": 
                 if(value) {
-                    const radio_json = JSON.parse(base64ToString(value))
-                    replace += `<div class="${cls}">`
+                    const radio_json = JSON.parse(decrypt(value))
+                    replace += `<div id="ezpsy_editor_table_${key}" class="${cls}">`
                     replace += `<div class="${cls}_title">${radio_json.title}</div>`
                     let len = radio_json.options.length
                     for(let i = 0; i < len; i++) {
                         const option = radio_json.options[i]
-                        replace += `<div id="ezpsy_editor_table_${key}" class="${cls}_option">`
+                        replace += `<div class="${cls}_option">`
                         replace += `<input class="${cls}_checkbox" type="checkbox" `
                         if(option.checked)
                             replace += `checked />`

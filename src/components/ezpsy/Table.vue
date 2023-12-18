@@ -13,6 +13,7 @@
     import { ObjectListSort } from '@/assets/utils/sort';
     import storeImage from '@/assets/agc/storeImage';
     import { getStorage, setStorage } from '@/assets/utils/storage';
+import router from '@/router/router';
 
     const storage = agc.storage
 
@@ -28,6 +29,9 @@
         path: string
         name: string
         description: string
+        html: string
+        json: string
+        keys: string
         modifyTime: string
         operations: OPERATE
     }
@@ -102,13 +106,25 @@
     data.type = `/private/${user?.uid}/ezTable/`
     data.headers = {
         name: {
-            type: "text",
+            type: "link",
             text: "标题",
             style: {
                 width: "15%"
             },
             align: "start",
-            sort: true
+            sort: true,
+            action: (list: LIST) => {
+                router.replace({
+                    query: {
+                        menu: "custom-table",
+                        msg: encrypt(JSON.stringify({
+                            title: list.name,
+                            description: list.description,
+                            json: list.json
+                        }))
+                    }
+                })
+            }
         },
         description: {
             type: "long-text",
@@ -168,7 +184,10 @@
                                 name: title,
                                 description: json.data.description,
                                 // modifyTime: formatDate(json.mtime),
-                                modifyTime: formatDate(metadata.mtime)
+                                modifyTime: formatDate(metadata.mtime),
+                                html: json.data.html,
+                                json: json.data.json,
+                                keys: json.data.keys
                             }
                             data.lists.push(Object.assign(li, { operations: operate }))
                         }

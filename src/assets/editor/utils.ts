@@ -1,8 +1,8 @@
 import { IDomEditor } from "@wangeditor/editor";
-import { base64ToString, stringToBase64 } from "../utils/utils";
 import { inputPopup, tipPopup } from "../utils/popup";
 import { EditorKeyStore } from "@/store/store";
 import { block_type } from "./interface";
+import { decrypt, encrypt } from "../utils/crypto";
 
 const key_store = EditorKeyStore()
 
@@ -31,7 +31,7 @@ export const insertBlock = (editor: IDomEditor, block: block_type, default_opt?:
     if(default_opt) {
         key = default_opt?.key ? default_opt.key : ""
         if(default_opt?.value) {
-            value = JSON.parse(base64ToString(default_opt.value))
+            value = JSON.parse(decrypt(default_opt.value))
         }
         skip = default_opt?.isSkip ? default_opt.isSkip : false
     }
@@ -198,7 +198,7 @@ export const insertBlock = (editor: IDomEditor, block: block_type, default_opt?:
                         const multiline_node = {
                             type: "block",
                             block: block,
-                            value: stringToBase64(JSON.stringify({
+                            value: encrypt(JSON.stringify({
                                 title: title,
                                 options: options
                             })),
@@ -230,7 +230,8 @@ export const insertBlock = (editor: IDomEditor, block: block_type, default_opt?:
                             title: "关键词",
                             placeholder: "关键词",
                             tips: "关键词指代实际使用中，用于存储数据时标识数据，请使用字母、数字或下划线(_)且以字母或下划线开头",
-                            reg: /^[a-zA-Z_][0-9a-zA-Z_]*$/
+                            reg: /^[a-zA-Z_][0-9a-zA-Z_]*$/,
+                            default: key
                         }
                     },
                     {
@@ -238,14 +239,16 @@ export const insertBlock = (editor: IDomEditor, block: block_type, default_opt?:
                         props: {
                             title: "标题",
                             placeholder: "标题",
-                            require: true
+                            require: true,
+                            default: value?.title
                         }
                     },
                     {
                         type: "option",
                         props: {
                             title: "选项",
-                            isMulti: true
+                            isMulti: true,
+                            default: value?.options
                         }
                     }
                 ],
@@ -274,7 +277,7 @@ export const insertBlock = (editor: IDomEditor, block: block_type, default_opt?:
                         const multiline_node = {
                             type: "block",
                             block: block,
-                            value: stringToBase64(JSON.stringify({
+                            value: encrypt(JSON.stringify({
                                 title: title,
                                 options: options
                             })),

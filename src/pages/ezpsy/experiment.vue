@@ -8,6 +8,7 @@
     import uuid from '@/assets/utils/uuid';
     import { showMsg } from '@/assets/utils/popup';
     import formatJavaScriptCode from '@/assets/utils/formatJS';
+import Swal from 'sweetalert2';
 
     const route = useRoute()
     const code = `(async function(){\n${decrypt(route.query.code as string)}\n}())`
@@ -62,6 +63,7 @@
         _window.dlg = dlg
         _window.time = time
         _window.keypress = keypress
+        _window.Swal = Swal
         _window.AjaxData = (id: string, data: string) => {
             const name = route.query?.experiment
             if(name) {
@@ -93,6 +95,12 @@
     })
 
     onBeforeUnmount(async () => {
+        delete _window.ezpsy
+        delete _window.ez 
+        delete _window.dlg
+        delete _window.time
+        delete _window.keypress
+        delete _window.Swal
         data.scripts.forEach(script => {
             if(script)
                 document.getElementsByTagName('head')[0].removeChild(script)

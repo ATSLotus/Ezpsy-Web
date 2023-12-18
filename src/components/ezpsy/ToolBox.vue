@@ -1048,6 +1048,17 @@
             </block>
         </category>
         <sep></sep>
+        <!-- 量表 -->
+        <category name="Table" :colour="color.table">
+            <block type="referenceTable">
+                <value name="name">
+                    <block type="text">
+                        <field name="TEXT">文本</field>
+                    </block>
+                </value>
+            </block>
+        </category>
+        <sep></sep>
         <!-- 弹窗 -->
         <category name="Dialog" :colour="color.dialog">
             <!-- -弹窗信息- -->

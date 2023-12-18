@@ -48,13 +48,3 @@ export const addMosaic = (str: string, num: number = 4, start: number = 2) => {
     }).join("")
     return result
 }
-
-export const stringToBase64 = (jsonStr: string) => {
-    const bs64 = btoa(jsonStr)
-    return bs64
-}
-
-export const base64ToString = (bs64: string) => {
-    const jsonStr = atob(bs64)
-    return jsonStr
-}

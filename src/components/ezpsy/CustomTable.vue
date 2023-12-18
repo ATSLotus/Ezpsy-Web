@@ -10,11 +10,15 @@
     import toolbarConfig from "@/assets/editor/toolbarConfig"
     import handleHtml from "@/assets/editor/handleHtml"
     import { hideloading, inputPopup, showloading } from '@/assets/utils/popup';
-    import { encrypt } from '@/assets/utils/crypto';
-    import { UserStore } from '@/store/store';
+    import { decrypt, encrypt } from '@/assets/utils/crypto';
+    import { EditorKeyStore, UserStore } from '@/store/store';
     import agc from '@/assets/agc/agc';
+    import uuid from '@/assets/utils/uuid';
+    import { useRoute } from 'vue-router';
 
     initBlock()
+    const route = useRoute()
+    const key_store = EditorKeyStore()
 
     const editorRef = shallowRef() as ShallowRef<IDomEditor>
     const valueHtml = ref("")
@@ -39,6 +43,7 @@
         },
         data: {
             title: "",
+            description: "",
             html: "",
             json: ""
         }
@@ -55,6 +60,14 @@
                 data.preview.header.height = `${h}px`
                 clearInterval(timer)
                 hideloading()
+            }
+            if(route.query?.msg) {
+                let msg = JSON.parse(decrypt(route.query.msg as string))
+                console.log(msg)
+                data.data.title = msg.title
+                data.data.description = msg.description
+                // @ts-ignore
+                editorRef.value.insertNode(JSON.parse(msg.json))
             }
         }, 100)
     })
@@ -80,7 +93,7 @@
             resetPreview()
             if(editor && data.preview.isShow) {
                 // const edt = editorRef.value
-                console.log(editor)
+                log.info(editor)
             }
         })
         editor.on("unFullScreen", () => {
@@ -100,6 +113,7 @@
         data.data.html = handleHtml(editor.getHtml())
         // data.data.html = editor.getHtml()
         data.data.json = JSON.stringify(editor.children)
+        key_store.update(editor)
     }
 
     const resetPreview = () => {
@@ -146,7 +160,8 @@
                     type: "multiline",
                     props: {
                         title: "描述",
-                        placeholder: "请输入"
+                        placeholder: "请输入",
+                        default: data.data.description
                     }
                 }
             ],
@@ -162,24 +177,27 @@
         }).then((res) => {
             if(res.isConfirmed) {
                 const { title, decription } = res.value
-                const json = encrypt(JSON.stringify({
-                    creator: {
-                        // @ts-ignore
-                        name: user.displayName,
-                        // @ts-ignore
-                        avatar: user.photoUrl
-                    },
-                    description: decription,
-                    html: data.data.html,
-                    json: data.data.json
-                }))
-                // storage.uploadString({
-                //     str: json,
-                //     // @ts-ignore
-                //     folder: `private/${user.uid}/ezTable`,
-                //     name: title ? title : uuid.getUuid(),
-                //     extension: "json"
-                // })
+                const json = {
+                    data: encrypt(JSON.stringify({
+                        creator: {
+                            // @ts-ignore
+                            name: user.displayName,
+                            // @ts-ignore
+                            avatar: user.photoUrl
+                        },
+                        description: decription,
+                        html: data.data.html,
+                        json: data.data.json,
+                        keys: key_store.getKeys
+                    }))
+                }
+                storage.uploadString({
+                    str: JSON.stringify(json),
+                    // @ts-ignore
+                    folder: `private/${user.uid}/ezTable`,
+                    name: title ? title : uuid.getUuid(),
+                    extension: "json"
+                })
             }
         })
     }
