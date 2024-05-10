@@ -25,7 +25,7 @@ const table = async (Blockly: typeof BLK) => {
                 json.data = JSON.parse(decrypt(json.data))
                 map.set(`'${list.name.split('.')[0]}'`, {
                     html: json.data.html,
-                    keys: JSON.stringify(json.data.keys)
+                    keys: JSON.parse(json.data.keys)
                 })
             }
         })
