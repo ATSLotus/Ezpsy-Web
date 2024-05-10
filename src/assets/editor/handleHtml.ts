@@ -42,6 +42,8 @@ const handleHtml = (html: string) => {
                         replace += `<img class="${cls}_img" `
                         replace += `onclick="((event)=>{
                             const target = event.target
+                            const parent = target.parentElement.parentElement
+                            const list  = parent.querySelectorAll('.${cls}_img')
                             if(target.getAttribute('data-selected') === 'true') {
                                 target.setAttribute('data-selected', 'false')
                                 target.src = target.src.replace('yes', 'no')
@@ -49,6 +51,13 @@ const handleHtml = (html: string) => {
                                 target.setAttribute('data-selected', 'true')
                                 target.src = target.src.replace('no', 'yes')
                             }
+                            list.forEach(li => {
+                                if(target !== li) {
+                                    li.setAttribute('data-selected', 'false')
+                                    li.src = target.src.replace('yes', 'no')
+                                }
+                            })
+                            
                         })(event)" `
                         replace += `src="./src/assets/image/editor/radio-`
                         if(option.checked)

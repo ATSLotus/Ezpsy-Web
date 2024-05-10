@@ -3,6 +3,7 @@ import BLK from "blockly"
 import agc from '@/assets/agc/agc';
 import { UserStore } from "@/store/store";
 import { decrypt } from "@/assets/utils/crypto";
+import { stringtobase64 } from "@/assets/utils/utils";
 
 interface MapObj {
     html: string,
@@ -32,20 +33,15 @@ const table = async (Blockly: typeof BLK) => {
     console.log("MAP", map)
 
     Blockly.JavaScript['referenceTable'] = function (block) {
-        let value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
+        let value_name = block.getFieldValue('name');
         
-        console.log(value_name)
-        const json = map.get(value_name)
-        console.log(json.html)
+        const json = stringtobase64(JSON.stringify(map.get(value_name)))
 
         var code = `
-            await Swal.fire({
-                html: ""
-            }).then(res => {
-
-            })
+            await renderTable(${JSON.stringify(json)})
         `;
-        return [code, Blockly.JavaScript.ORDER_ATOMIC];
+        return [code, Blockly.JavaScript.ORDER_ATOMIC]; 
+        
     };
 }
 

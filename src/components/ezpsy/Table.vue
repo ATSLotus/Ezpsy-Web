@@ -13,7 +13,7 @@
     import { ObjectListSort } from '@/assets/utils/sort';
     import storeImage from '@/assets/agc/storeImage';
     import { getStorage, setStorage } from '@/assets/utils/storage';
-import router from '@/router/router';
+    import router from '@/router/router';
 
     const storage = agc.storage
 

@@ -1051,11 +1051,12 @@
         <!-- 量表 -->
         <category name="Table" :colour="color.table">
             <block type="referenceTable">
-                <value name="name">
+                <!-- <value name="name">
                     <block type="text">
                         <field name="TEXT">文本</field>
                     </block>
-                </value>
+                </value> -->
+                <field name="Table"></field>
             </block>
         </category>
         <sep></sep>
