@@ -1,7 +1,7 @@
 import Swal from "sweetalert2"
 import ATSSelectElement from "../elem/atsselect"
 import uuid from "./uuid"
-import { getBase64, getContainedImageSize, getImgTypeByBase64 } from "./image"
+import { getBase64, getContainedImageSize, getImgTypeByBase64, getMaxContainSize } from "./image"
 
 let container = "ats_container"
 type ContainerType = "normal" | "spacial" | "fullscreen"
@@ -898,6 +898,11 @@ const inputPopup = (opts: inputOptions) => {
                                         const reader = new FileReader()
                                         reader.onload = () => {
                                             img.src = reader.result
+                                            const image = new Image()
+                                            image.src = reader.result
+                                            image.onload = () => {
+                                                img.setAttribute('data-origin-size', image.width + '-' + image.height)
+                                            }
                                         }
                                         reader.readAsDataURL(file)
                                     } else {
@@ -1005,8 +1010,14 @@ const inputPopup = (opts: inputOptions) => {
                             height: 100%;
                             object-fit: contain;
                             display: block;
-                            user-select: none;
-                        " src="${default_img}" id="${id}"/>
+                            user-select: none; /* 防止选择图片内容 */
+                            -webkit-user-select: none; /* 兼容旧版本的 WebKit 浏览器 */
+                            -moz-user-select: none; /* 兼容旧版本的 Firefox */
+                            -ms-user-select: none; /* 兼容旧版本的 IE 浏览器 */
+                            -webkit-user-drag: none; /* 防止拖拽图片 */
+                            user-drag: none; /* 防止拖拽图片 */
+                        " src="${default_img}" id="${id}"
+                        data-origin-size=""/>
                     </div>
                 </div>
                 `
@@ -1105,23 +1116,27 @@ const inputPopup = (opts: inputOptions) => {
                     if(/data:image\/.{3,4};base64,/.test(img_src)) {
                         const cropper = document.getElementById(`${item.id}_crop`)
                         const cropper_box = document.getElementById(`${item.id}_crop_box`)
-                        if(cropper && cropper_box) {
-                            const x = cropper.offsetLeft
-                            const y = cropper.offsetTop
-                            const w = cropper.offsetWidth 
-                            const h = cropper.offsetHeight
+                        const sizeInfo = dom?.getAttribute("data-origin-size")
+                        if(cropper && cropper_box && sizeInfo) {
+                            const ow = parseFloat(sizeInfo.split("-")[0])
+                            const oh = parseFloat(sizeInfo.split("-")[1])
                             const canvas = document.createElement("canvas")
-                            document.body.append(canvas)
-                            canvas.width = cropper_box.clientWidth
-                            canvas.height = cropper_box.clientHeight
                             const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
-                            const size = getContainedImageSize(cropper_box, (<HTMLImageElement>dom))
+                            const max_size = getMaxContainSize(ow, oh)
+                            canvas.width = max_size.width
+                            canvas.height = max_size.height
+                            const ratio_row = max_size.width / cropper_box.clientWidth
+                            const ratio_col = max_size.height / cropper_box.clientHeight
+                            const x = cropper.offsetLeft * ratio_row
+                            const y = cropper.offsetTop * ratio_col
+                            const w = cropper.offsetWidth * ratio_row
+                            const h = cropper.offsetHeight * ratio_col
                             ctx.drawImage(
                                 (<HTMLImageElement>dom), 
-                                (canvas.width - size.width) / 2,
-                                (canvas.height - size.height) / 2,
-                                size.width,
-                                size.height
+                                (max_size.width - ow) / 2,
+                                (max_size.width - oh) / 2,
+                                ow,
+                                oh
                             )
                             const img_data = ctx.getImageData(x, y, w, h)
                             ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -1275,13 +1290,20 @@ const inputPopup = (opts: inputOptions) => {
                 if(cropper_box.getAttribute(key) === "true") {
                     const left = cropper_box.offsetLeft
                     const top = cropper_box.offsetTop
-                    if(top > 0 && left > 0) {
+                    if(top >= 0 && left >= 0) {
                         const x = event.clientX - position.x
                         const y = event.clientY - position.y
-                        if(top + y > 0 && top + position.h < H && left + x > 0 && left + position.w < W)
                         cropper_box.style.transform = `translate(${x}px, ${y}px)`
                         cropper_box.setAttribute(key_left, `${x}`)
                         cropper_box.setAttribute(key_top, `${y}`)
+                        // if(
+                        //     top + y > 0 && 
+                        //     top + position.h < H && 
+                        //     left + x > 0 && 
+                        //     left + position.w < W
+                        // ) {
+                            
+                        // }
                     }
                 }
             })
@@ -1299,16 +1321,28 @@ const inputPopup = (opts: inputOptions) => {
                     cropper_box.style.transform = ""
                     if(top) {
                         if(/-/.test(top)) {
-                            cropper_box.style.top = `${old_top - parseInt(top.replace("-", ""))}px`
+                            let move = old_top - parseInt(top.replace("-", ""))
+                            if(move < 0)
+                                move = 0
+                            cropper_box.style.top = `${move}px`
                         } else {
-                            cropper_box.style.top = `${old_top + parseInt(top)}px`
+                            let move = old_top + parseInt(top)
+                            if(move > crop_box.clientHeight - cropper_box.clientHeight)
+                                move = crop_box.clientHeight - cropper_box.clientHeight
+                            cropper_box.style.top = `${move}px`
                         }
                     }
                     if(left) {
                         if(/-/.test(left)) {
-                            cropper_box.style.left = `${old_left - parseInt(left.replace("-", ""))}px`
+                            let move = old_left - parseInt(left.replace("-", ""))
+                            if(move < 0)
+                                move = 0
+                            cropper_box.style.left = `${move}px`
                         } else {
-                            cropper_box.style.left = `${old_left + parseInt(left)}px`
+                            let move = old_left + parseInt(left)
+                            if(move > crop_box.clientWidth - cropper_box.clientWidth)
+                                move = crop_box.clientWidth - cropper_box.clientWidth
+                            cropper_box.style.left = `${move}px`
                         }
                     }
                 }
