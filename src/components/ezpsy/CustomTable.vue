@@ -63,7 +63,6 @@
             }
             if(route.query?.msg) {
                 let msg = JSON.parse(decrypt(route.query.msg as string))
-                console.log(msg)
                 data.data.title = msg.title
                 data.data.description = msg.description
                 // @ts-ignore

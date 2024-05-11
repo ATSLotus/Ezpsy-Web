@@ -30,7 +30,6 @@ const table = async (Blockly: typeof BLK) => {
             }
         })
     }
-    console.log("MAP", map)
 
     Blockly.JavaScript['referenceTable'] = function (block) {
         let value_name = block.getFieldValue('name');

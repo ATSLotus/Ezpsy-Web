@@ -33,8 +33,6 @@ const table = async (Blockly: typeof BLK) => {
             }
         })
     }
-    console.log("MAP", map)
-    console.log("ARRAY", arr)
 
     Blockly.Blocks["referenceTable"] = {
         init: function () {

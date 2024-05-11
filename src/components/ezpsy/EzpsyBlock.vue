@@ -623,7 +623,8 @@
     }
 
     const copy_src = async (li: LIST) => {
-        const src = getBlob(li.preview)
+        // const src = getBlob(li.preview)
+        const src = `data:image/png;base64,${li.preview}`
         await navigator.clipboard.writeText(src);
         tipPopup("success", {
             title: `已选中 ${li.name}`, 

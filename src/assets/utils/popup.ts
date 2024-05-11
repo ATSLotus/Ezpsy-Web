@@ -1203,7 +1203,6 @@ const inputPopup = (opts: inputOptions) => {
     const SET = new Set()
 
     const judgeIsConfirm = () => {
-        console.log()
         if(SET.size !== max) {
             confirmButton.setAttribute("disabled", "true")
             confirmButton.style.cursor = "not-allowed"
