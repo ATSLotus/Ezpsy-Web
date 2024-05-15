@@ -15,8 +15,9 @@ import module from "./module"
 import object from "./object"
 import systemInformation from "./systemInformation"
 import time from "./time"
+import table from "./table"
 
-const javascriptInit = (Blockly: typeof BLK) => {
+const javascriptInit = async (Blockly: typeof BLK) => {
     action(Blockly)
     animate(Blockly)
     async_f(Blockly)
@@ -25,6 +26,7 @@ const javascriptInit = (Blockly: typeof BLK) => {
     control(Blockly)
     dataExport(Blockly)
     delay(Blockly)
+    await table(Blockly)
     dialog(Blockly)
     general(Blockly)
     graph(Blockly)

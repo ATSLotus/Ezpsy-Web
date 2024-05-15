@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { createRouter } from 'vue-router'
+import { IDomEditor } from "@wangeditor/editor"
+import { BlockElementWithId } from '@/assets/editor/interface'
 
 interface MENU {
     key: string,
@@ -52,6 +54,41 @@ export const UserStore = defineStore({
             this.user = user
             // @ts-ignore
             window.localStorage.setItem("userId", user?.uid)
+        }
+    }
+})
+
+type blocks = "singleline" | "multiline" | "radio" | "checkbox"
+export const EditorKeyStore = defineStore({
+    id: "editor_key",
+    state: () => ({
+        keys: new Map<string, blocks>()
+    }),
+    getters: {
+        // getKeys: (state) => state.keys
+        getKeys: (state) => {
+            const keys = new Object() as Record<string, blocks>
+            const map = state.keys
+            map.forEach((value, key) => {
+                keys[key] = value
+            })
+            return JSON.stringify(keys)
+        }
+    },
+    actions: {
+        update(editor: IDomEditor) {
+            const blocks = editor.getElemsByType("block") as BlockElementWithId[]
+            const inline_blocks = editor.getElemsByType("inline-block") as BlockElementWithId[]
+            this.keys.clear()
+            blocks.forEach(block => {
+                this.keys.set(block.key, block.block)
+            })
+            inline_blocks.forEach(block => {
+                this.keys.set(block.key, block.block)
+            })
+        },
+        validate(key: string) {
+            return this.keys.has(key)
         }
     }
 })

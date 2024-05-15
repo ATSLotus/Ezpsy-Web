@@ -15,6 +15,7 @@ import module from "./module"
 import object from "./object"
 import systemInformation from "./systemInformation"
 import time from "./time"
+import table from "./table"
 
 const blocksInit = (Blockly: typeof BLK) => {
     action(Blockly)
@@ -25,6 +26,7 @@ const blocksInit = (Blockly: typeof BLK) => {
     control(Blockly)
     dataExport(Blockly)
     delay(Blockly)
+    table(Blockly)
     dialog(Blockly)
     general(Blockly)
     graph(Blockly)

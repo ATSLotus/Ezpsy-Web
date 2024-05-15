@@ -13,12 +13,12 @@
 }
 
 .ats_container {
-    width: $APPWidth !important;
+    width: $ConsoleWidth !important;
     margin: auto !important;
 }
 
 .ats_ezpsy_container {
-    width: calc($APPWidth - $EzpsyMenuWidth) !important;
+    width: calc($ConsoleWidth - $EzpsyMenuWidth) !important;
     margin: auto !important;
     left: $EzpsyMenuWidth !important;
 }

@@ -1,3 +1,5 @@
+import { encode, decode } from "js-base64"
+
 export const formatNum = (num: number) => {
     return num >= 10 ? `${num}` : `0${num}`
 }
@@ -47,4 +49,12 @@ export const addMosaic = (str: string, num: number = 4, start: number = 2) => {
         }
     }).join("")
     return result
+}
+
+export const stringtobase64 = (value: string) => {
+    return encode(value)
+}
+
+export const base64tostring = (value: string) => {
+    return decode(value)
 }

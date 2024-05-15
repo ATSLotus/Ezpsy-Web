@@ -7,8 +7,10 @@
     
     import { EzpsyMenuStore, UserStore } from "@/store/store";
     import Production from "@/components/ezpsy/Production.vue"
+    import Table from "@/components/ezpsy/Table.vue";
     import Image from "@/components/ezpsy/Image.vue"
     import EzpsyBlock from "@/components/ezpsy/EzpsyBlock.vue";
+    import CustomTable from "@/components/ezpsy/CustomTable.vue";
     import Codes from "@/components/ezpsy/Codes.vue"
     import Datas from "@/components/ezpsy/Datas.vue"
     import { getCurrentUser, logout, updateProfile } from "@/assets/index/auth";
@@ -159,8 +161,10 @@
 
     const menus = shallowRef([
         { key: "production", component: Production, icon: 'file-code',title: '个人项目', isSelected: true },
+        { key: "table", component: Table, icon: "file-word", title: "实验量表", isSelected: false },
         { key: "image", component: Image, icon: 'image', title: '图床图片', isSelected: false }, 
         { key: "ezpsy-block", component: EzpsyBlock, icon: "puzzle-piece", title: '实验设计', isSelected: false },
+        { key: "custom-table", component: CustomTable, icon: "file-pen", title: "表格设计", isSelected: false },
         { key: "codes", component: Codes, icon: 'list', title: '实验列表', isSelected: false },
         { key: "datas", component: Datas, icon: 'file-excel', title: '实验数据', isSelected: false }
     ])
@@ -284,7 +288,8 @@
     @import "@/scss/ezpsy-menu.scss";
     @import "@/scss/app.scss";
     .console {
-        width: 100%;
+        width: $ConsoleWidth !important;
+        margin: auto;
         height: 100vh;
         display: flex;
         .content-box {

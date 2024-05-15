@@ -1,7 +1,7 @@
 import Swal from "sweetalert2"
 import ATSSelectElement from "../elem/atsselect"
 import uuid from "./uuid"
-import { getBase64, getContainedImageSize, getImgTypeByBase64 } from "./image"
+import { getBase64, getContainedImageSize, getImgTypeByBase64, getMaxContainSize } from "./image"
 
 let container = "ats_container"
 type ContainerType = "normal" | "spacial" | "fullscreen"
@@ -393,7 +393,8 @@ type inputTypes =
     "checkbox" | 
     "select" | 
     "file" |
-    "image"
+    "image" |
+    "option"
 
 interface inputObject {
     type: inputTypes
@@ -412,7 +413,6 @@ interface inputOptions {
     preConfirm: (getValue: () => Array<boolean|File|string>) => () => any
 }
 
-
 const inputPopup = (opts: inputOptions) => {
     let storage = new Array<string|boolean>()
     if(opts.storageId) {
@@ -420,6 +420,7 @@ const inputPopup = (opts: inputOptions) => {
         if(st) 
             storage = JSON.parse(st) as Array<string|boolean>
     }
+    
     const ids = new Array<domIndex>()
     let html = ``
     html += `
@@ -450,12 +451,191 @@ const inputPopup = (opts: inputOptions) => {
                 color: #888888;
                 text-indent: 0em;
             }
+            .ats-tips-icon {
+                width: 16px;
+                height: 16px;
+                margin: 0 4px;
+                cursor: pointer;
+                position: relative;
+                background: url(./src/assets/image/popup/tips.svg) no-repeat;
+                background-size: 100%;
+            }
+            .ats-tips-icon:hover .ats-tips {
+                display: block;
+            }
+            .ats-tips {
+                display: none;
+                min-width: 100px;
+                width: fit-content;
+                max-width: 200px;
+                padding: 5px 10px;
+                position: absolute;
+                z-index: 1;
+                top: 24px;
+                left: -50px;
+                background: #FFFFFF;
+                filter: drop-shadow(0 2px 10px #CCCCCC);
+                text-align: justify;
+            }
+            .ats-tips:before {
+                content: "";
+                position: absolute;
+                width: 0;
+                height: 0;
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-bottom: 6px solid #FFFFFF;
+                top: -6px;
+                left: 50px;
+            }
         </style>
     `
     html += `<div>${opts.title}</div>\n`
     const requireStr = '<span style="margin-left: 5px;color: #FF0000">*</span>'
     const requires = new Array<string>()
     const crops = new Array<string>()
+    const regs = new Array<{
+        id: string,
+        reg: RegExp
+    }>()
+    const options = new Array<{
+        id: string
+        amount: number
+        hasDefault: boolean
+        isMulti: boolean
+        default: Array<{
+            text: string,
+            checked: boolean
+        }>
+    }>()
+
+    const optionsList = new Map<string, Array<HTMLDivElement>>()
+
+    const setOption = ({
+        id,
+        hasDefault,
+        isMulti,
+        defaultValue
+    }: {
+        id: string
+        hasDefault: boolean
+        isMulti: boolean
+        defaultValue?: {
+            text: string,
+            checked: boolean
+        }
+    }) => {
+        let input_width = hasDefault ? "90%" : "100%"
+        const option_item = document.createElement("div")
+        option_item.style.cssText = `
+            width: 100%;
+            height: 40px;
+            display: flex;
+            margin: 0 0 10px 0;
+        `
+        const input_item = document.createElement("div")
+        input_item.style.cssText = `
+            width: ${input_width};
+            height: 40px;
+            display: flex;
+        `
+        const input_dom = document.createElement('input')
+        input_dom.style.cssText = `
+            width: calc(100% - 80px);
+            height: 40px;
+            line-height: 40px;
+            outline: none;
+            padding: 0;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            text-indent: 0.8em;
+        `
+        input_dom.type = "text"
+        const add_dom = document.createElement("div")
+        add_dom.style.cssText = `
+            width: 40px;
+            height: 40px;
+            background: url(./src/assets/image/popup/add.svg) no-repeat;
+            background-size: 75%;
+            background-position: center;
+            cursor: pointer;
+        `
+        add_dom.addEventListener("click", () => {
+            const index = parseInt(option_item.getAttribute("data-index") as string)
+            const array = optionsList.get(id)
+            array?.splice(index + 1, 0, setOption({
+                id,
+                hasDefault,
+                isMulti
+            }))
+            const dom = document.getElementById(`${id}_option`) as HTMLElement
+            dom.innerHTML = '' 
+            array?.forEach((item, index) => {
+                item.setAttribute("data-index", index.toString())
+                dom.append(item)
+            })
+        })
+        const reduce_dom = document.createElement("div")
+        reduce_dom.style.cssText = `
+            width: 40px;
+            height: 40px;
+            background: url(./src/assets/image/popup/reduce.svg) no-repeat;
+            background-size: 75%;
+            background-position: center;
+            cursor: pointer;
+        `
+        reduce_dom.addEventListener("click", () => {
+            const index = parseInt(option_item.getAttribute("data-index") as string)
+            const array = optionsList.get(id)
+            array?.splice(index, 1)
+            const dom = document.getElementById(`${id}_option`) as HTMLElement
+            dom.innerHTML = '' 
+            array?.forEach((item, index) => {
+                item.setAttribute("data-index", index.toString())
+                dom.append(item)
+            })
+        })
+        input_item.append(input_dom, add_dom, reduce_dom)
+        option_item.append(input_item)
+        if(hasDefault) {
+            const default_body = document.createElement("div")
+            default_body.style.cssText = `
+                width: 10%;
+                height: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `
+            const checkbox_dom = document.createElement("input")
+            checkbox_dom.type = "checkbox"
+            checkbox_dom.style.cssText = `
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+            `
+            default_body.append(checkbox_dom)
+            option_item.append(default_body)
+            if(!isMulti)
+                checkbox_dom.addEventListener("click", () => {
+                    const array = optionsList.get(id)
+                    array?.forEach(item => {
+                        const checkbox = item.querySelector("[type='checkbox']") as HTMLInputElement
+                        if(checkbox !== checkbox_dom) {
+                            checkbox.checked = false
+                        }
+                    })
+                })
+            if(defaultValue) {
+                checkbox_dom.checked = defaultValue.checked
+            }
+        }
+        if(defaultValue) {
+            input_dom.value = defaultValue.text
+        }
+        return option_item
+    }
+
     opts.html.forEach((obj, i) => {
         const id = "input_" + uuid.getUuid()
         const v = storage[i]
@@ -465,8 +645,22 @@ const inputPopup = (opts: inputOptions) => {
                 const placeholder = obj.props.placeholder ? obj.props.placeholder : "请输入内容"
                 const defaultValue = obj.props.default ? `${obj.props.default}` : ""
                 const require = obj.props.require ? obj.props.require : false
-                if(require)
+                const tips = obj.props.tips ? obj.props.tips : ""
+                const reg = obj.props.reg ? obj.props.reg : null
+                const tipsDom = `
+                    <div 
+                        class="ats-tips-icon"
+                    ><div class="ats-tips">${tips}</div></div>
+                `
+                if(reg) {
+                    regs.push({
+                        id,
+                        reg
+                    })
                     requires.push(id)
+                } else if(require) {
+                    requires.push(id)
+                }   
                 html += `
                     <div style="
                         width: 90%;
@@ -485,8 +679,10 @@ const inputPopup = (opts: inputOptions) => {
                             width: 15%;
                             flex-shrink: 1;
                             flex-grow: 1;
+                            position: relative;
                         ">
-                            ${title} ${require ? requireStr : ''} 
+                            ${title} ${require ? requireStr : ''} ${reg ? requireStr : ''}
+                            ${tips ? tipsDom : ""}
                         </div>
                         <input style="
                             width: 75%;
@@ -702,6 +898,11 @@ const inputPopup = (opts: inputOptions) => {
                                         const reader = new FileReader()
                                         reader.onload = () => {
                                             img.src = reader.result
+                                            const image = new Image()
+                                            image.src = reader.result
+                                            image.onload = () => {
+                                                img.setAttribute('data-origin-size', image.width + '-' + image.height)
+                                            }
                                         }
                                         reader.readAsDataURL(file)
                                     } else {
@@ -809,14 +1010,77 @@ const inputPopup = (opts: inputOptions) => {
                             height: 100%;
                             object-fit: contain;
                             display: block;
-                            user-select: none;
-                        " src="${default_img}" id="${id}"/>
+                            user-select: none; /* 防止选择图片内容 */
+                            -webkit-user-select: none; /* 兼容旧版本的 WebKit 浏览器 */
+                            -moz-user-select: none; /* 兼容旧版本的 Firefox */
+                            -ms-user-select: none; /* 兼容旧版本的 IE 浏览器 */
+                            -webkit-user-drag: none; /* 防止拖拽图片 */
+                            user-drag: none; /* 防止拖拽图片 */
+                        " src="${default_img}" id="${id}"
+                        data-origin-size=""/>
                     </div>
                 </div>
                 `
                 crops.push(id)
                 break
             }
+            case "option": 
+                const title = obj.props.title ? obj.props.title : ""
+                const amount = obj.props.amount ? obj.props.amount : 3
+                const has_default = obj.props.hasDefault ? !!(obj.props.hasDefault) : true
+                const isMulti = obj.props.isMulti ? !!(obj.props.isMulti) : false
+                const defaultValue = obj.props.default ? obj.props.default : null
+
+                options.push({
+                    id: id,
+                    amount: amount,
+                    hasDefault: has_default,
+                    isMulti: isMulti,
+                    default: defaultValue
+                })
+
+                optionsList.set(id, [])
+
+                let default_head = ""
+                let input_width = has_default ? "90%" : "100%"
+                if(has_default) {
+                    default_head = `
+                        <div style="
+                            width: 10%;
+                            height； 40px;
+                            line-height: 40px;
+                        ">默认</div>
+                    `
+                }
+
+                html += `
+                    <div style="
+                        width: 90%;
+                        margin: 15px auto 0 auto;
+                    " id="${id}">
+                        <div style="
+                            width: 100%;
+                            height； 40px;
+                            display: flex;
+                            align-items: center;
+                            font-size: 14px;
+                        ">
+                            <div style = "
+                                width: ${input_width};
+                                height: 40px;
+                                line-height: 40px;
+                                text-align: start;
+                            ">${title}</div>
+                            ${default_head}
+                        </div>
+                        <div style="
+                            width: 100%;
+                            height: auto;
+                            max-height: 220px;
+                        " class="ats_no_scroll_bar" id="${id}_option"></div>
+                    </div>
+                `
+                break
             default:
                 break
         }
@@ -852,23 +1116,27 @@ const inputPopup = (opts: inputOptions) => {
                     if(/data:image\/.{3,4};base64,/.test(img_src)) {
                         const cropper = document.getElementById(`${item.id}_crop`)
                         const cropper_box = document.getElementById(`${item.id}_crop_box`)
-                        if(cropper && cropper_box) {
-                            const x = cropper.offsetLeft
-                            const y = cropper.offsetTop
-                            const w = cropper.offsetWidth 
-                            const h = cropper.offsetHeight
+                        const sizeInfo = dom?.getAttribute("data-origin-size")
+                        if(cropper && cropper_box && sizeInfo) {
+                            const ow = parseFloat(sizeInfo.split("-")[0])
+                            const oh = parseFloat(sizeInfo.split("-")[1])
                             const canvas = document.createElement("canvas")
-                            document.body.append(canvas)
-                            canvas.width = cropper_box.clientWidth
-                            canvas.height = cropper_box.clientHeight
                             const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
-                            const size = getContainedImageSize(cropper_box, (<HTMLImageElement>dom))
+                            const max_size = getMaxContainSize(ow, oh)
+                            canvas.width = max_size.width
+                            canvas.height = max_size.height
+                            const ratio_row = max_size.width / cropper_box.clientWidth
+                            const ratio_col = max_size.height / cropper_box.clientHeight
+                            const x = cropper.offsetLeft * ratio_row
+                            const y = cropper.offsetTop * ratio_col
+                            const w = cropper.offsetWidth * ratio_row
+                            const h = cropper.offsetHeight * ratio_col
                             ctx.drawImage(
                                 (<HTMLImageElement>dom), 
-                                (canvas.width - size.width) / 2,
-                                (canvas.height - size.height) / 2,
-                                size.width,
-                                size.height
+                                (max_size.width - ow) / 2,
+                                (max_size.width - oh) / 2,
+                                ow,
+                                oh
                             )
                             const img_data = ctx.getImageData(x, y, w, h)
                             ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -885,6 +1153,23 @@ const inputPopup = (opts: inputOptions) => {
                         res.push("")
                     }
                     break
+                case "option":
+                    const lists = optionsList.get(item.id)
+                    const options = new Array<{
+                        text: string
+                        checked: boolean
+                    }>()
+                    lists?.forEach(li => {
+                        const input = li.querySelector("[type='text']") as HTMLInputElement
+                        if(input.value) {
+                            const checkbox = li.querySelector("[type='checkbox']") as HTMLInputElement
+                            options.push({
+                                text: input.value,
+                                checked: checkbox.checked
+                            })
+                        }
+                    })
+                    res.push(JSON.stringify(options))
                 default:
                     break
             }
@@ -939,6 +1224,18 @@ const inputPopup = (opts: inputOptions) => {
         }
     }
 
+    const changeIndexWithReg = (dom: HTMLInputElement, reg: RegExp, oldCss: string) => {
+        if(!(reg.test(dom.value))) {
+            dom.style.cssText = oldCss + `
+                border-color: #FF0000;
+            `
+            SET.delete(dom.id)
+        } else {
+            dom.style.cssText = oldCss + ''
+            SET.add(dom.id)
+        }
+    }
+
     requires.forEach(id => {
         const dom = document.getElementById(id) as HTMLInputElement
         if(dom) {
@@ -952,7 +1249,6 @@ const inputPopup = (opts: inputOptions) => {
             })
         }
     })
-    judgeIsConfirm()
 
     crops.forEach(crop => {
         const key = "isCropping"
@@ -993,13 +1289,20 @@ const inputPopup = (opts: inputOptions) => {
                 if(cropper_box.getAttribute(key) === "true") {
                     const left = cropper_box.offsetLeft
                     const top = cropper_box.offsetTop
-                    if(top > 0 && left > 0) {
+                    if(top >= 0 && left >= 0) {
                         const x = event.clientX - position.x
                         const y = event.clientY - position.y
-                        if(top + y > 0 && top + position.h < H && left + x > 0 && left + position.w < W)
                         cropper_box.style.transform = `translate(${x}px, ${y}px)`
                         cropper_box.setAttribute(key_left, `${x}`)
                         cropper_box.setAttribute(key_top, `${y}`)
+                        // if(
+                        //     top + y > 0 && 
+                        //     top + position.h < H && 
+                        //     left + x > 0 && 
+                        //     left + position.w < W
+                        // ) {
+                            
+                        // }
                     }
                 }
             })
@@ -1017,16 +1320,28 @@ const inputPopup = (opts: inputOptions) => {
                     cropper_box.style.transform = ""
                     if(top) {
                         if(/-/.test(top)) {
-                            cropper_box.style.top = `${old_top - parseInt(top.replace("-", ""))}px`
+                            let move = old_top - parseInt(top.replace("-", ""))
+                            if(move < 0)
+                                move = 0
+                            cropper_box.style.top = `${move}px`
                         } else {
-                            cropper_box.style.top = `${old_top + parseInt(top)}px`
+                            let move = old_top + parseInt(top)
+                            if(move > crop_box.clientHeight - cropper_box.clientHeight)
+                                move = crop_box.clientHeight - cropper_box.clientHeight
+                            cropper_box.style.top = `${move}px`
                         }
                     }
                     if(left) {
                         if(/-/.test(left)) {
-                            cropper_box.style.left = `${old_left - parseInt(left.replace("-", ""))}px`
+                            let move = old_left - parseInt(left.replace("-", ""))
+                            if(move < 0)
+                                move = 0
+                            cropper_box.style.left = `${move}px`
                         } else {
-                            cropper_box.style.left = `${old_left + parseInt(left)}px`
+                            let move = old_left + parseInt(left)
+                            if(move > crop_box.clientWidth - cropper_box.clientWidth)
+                                move = crop_box.clientWidth - cropper_box.clientWidth
+                            cropper_box.style.left = `${move}px`
                         }
                     }
                 }
@@ -1192,6 +1507,51 @@ const inputPopup = (opts: inputOptions) => {
             })
         }
     })
+
+    regs.forEach(reg => {
+        const dom = document.getElementById(reg.id) as HTMLInputElement
+        if(dom) {
+            const oldCss = dom.style.cssText
+            if(reg.reg.test(dom.value)) {
+                SET.add(dom.id)
+            }
+            dom.addEventListener("input", () => {
+                changeIndexWithReg(dom, reg.reg, oldCss) 
+                judgeIsConfirm()
+            })
+        }
+    })
+
+    options.forEach((option) => {
+        const dom = document.getElementById(`${option.id}_option`)
+        const array = optionsList.get(option.id)
+        if(option.default) {
+            option.default.forEach((def, index) => {
+                const opt = setOption({
+                    id: option.id,
+                    hasDefault: option.hasDefault,
+                    isMulti: option.isMulti,
+                    defaultValue: def
+                })
+                opt.setAttribute("data-index", index.toString())
+                array?.push(opt)
+                dom?.append(opt)
+            })
+        } else {
+            for(let i = 0; i < option.amount; i++) {
+                const opt = setOption({
+                    id: option.id,
+                    hasDefault: option.hasDefault,
+                    isMulti: option.isMulti
+                })
+                opt.setAttribute("data-index", i.toString())
+                array?.push(opt)
+                dom?.append(opt)
+            }
+        }
+    })
+
+    judgeIsConfirm()
 
     return result
 }

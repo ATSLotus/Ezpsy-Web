@@ -8,6 +8,8 @@
     import uuid from '@/assets/utils/uuid';
     import { showMsg } from '@/assets/utils/popup';
     import formatJavaScriptCode from '@/assets/utils/formatJS';
+    import Swal from 'sweetalert2';
+    import { base64tostring } from '@/assets/utils/utils';
 
     const route = useRoute()
     const code = `(async function(){\n${decrypt(route.query.code as string)}\n}())`
@@ -46,6 +48,7 @@
         data.scripts.push(await randerCode("static/blockly/src/clearScreen-func.js", false))
         data.scripts.push(await randerCode("static/blockly/src/control-func.js", false))
         data.scripts.push(await randerCode("static/blockly/src/animate-func.js", false))
+        data.scripts.push(await randerCode("static/blockly/src/table-func.js", false))
         // data.scripts.push(await randerCode("static/blockly/src/dataExport-func.js", false))
         const ez = ezpsy.init({
             el: document.getElementById("toturial") as HTMLElement,
@@ -62,6 +65,10 @@
         _window.dlg = dlg
         _window.time = time
         _window.keypress = keypress
+        _window.Swal = Swal
+        _window.utils = {
+            base64tostring: base64tostring
+        }
         _window.AjaxData = (id: string, data: string) => {
             const name = route.query?.experiment
             if(name) {
@@ -93,6 +100,13 @@
     })
 
     onBeforeUnmount(async () => {
+        delete _window.ezpsy
+        delete _window.ez 
+        delete _window.dlg
+        delete _window.time
+        delete _window.keypress
+        delete _window.Swal
+        delete _window.utils
         data.scripts.forEach(script => {
             if(script)
                 document.getElementsByTagName('head')[0].removeChild(script)
@@ -119,4 +133,7 @@
             left: 0;
         }
     }
+</style>
+<style lang="scss"> 
+    @import "@/scss/editor-table.scss";
 </style>

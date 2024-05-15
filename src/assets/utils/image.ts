@@ -6,7 +6,7 @@ export const getBase64 = (str: string) => {
 
 export const getImgTypeByBase64 = (str: string) => {
     const res = str.match(base64HeaderReg)
-    if(res) {
+    if (res) {
         return res[0].replace("data:", "").replace(";base64,", "")
     } else {
         return ""
@@ -38,8 +38,8 @@ export const getContainedImageSize = (container: HTMLElement, image: HTMLImageEl
     if (containerAspect > imageAspect) {
         // 图片被包含在容器内，高度撑满，宽度计算
         return {
-            width: containerHeight * imageAspect,  
-            height: containerHeight 
+            width: containerHeight * imageAspect,
+            height: containerHeight
         };
     } else {
         // 图片被包含在容器内，宽度撑满，高度计算
@@ -47,5 +47,19 @@ export const getContainedImageSize = (container: HTMLElement, image: HTMLImageEl
             width: containerWidth,
             height: containerWidth / imageAspect
         };
+    }
+}
+
+export const getMaxContainSize = (width: number, height: number) => {
+    if(width >= height) {
+        return {
+            width: width,
+            height: width
+        }
+    } else {
+        return {
+            width: height,
+            height: height
+        }
     }
 }

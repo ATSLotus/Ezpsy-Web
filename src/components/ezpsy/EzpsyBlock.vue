@@ -42,9 +42,9 @@
             if(res.length > 0) {
                 return
             } else {
-                tempConsoleWarn(data)
+                tempConsoleWarn(...data)
             }
-        } else tempConsoleWarn(data);
+        } else tempConsoleWarn(...data);
     }
     console.log = (...data: any[]) => {
         if(typeof data[0] === 'string') {
@@ -52,9 +52,9 @@
             if(res.length > 0) {
                 return
             } else {
-                tempConsoleLog(data)
+                tempConsoleLog(...data)
             }
-        } else tempConsoleLog(data);
+        } else tempConsoleLog(...data);
     }
 
     const storage = agc.storage
@@ -205,7 +205,7 @@
             
         // })
         blocksInit(data.Blockly as typeof BLK)
-        javascriptInit(data.Blockly as typeof BLK)
+        await javascriptInit(data.Blockly as typeof BLK)
         defaultInit(data.Blockly as typeof BLK)
         await init()
         if(route.query?.key) {
@@ -623,7 +623,8 @@
     }
 
     const copy_src = async (li: LIST) => {
-        const src = getBlob(li.preview)
+        // const src = getBlob(li.preview)
+        const src = `data:image/png;base64,${li.preview}`
         await navigator.clipboard.writeText(src);
         tipPopup("success", {
             title: `已选中 ${li.name}`, 

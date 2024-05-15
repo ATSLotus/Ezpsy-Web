@@ -43,6 +43,7 @@ const blockColor = {
     action: "#9BCF8E",
     animate: "#5B88CF",
     clearScreen: "#78CF8E",
+    table: "#4FA9BF",
     dialog: "#CF5B78",
     delay: "#CF9E5B",
     time: "#CF5B8F",
@@ -51,7 +52,6 @@ const blockColor = {
     variables: "#8D5BCF",
     procedure: "#CF5B8F",
     dataExport: "#CF7B5B"
-
 }
 
 export default blockColor
