@@ -288,7 +288,8 @@
     @import "@/scss/ezpsy-menu.scss";
     @import "@/scss/app.scss";
     .console {
-        width: 100%;
+        width: $ConsoleWidth !important;
+        margin: auto;
         height: 100vh;
         display: flex;
         .content-box {

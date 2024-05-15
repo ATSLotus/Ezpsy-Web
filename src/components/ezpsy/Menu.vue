@@ -57,12 +57,16 @@
     watch(router.currentRoute, () => {
         changeSelected()
     })
+
+    const gotoIndex = () => {
+        router.push("/")
+    }
     
 </script>
 
 <template>
     <div class="menus">
-        <div class="logo">
+        <div class="logo" @click="gotoIndex">
             <img :src="data.logo" width="100" height="100" />
         </div>
         <div
@@ -89,6 +93,7 @@
         .logo {
             display: flex;
             justify-content: center;
+            cursor: pointer;
             img {
                 filter: brightness(100);
             }
