@@ -403,47 +403,47 @@
             <!-- 直线 -->
             <block type="graph_line">
                 <value name="id">
-                    <block type="variables_get">
+                    <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">line</field>
                     </block>
                 </value>
                 <value name="lis_pointer_0">
-                    <block  movable="false" deletable="false" type="points_0">
+                    <block movable="false" deletable="false" type="points_0">
                         <value name="x_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="y_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                     </block>
                 </value>
                 <value name="lis_pointer_1">
-                    <block  movable="false" deletable="false" type="points_1">
+                    <block movable="false" deletable="false" type="points_1">
                         <value name="x_1">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">1000</field>
                             </block>
                         </value>
                         <value name="y_1">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">1000</field>
                             </block>
                         </value>
                     </block>
                 </value>
                 <value name="graph_attributes">
-                    <block  movable="false" deletable="false" type="graph_attributes">
+                    <block movable="false" deletable="false" type="graph_attributes">
                         <value name="border_width">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">2</field>
                             </block>
                         </value>
                         <value name="color">
-                            <block type="colour_picker" movable="false" deletable="false">
+                            <block type="colour_picker">
                             </block>
                         </value>
                     </block>
@@ -452,26 +452,26 @@
             <!-- 矩形 -->
             <block type="graph_rect">
                 <value name="id">
-                    <block type="variables_get">
+                    <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">rect</field>
                     </block>
                 </value>
                 <value name="lis_pointer_0">
-                    <block  movable="false" deletable="false" type="points_0">
+                    <block movable="false" deletable="false" type="points_0">
                         <value name="x_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="y_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                     </block>
                 </value>
                 <value name="lis_size">
-                    <block type="size">
+                    <block type="size" movable="false" deletable="false">
                         <value name="width">
                             <block type="math_number">
                                 <field name="NUM">100</field>
@@ -544,47 +544,47 @@
             <!-- 三角形 -->
             <block type="graph_triangle">
                 <value name="id">
-                    <block type="variables_get">
+                    <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">triangle</field>
                     </block>
                 </value>
                 <value name="lis_pointer_0">
-                    <block  movable="false" deletable="false" type="points_0">
+                    <block movable="false" deletable="false" type="points_0">
                         <value name="x_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="y_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                     </block>
                 </value>
                 <value name="lis_pointer_1">
-                    <block  movable="false" deletable="false" type="points_1">
+                    <block movable="false" deletable="false" type="points_1">
                         <value name="x_1">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">0</field>
                             </block>
                         </value>
                         <value name="y_1">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">200</field>
                             </block>
                         </value>
                     </block>
                 </value>
                 <value name="lis_pointer_2">
-                    <block  movable="false" deletable="false" type="points_2">
+                    <block movable="false" deletable="false" type="points_2">
                         <value name="x_2">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">200</field>
                             </block>
                         </value>
                         <value name="y_2">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">200</field>
                             </block>
                         </value>
@@ -611,31 +611,31 @@
             <!-- 圆 -->
             <block type="graph_circle">
                 <value name="id">
-                    <block type="variables_get">
+                    <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">strokeCircle</field>
                     </block>
                 </value>
                 <value name="lis_pointer_r">
-                    <block  movable="false" deletable="false" type="points_r">
+                    <block movable="false" deletable="false" type="points_r">
                         <value name="x_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="y_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="r">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">50</field>
                             </block>
                         </value>
                     </block>
                 </value>
                 <value name="graph_attributes_1">
-                    <block  movable="false" deletable="false" type="graph_attributes_1">
+                    <block movable="false" deletable="false" type="graph_attributes_1">
                         <value name="border_width">
                             <block type="math_number">
                                 <field name="NUM">2</field>
@@ -681,24 +681,24 @@
             <!-- 文本 -->
             <block type="graph_text">
                 <value name="id">
-                    <block type="variables_get">
+                    <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">text</field>
                     </block>
                 </value>
                 <value name="content">
-                    <block type="text" movable="false" deletable="false">
+                    <block type="text">
                         <field name="TEXT">文本</field>
                     </block>
                 </value>
                 <value name="lis_pointer_0">
-                    <block  movable="false" deletable="false" type="points_0">
+                    <block movable="false" deletable="false" type="points_0">
                         <value name="x_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="y_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
@@ -707,14 +707,14 @@
                 <value name="font_attributes">
                     <block movable="false" deletable="false" type="font_attributes">
                         <value name="fontSize">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">20</field>
                             </block>
                         </value>
                         <field name="fontWeight">'normal'</field>
                         <field name="fontStyle">'normal'</field>
                         <value name="fontFamily">
-                            <block type="text" movable="false" deletable="false">
+                            <block type="text">
                                 <field name="TEXT">仿宋</field>
                             </block>
                         </value>
@@ -725,7 +725,7 @@
                         <field name="textAlgin">'start'</field>
                         <field name="textBaseline">'alphabetic'</field>
                         <value name="color">
-                            <block type="colour_picker" movable="false" deletable="false"></block>
+                            <block type="colour_picker"></block>
                         </value>
                     </block>
                 </value>
@@ -733,7 +733,7 @@
             <!-- 图片 -->
             <block type="image">
                 <value name="id">
-                    <block type="variables_get">
+                    <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">image1</field>
                     </block>
                 </value>
@@ -745,21 +745,21 @@
                     </block>
                 </value>
                 <value name="lis_pointer_0">
-                    <block  movable="false" deletable="false" type="points_0">
+                    <block movable="false" deletable="false" type="points_0">
                         <value name="x_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="y_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                     </block>
                 </value>
                 <value name="lis_size">
-                    <block type="size">
+                    <block type="size" movable="false" deletable="false">
                         <value name="width">
                             <block type="math_number">
                                 <field name="NUM">100</field>
@@ -775,7 +775,7 @@
             </block>
             <block type="drawImg">
                 <value name="id">
-                    <block type="variables_get">
+                    <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">image1</field>
                     </block>
                 </value>
@@ -783,24 +783,24 @@
             <!-- -光栅- -->
             <block type="grating">
                 <value name="id">
-                    <block type="variables_get">
+                    <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">grating</field>
                     </block>
                 </value>
                 <value name="lis_pointer_r">
                     <block  movable="false" deletable="false" type="points_r">
                         <value name="x_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="y_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="r">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">50</field>
                             </block>
                         </value>
@@ -809,22 +809,22 @@
                 <value name="grat_attributes_1">
                     <block type="grat_attributes_1" movable="false" deletable="false">
                         <value name="pixelsPerDegree">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">57</field>
                             </block>
                         </value>
                         <value name="spatialFrequency">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">1</field>
                             </block>
                         </value>
                         <value name="angle">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">0</field>
                             </block>
                         </value>
                         <value name="contrast">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">1</field>
                             </block>
                         </value>
@@ -833,22 +833,22 @@
                 <value name="grat_attributes_2">
                     <block type="grat_attributes_2" movable="false" deletable="false">
                         <value name="phase">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">0</field>
                             </block>
                         </value>
                         <value name="noiseLevel">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">0</field>
                             </block>
                         </value>
                         <value name="animateCycle">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">0</field>
                             </block>
                         </value>
                         <value name="time">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">1000</field>
                             </block>
                         </value>
@@ -858,24 +858,24 @@
             <!-- -随机点- -->
             <block type="randomDot">
                 <value name="id">
-                    <block type="variables_get">
+                    <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">randomDot</field>
                     </block>
                 </value>
                 <value name="lis_pointer_r">
-                    <block  movable="false" deletable="false" type="points_r">
+                    <block movable="false" deletable="false" type="points_r">
                         <value name="x_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="y_0">
-                            <block  movable="false" deletable="false" type="math_number">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="r">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">50</field>
                             </block>
                         </value>
@@ -884,22 +884,22 @@
                 <value name="random_dot_attributes">
                     <block type="random_dot_attributes" movable="false" deletable="false">
                         <value name="maskBand">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">8</field>
                             </block>
                         </value>
                         <value name="dotNumber">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">100</field>
                             </block>
                         </value>
                         <value name="minSpeed">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">0</field>
                             </block>
                         </value>
                         <value name="maxSpeed">
-                            <block type="math_number" movable="false" deletable="false">
+                            <block type="math_number">
                                 <field name="NUM">5</field>
                             </block>
                         </value>

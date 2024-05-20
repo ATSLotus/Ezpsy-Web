@@ -204,7 +204,8 @@
                             json.data = JSON.parse(decrypt(json.data))
                             data.experiments.push({
                                 title: title,
-                                description: json.data.description
+                                description: json.data.description,
+                                code: json.data.code
                             })
                         }
                     }
@@ -244,6 +245,16 @@
         router.push("/index/register")
     }
 
+    const gotoExperiment = (title: string, code: string) => {
+        const routeData = router.resolve({
+            path: "/ezpsy/experiment",
+            query: {
+                code: encrypt(code),
+                experiment: title
+            }
+        })
+        window.open(routeData.href, "_blank")
+    }
 
 </script>
 
@@ -296,7 +307,7 @@
                 </div>
                 <div class="experiments-box">
                     <div class="experiments">
-                        <div class="experiment" v-for="experiment in data.experiments">
+                        <div class="experiment" v-for="experiment in data.experiments" @click="gotoExperiment(experiment.title, experiment.code)">
                             <div class="experiment-title">{{ experiment.title }}</div>
                             <div class="experiment-description">
                                 {{ 
@@ -481,7 +492,9 @@
                 }
             }
         }
-        $EXP_TILTE_HEIGHT: 30px; $EXP_DES_HEIGHT: 50px; $EXP_DES_LINEHEIGHT: 0.5 * $EXP_DES_HEIGHT;
+        $EXP_TILTE_HEIGHT: 30px; $EXP_LINE_NUMBER: 4;
+        $EXP_BORDER: 10px;
+        $EXP_DES_LINEHEIGHT: 25px; $EXP_DES_HEIGHT: $EXP_LINE_NUMBER * $EXP_DES_LINEHEIGHT + 2 * $EXP_BORDER;
         $EXP_HEIGHT: $EXP_TILTE_HEIGHT + $EXP_DES_HEIGHT;
         .experiments-box {
             width: 100%;
@@ -518,9 +531,12 @@
                     font-size: 14px;
                     overflow: hidden;
                     display: -webkit-box;
-                    -webkit-line-clamp: 2;
+                    -webkit-line-clamp: $EXP_LINE_NUMBER;
                     -webkit-box-orient: vertical;
                     text-overflow: ellipsis;
+                    border: $EXP_BORDER solid #FFFFFF;
+                    box-sizing: border-box;
+                    text-align: justify;
                 }
             }
         }
