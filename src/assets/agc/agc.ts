@@ -10,6 +10,11 @@ const agc = await (async () => {
         context,
         authConfig: [
             {
+                mode: 0,
+                saveMode: 0,
+                tag: "Ezpsy_Anonymous"
+            },
+            {
                 mode: 1,
                 saveMode: 0,
                 tag: "Ezpsy_Auth"

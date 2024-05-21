@@ -5,8 +5,7 @@
 </script>
 
 <template>
-	<div id="root" class="
-	no_scroll_bar">
+	<div id="root" class="no_scroll_bar">
         <router-view class="content"></router-view>
 	</div>
 </template>

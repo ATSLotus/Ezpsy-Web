@@ -9,6 +9,7 @@
     import router from '@/router/router';
     import { UserStore } from '@/store/store';
     import { onMounted, reactive, nextTick, watch } from 'vue';
+    import { loginAnonymously } from "@/assets/index/auth"
 
     interface AUTHMENU {
         text: string,
@@ -23,7 +24,7 @@
     const reload = async () => {
         const resp = await getCurrentUser()
         data.isAuth = resp.isSuccess
-        if(resp.isSuccess) {
+        if(resp.isSuccess && !resp.isAnonymous) {
             const u = resp.data
             data.auth.user = u
             data.auth.name = u.getDisplayName()
@@ -34,6 +35,11 @@
                     data.auth.logo = getBlob(getBase64(avatarResp.data))
                 }
             }
+        } else if(resp.isAnonymous) {
+            
+        } else {
+            const resp = await loginAnonymously()
+            log.info("Anonymously", resp)
         }
     }
 
@@ -162,8 +168,9 @@
     onMounted(async () => {
         setContainer("fullscreen")
         const user = await getCurrentUser()
+        log.info("USER", user)
         data.isAuth = user.isSuccess
-        if(data.isAuth) {
+        if(data.isAuth && !user.isAnonymous) {
             const userStorage = UserStore()
             userStorage.set(user.data.user)
             const u = user.data
@@ -180,6 +187,11 @@
             data.auth.time = info.lastSignInTime
             data.auth.time_text = formatDate(parseInt(data.auth.time))
             data.auth.menus = auth_menu
+        } else if(user.isAnonymous) {
+
+        } else {
+            const resp = await loginAnonymously()
+            log.info("Anonymously", resp)
         }
         const public_path = `public/`
         const all_list = await storage.getFileListAll(public_path)

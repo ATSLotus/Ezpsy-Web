@@ -164,10 +164,14 @@
         router.push("/index/reset")
     }
 
+    const index = () => {
+        router.push("/index")
+    }
+
     onBeforeMount(async () => {
         setContainer("fullscreen")
         const user = await getCurrentUser()
-        if(user.isSuccess) {
+        if(user.isSuccess && !user.isAnonymous) {
             router.push("/ezpsy/console")
         }
         if("msg" in route.query) {
@@ -190,6 +194,13 @@
         <div class="login">
             <div class="loginHeader">
                 <div style="font-size: 24px;">Ezpsy 账号登录</div>
+                <div style="font-size: 14px;margin-top: 10px;white-space: pre-wrap">
+                    放弃登录,
+                    <span 
+                        style="color: #007dff;cursor: pointer;"
+                        @click="index"
+                    > 去首页></span>
+                </div>
             </div>
             <form class="form" @submit="login">
                 <div v-if="!data.phoneIsTrue" class="Error">
@@ -296,7 +307,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        .registerHeader {
+        .loginHeader {
             width: $InputWidth;
             text-align: center;
         }

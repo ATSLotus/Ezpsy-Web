@@ -351,7 +351,7 @@
 
     const save = async (isGoto: boolean = false) => {
         const res = await getCurrentUser()
-        if(res.isSuccess) {
+        if(res.isSuccess && !res.isAnonymous) {
             const user = res.data.user
             const listsRes = storage.getFileListAll(`/private/${user?.uid}/ezBlock/`)
             if(data.isStorage) {
@@ -449,7 +449,6 @@
                     }
                 })
             }
-            
         } else {
             tipPopup("error", {
                 title: "请登录",

@@ -56,7 +56,7 @@
 
     const reload = async () => {
         const resp = await getCurrentUser()
-        if(resp.isSuccess) {
+        if(resp.isSuccess && !resp.isAnonymous) {
             const u = resp.data
             data.auth.user = u
             data.auth.name = u.getDisplayName()
@@ -67,6 +67,8 @@
                     data.auth.logo = getBlob(getBase64(avatarResp.data))
                 }
             }
+        } else {
+            router.push("/index/login")
         }
     }
 
@@ -175,7 +177,7 @@
         setContainer("spacial")
         const user = await getCurrentUser()
         log.info("USER", user)
-        if(!user.isSuccess) {
+        if(!user.isSuccess && !user.isAnonymous) {
             router.push("/index/login")
         } else {
             const userStorage = UserStore()

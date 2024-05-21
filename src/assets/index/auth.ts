@@ -1,11 +1,23 @@
 import agc from '@/assets/agc/agc'
-import { PhoneAuth } from "ezpsy-server"
+import log from "@/assets/utils/log"
+import { AnonymouslyAuth, PhoneAuth } from "ezpsy-server"
 
 const auth = agc.getAuth("Ezpsy_Auth") as PhoneAuth
+const anonymous_auth = agc.getAuth("Ezpsy_Anonymous") as AnonymouslyAuth
+
+type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
+type CURRENT_USER = UnwrapPromise<ReturnType<PhoneAuth["getUserInfo"]>> & {
+    isAnonymous: boolean
+}
 
 const getCurrentUser = async () => {
     const user = await auth.getUserInfo()
-    return user
+    const resp: CURRENT_USER = {
+        isSuccess: user.isSuccess,
+        isAnonymous: user.data?.user.anonymous || false,
+        data: user.data
+    }
+    return resp
 }
 
 const getVerifyCode = async (opts: Parameters<typeof auth.getVerifyCode>[0]) => {
@@ -25,6 +37,13 @@ const loginByPsd = async (opts: Parameters<typeof auth.loginByPassword>[0]) => {
 
 const loginByCode = async (opts: Parameters<typeof auth.loginByVerifyCode>[0]) => {
     const res = await auth.loginByVerifyCode(opts)
+    return res
+}
+
+const loginAnonymously = async () => {
+    const res = await anonymous_auth.login(() => {
+        log.info("匿名登录成功")
+    })
     return res
 }
 
@@ -53,5 +72,6 @@ export {
     loginByCode,
     updateProfile,
     resetPassword,
-    logout
+    logout,
+    loginAnonymously
 }
