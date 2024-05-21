@@ -23,7 +23,7 @@
 
     const reload = async () => {
         const resp = await getCurrentUser()
-        data.isAuth = resp.isSuccess
+        data.isAuth = resp.isSuccess && !resp.isAnonymous
         if(resp.isSuccess && !resp.isAnonymous) {
             const u = resp.data
             data.auth.user = u
@@ -169,8 +169,8 @@
         setContainer("fullscreen")
         const user = await getCurrentUser()
         log.info("USER", user)
-        data.isAuth = user.isSuccess
-        if(data.isAuth && !user.isAnonymous) {
+        data.isAuth = user.isSuccess && !user.isAnonymous
+        if(data.isAuth) {
             const userStorage = UserStore()
             userStorage.set(user.data.user)
             const u = user.data
