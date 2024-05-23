@@ -98,6 +98,8 @@
                 }
             })
         })
+
+        log.info(data.canShow, data.isShow)
     })
 
     
@@ -106,20 +108,20 @@
 <template>
     <div 
         class="toolbox_box" 
-        @mousemove="data.isShow = true" 
-        @mouseout="data.isShow = false"
+        @mouseover="data.isShow = true"
+        @mouseleave="data.isShow = false"
         ref="tool_box"
     >
         <div :class="data.tipStyle" ref="content">{{ props.content }}</div>
         <div class="tooltip" v-if="data.canShow && data.isShow">
-            <div class="tooltip_content" :class="data.tooltipStyle">{{ data.tooltip }}</div>
+            <div class="tooltip_content no_scroll_bar" :class="data.tooltipStyle">{{ data.tooltip }}</div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
     @import "../../scss/app.scss";
-    $trangleWidth: 10px; $trangleHeight: 10px; $color: #FFFFFF; $color-shadow: #0000001f;
+    $trangleWidth: 20px; $trangleHeight: 10px; $color: #FFFFFF; $color-shadow: #0000001f;
     .toolbox_box {
         position: relative;
         cursor: pointer;
@@ -148,6 +150,7 @@
             left: calc(0.5 * (100% - v-bind("data.props.width")));
             position: absolute;
             top: calc($trangleHeight + v-bind("data.top"));
+            // top: v-bind("data.top");
             white-space: pre-wrap;
             text-align: start;
             display: flex;
@@ -162,8 +165,11 @@
                 // color: #000000;
                 // opacity: 1;
                 width: 100%;
+                max-height: 120px;
+                overflow: scroll;
                 white-space: pre-wrap;
                 filter: drop-shadow(0px 0px 0px #1d1d1d33);
+                z-index: $ZIndex2;
             }
             .json {
                 display: flex;
@@ -190,6 +196,15 @@
             border-right: $trangleWidth solid transparent;
             border-bottom: $trangleHeight solid $color;
             top: -$trangleHeight;
+            z-index: $ZIndex1;
+        }
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: calc(100% + $trangleHeight);
+            top: -$trangleHeight;
+            z-index: $ZIndex1;
         }
     }
 </style>

@@ -49,14 +49,24 @@
             align: "center"
         },
         goto_index: 1,
+        refresh: true
     })
+
+    const refresh = () => {
+        data.refresh = false
+        nextTick(() => {
+            data.refresh = true
+        })
+    }
 
     const getStyle = (obj: Record<string, string>) => {
         return JSON.stringify(obj).replace(/[{}"]/g, '').replace(/,/g, ';')
     }
 
     const sliceLists = (origin: Array<any>) => {
-        return origin.slice(data.numPerPage*(data.index-1), data.numPerPage*data.index)
+        const new_lists = origin.slice(data.numPerPage*(data.index-1), data.numPerPage*data.index)
+        refresh()
+        return new_lists
     }
 
     const calculateNumPerPage= (value: HTMLDivElement) => {
@@ -349,6 +359,7 @@
                         class="li-item" 
                         :style="item.style" 
                         v-for="item in data.header"
+                        v-if="data.refresh"
                     >
                         <ToolTip 
                             class="text align" 
@@ -417,11 +428,13 @@
                             :type="'json'"
                         ></ToolTip>
                     </div>
-                    
+                </div>
+                <div class="list-default" v-if="data.lists.length === 0">
+                    <img src="@/assets/image/imgs/list-default.svg" alt="">
                 </div>
             </div>
         </div>
-        <div class="index">
+        <div class="index" v-if="data.lists.length !== 0">
             <div class="index-info">
                 当前页面: {{ data.index }} / {{ data.pages }}
             </div>
@@ -772,6 +785,13 @@
                         }
                     }
                     
+                }
+                .list-default {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 }
             }
         }
