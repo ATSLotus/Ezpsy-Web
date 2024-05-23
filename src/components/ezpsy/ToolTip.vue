@@ -121,7 +121,7 @@
 
 <style scoped lang="scss">
     @import "../../scss/app.scss";
-    $trangleWidth: 20px; $trangleHeight: 10px; $color: #FFFFFF; $color-shadow: #0000001f;
+    $trangleWidth: 15px; $trangleHeight: 10px; $color: #FFFFFF; $color-shadow: #0000001f;
     .toolbox_box {
         position: relative;
         cursor: pointer;
