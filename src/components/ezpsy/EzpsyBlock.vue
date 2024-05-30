@@ -859,13 +859,16 @@
                 }
                 .btn-run {
                     background: #005795;
-                    color: #ffffff;
+                    color: #FFFFFF;
                     img {
                         filter: brightness(100);
                     }
                 }
                 .btn:hover {
                     background: #3379aa;
+                    img {
+                        filter: brightness(100) invert(1);
+                    }
                 }
                 .button_denied:hover {
                     background: #f0f0f0;

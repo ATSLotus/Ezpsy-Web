@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import "@/scss/blockly.scss"
 import "@/scss/style.scss"
 import '@/scss/popup.scss'
 import App from './App.vue'
