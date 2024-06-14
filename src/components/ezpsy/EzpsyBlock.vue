@@ -193,18 +193,8 @@
                 }
             })
         })
-        // data.Blockly.dialog.setAlert((
-        //     message: string,
-        //     callback: (() => void) | undefined
-        // ) => {
-        //     showMsg(message, "").then(() => {
-        //         if(callback) {
-        //             callback()
-        //         }
-        //     })
-            
-        // })
-        blocksInit(data.Blockly as typeof BLK)
+        
+        await blocksInit(data.Blockly as typeof BLK)
         await javascriptInit(data.Blockly as typeof BLK)
         defaultInit(data.Blockly as typeof BLK)
         await init()

@@ -17,7 +17,7 @@ import systemInformation from "./systemInformation"
 import time from "./time"
 import table from "./table"
 
-const blocksInit = (Blockly: typeof BLK) => {
+const blocksInit = async (Blockly: typeof BLK) => {
     action(Blockly)
     animate(Blockly)
     // async(Blockly)
@@ -26,7 +26,7 @@ const blocksInit = (Blockly: typeof BLK) => {
     control(Blockly)
     dataExport(Blockly)
     delay(Blockly)
-    table(Blockly)
+    await table(Blockly)
     dialog(Blockly)
     general(Blockly)
     graph(Blockly)
