@@ -9,25 +9,6 @@
 
 <template>
     <xml id="ezpsy-toolbox" style="display: none">
-        <!-- guide -->
-        <!-- <category name="Guide" :colour="color.guide">
-            <block type="guide">
-                <value name="imageUrl">
-                    <shadow type="text">
-                        <field name="TEXT">http://www.easyun.ltd/img/head-back2.png</field>
-                    </shadow>
-                </value>
-            </block>
-            <block type="end">
-                <value name="ENDTEXT">
-                    <shadow type="text">
-                        <field name="TEXT">实验结束感谢参与！</field>
-                    </shadow>
-                </value>
-            </block>
-        </category> -->
-        <!-- <sep></sep> -->
-        <!-- logic -->
         <category name="Logic" :colour="color.logic">
             <block type="controls_if"></block>
             <block type="logic_compare"></block>
@@ -502,45 +483,6 @@
                     </block>
                 </value>
             </block>
-            <!-- 实心矩形 -->
-            <!-- <block type="graph_fillrect">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">fillRect</field>
-                    </block>
-                </value>
-                <value name="lis_pointer_0">
-                    <block  movable="false" deletable="false" type="points_0">
-                        <value name="x_0">
-                            <block  movable="false" deletable="false" type="math_number">
-                                <field name="NUM">100</field>
-                            </block>
-                        </value>
-                        <value name="y_0">
-                            <block  movable="false" deletable="false" type="math_number">
-                                <field name="NUM">100</field>
-                            </block>
-                        </value>
-                    </block>
-                </value>
-                <value name="lis_size">
-                    <block type="size">
-                        <value name="width">
-                            <block type="math_number">
-                                <field name="NUM">100</field>
-                            </block>
-                        </value>
-                        <value name="height">
-                            <block type="math_number">
-                                <field name="NUM">100</field>
-                            </block>
-                        </value>
-                    </block>
-                </value>
-                <value name="fill_color">
-                    <block type="colour_picker"></block>
-                </value>
-            </block> -->
             <!-- 三角形 -->
             <block type="graph_triangle">
                 <value name="id">
@@ -652,32 +594,6 @@
                     </block>
                 </value>
             </block>
-            <!-- 实心圆 -->
-            <!-- <block type="graph_fillcircle">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">fillCircle</field>
-                    </block>
-                </value>
-                <value name="x">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
-                    </block>
-                </value>
-                <value name="y">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
-                    </block>
-                </value>
-                <value name="r">
-                    <block type="math_number">
-                        <field name="NUM">50</field>
-                    </block>
-                </value>
-                <value name="fill_color">
-                    <block type="colour_picker"></block>
-                </value>
-            </block> -->
             <!-- 文本 -->
             <block type="graph_text">
                 <value name="id">
@@ -1186,7 +1102,7 @@
                 <value name="msgDlgContent">
                     <block type="msgDlgContent" movable="false" deletable="false">
                         <value name="image">
-                            <block type="text" movable="false" deletable="false">
+                            <block type="text">
                                 <field name="TEXT">https://unsplash.it/400/200</field>
                             </block>
                         </value>

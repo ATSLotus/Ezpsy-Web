@@ -219,21 +219,21 @@
         </div>
         <div class="editor_contain" ref="contain">
             <div class="wangeditor">
-                <Toolbar
-                    class="toolbar"
-                    :editor="editorRef"
-                    :defaultConfig="toolbarConfig"
-                    mode="default"
-                    ref="toolbar"
-                />
-                <Editor
-                    class="editor"
-                    v-model="valueHtml"
-                    :defaultConfig="editorConfig"
-                    mode="default"
-                    @onCreated="handleCreated"
-                    @onChange="handleChange"
-                />
+            <Toolbar
+                class="toolbar"
+                :editor="editorRef"
+                :defaultConfig="toolbarConfig"
+                mode="default"
+                ref="toolbar"
+            />
+            <Editor
+                class="editor"
+                v-model="valueHtml"
+                :defaultConfig="editorConfig"
+                mode="default"
+                @onCreated="handleCreated"
+                @onChange="handleChange"
+            />
             </div>
             <div id="ezpsy-editor-preview" class="preview" v-if="data.preview.isShow" ref="preview">
                 <div 

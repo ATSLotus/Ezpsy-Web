@@ -164,19 +164,17 @@ const dialog = (Blockly: typeof BLK) => {
     let statements_func = Blockly.JavaScript.statementToCode(block, 'func');
     // TODO: Assemble JavaScript into code variable.
     var code = `
-      await dlg.msgDlg({
+      let msg_resp = await dlg.msgDlg({
         imgUrl: ${value_image},
         content: ${value_text},
         imgWidth: ${value_width},
         imgHeight: ${value_height},
         confirm: ${value_confirm}
-      }).then(e=>{
-        if(e)
-        {
-          document.documentElement.requestFullscreen();
-          (async ()=>{\n${statements_func}\n})()
-        }
-      });
+      })
+      if(msg_resp) {
+        document.documentElement.requestFullscreen();
+        ${statements_func}\n
+      }
     `;
     return code;
   };

@@ -76,14 +76,10 @@ let graph = (Blockly: typeof BLK) => {
     // 1.直线
     Blockly.JavaScript['graph_line'] = function (block: BLK.BlockSvg) {
         let value_id = Blockly.JavaScript.valueToCode(block, 'id', Blockly.JavaScript.ORDER_ATOMIC);
-
         let points_0 = Blockly.JavaScript.valueToCode(block, 'lis_pointer_0', Blockly.JavaScript.ORDER_ATOMIC);
         let points_1 = Blockly.JavaScript.valueToCode(block, 'lis_pointer_1', Blockly.JavaScript.ORDER_ATOMIC);
         let attributes = Blockly.JavaScript.valueToCode(block, 'graph_attributes', Blockly.JavaScript.ORDER_ATOMIC);
-        
-        let code = `
-            ${value_id} = makeLine(${points_0}, ${points_1}, ${attributes});\n
-        `;
+        let code = `${value_id} = makeLine(${points_0}, ${points_1}, ${attributes});\n`;
         return code;
     };
     // 2.矩形
