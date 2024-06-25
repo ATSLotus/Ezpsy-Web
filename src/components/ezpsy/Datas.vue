@@ -173,6 +173,7 @@
                         const fileRes = await storage.getFileData(list.path)
                         if(fileRes.isSuccess) {
                             const json = fileRes.data
+                            console.log("JSON", json)
                             json.data = JSON.parse(decrypt(json.data))
                             const li = {
                                 path: encrypt(list.path),

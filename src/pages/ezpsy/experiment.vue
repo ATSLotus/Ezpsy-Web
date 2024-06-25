@@ -69,6 +69,11 @@
         _window.utils = {
             base64tostring: base64tostring
         }
+        agc.storage.setUploadPercent({
+            next: (snapshot) => {},
+            error: (error) => {},
+            complete: () => {}
+        })
         _window.AjaxData = (id: string, data: string) => {
             const name = route.query?.experiment
             if(name) {
@@ -89,9 +94,14 @@
             }
         }
         _window.getString = (data: any) => {
+            console.log(data, typeof data)
             switch(typeof data) {
                 case "object":
                     return JSON.stringify(data)
+                case "number":
+                    return `${data}`
+                case "undefined":
+                    return ""
                 default:
                     return data.toString()
             }
