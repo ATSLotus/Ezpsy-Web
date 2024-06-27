@@ -43,11 +43,11 @@
     data.searchOpts = {
         search: {
             title: "搜索: ",
-            placeholder: "通过标题查询",
-            func: (value: string, origin: Array<any>) => {
+            placeholder: "通过标题或实验名查询",
+            func: (value: string, origin: Array<LIST>) => {
                 const reg = getReg(value)
                 const target = origin.filter(item => {
-                    if(reg.test(item.name)) {
+                    if(reg.test(item.name) || reg.test(item.origin)) {
                         return deepClone(item)
                     } else {
                         return false
@@ -62,11 +62,30 @@
             }
         },
         operations: {
-            add: {
-                title: "增加",
-                style: "green",
-                func: async () => {
-                    storeImage(user)
+            export: {
+                title: "导出",
+                style: "blue",
+                func: (lists: Array<LIST>) => {
+                    const results = new Array()
+                    lists.forEach(item => {
+                        const obj = JSON.parse(item.data)
+                        results.push({
+                            name: item.name,
+                            origin: item.origin,
+                            data: item.data
+                        })
+                    })
+                    
+                    const jsonData = JSON.stringify(results, null, 2);
+
+                    const blob = new Blob([jsonData], { type: "application/json" });
+
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'data.json'; // 你想要保存的文件名
+                    document.body.appendChild(a);
+                    a.click();
                 }
             },
             delete: {
