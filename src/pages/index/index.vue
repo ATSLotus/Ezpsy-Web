@@ -215,6 +215,7 @@
                             const json = fileRes.data
                             json.data = JSON.parse(decrypt(json.data))
                             data.experiments.push({
+                                path: list.path,
                                 title: title,
                                 description: json.data.description,
                                 code: json.data.code
@@ -257,11 +258,12 @@
         router.push("/index/register")
     }
 
-    const gotoExperiment = (title: string, code: string) => {
+    const gotoExperiment = (title: string, path: string) => {
         const routeData = router.resolve({
             path: "/ezpsy/experiment",
             query: {
-                code: encrypt(code),
+                // code: encrypt(code),
+                path: encrypt(path),
                 experiment: title
             }
         })
@@ -319,7 +321,7 @@
                 </div>
                 <div class="experiments-box">
                     <div class="experiments">
-                        <div class="experiment" v-for="experiment in data.experiments" @click="gotoExperiment(experiment.title, experiment.code)">
+                        <div class="experiment" v-for="experiment in data.experiments" @click="gotoExperiment(experiment.title, experiment.path)">
                             <div class="experiment-title">{{ experiment.title }}</div>
                             <div class="experiment-description">
                                 {{ 

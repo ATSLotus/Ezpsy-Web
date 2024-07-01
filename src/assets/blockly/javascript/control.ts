@@ -27,6 +27,7 @@ const control = (Blockly: typeof BLK) => {
     Blockly.JavaScript['await_keypress'] = function (a) {
         let complete = Blockly.JavaScript.statementToCode(a, 'complete')
         let IsDestroy = Blockly.JavaScript.valueToCode(a, 'isDestroy', Blockly.JavaScript.ORDER_ATOMIC)
+        let keypressId = Blockly.JavaScript.valueToCode(a, 'id', Blockly.JavaScript.ORDER_ATOMIC)
         for (var b = Array(a.itemCount_), d = Array(a.itemCount_), c = 0; c < a.itemCount_; c++) {
             b[c] = Blockly.JavaScript.valueToCode(a, "key" + c, Blockly.JavaScript.ORDER_COMMA) || "null";
             d[c] = Blockly.JavaScript.statementToCode(a, "func" + c) || "null";
@@ -37,7 +38,7 @@ const control = (Blockly: typeof BLK) => {
         }
         funcObject += `},\n`
         let code = `
-          await keypress.listen([${b}],{
+          await keypress.listen(${keypressId}, [${b}],{
             funcList: ${funcObject}
             complete: ()=>{\n${complete}\n}
           },${IsDestroy}); \n
@@ -49,6 +50,7 @@ const control = (Blockly: typeof BLK) => {
     Blockly.JavaScript['keypress'] = function (a) {
         let complete = Blockly.JavaScript.statementToCode(a, 'complete')
         let IsDestroy = Blockly.JavaScript.valueToCode(a, 'isDestroy', Blockly.JavaScript.ORDER_ATOMIC)
+        let keypressId = Blockly.JavaScript.valueToCode(a, 'id', Blockly.JavaScript.ORDER_ATOMIC)
         for (var b = Array(a.itemCount_), d = Array(a.itemCount_), c = 0; c < a.itemCount_; c++) {
             b[c] = Blockly.JavaScript.valueToCode(a, "key" + c, Blockly.JavaScript.ORDER_COMMA) || "null";
             d[c] = Blockly.JavaScript.statementToCode(a, "func" + c) || "null";
@@ -59,7 +61,7 @@ const control = (Blockly: typeof BLK) => {
         }
         funcObject += `},\n`
         let code = `
-          keypress.listen([${b}],{
+          keypress.listen(${keypressId}, [${b}],{
             funcList: ${funcObject}
             complete: ()=>{\n${complete}\n}
           },${IsDestroy}); \n
@@ -67,6 +69,14 @@ const control = (Blockly: typeof BLK) => {
         return code
         // return[code,Blockly.JavaScript.ORDER_ATOMIC]
     };
+
+    Blockly.JavaScript['destroy'] = function (a) {
+      let keypressId = Blockly.JavaScript.valueToCode(a, 'id', Blockly.JavaScript.ORDER_ATOMIC)
+      let code = `
+        keypress.destroy(${keypressId})
+      `
+      return code
+    }
 
 }
 export default control

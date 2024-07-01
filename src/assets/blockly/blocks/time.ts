@@ -14,6 +14,20 @@ const time = (Blockly: typeof BLK) => {
        this.setHelpUrl("www.taobao.com");
         }
       };
+
+    Blockly.Blocks['cancel'] = {
+        init: function() {
+          this.appendDummyInput()
+              .appendField("cancel");
+          this.setInputsInline(true);
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+          this.setColour(blockColor.time);
+       this.setTooltip("dfdf");
+       this.setHelpUrl("www.taobao.com");
+        }
+      };
+    
     
       Blockly.Blocks['getContinueValue'] = { 
         init: function() {

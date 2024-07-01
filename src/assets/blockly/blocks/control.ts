@@ -83,6 +83,10 @@ const control = (Blockly: typeof BLK) => {
         init: function () {
             this.appendDummyInput()
                 .appendField("awaitKeypress")
+            
+            this.appendValueInput('id')
+                .setAlign(Blockly.ALIGN_RIGHT)
+                .appendField('id')
             this.appendValueInput('isDestroy')
                 .setAlign(Blockly.ALIGN_RIGHT)
                 .appendField('isDestroy')
@@ -167,6 +171,9 @@ const control = (Blockly: typeof BLK) => {
         init: function () {
             this.appendDummyInput()
                 .appendField("keypress")
+            this.appendValueInput('id')
+                .setAlign(Blockly.ALIGN_RIGHT)
+                .appendField('id')
             this.appendValueInput('isDestroy')
                 .setAlign(Blockly.ALIGN_RIGHT)
                 .appendField('isDestroy')
@@ -244,6 +251,19 @@ const control = (Blockly: typeof BLK) => {
             for (; this.getInput("key" + a), this.getInput("func" + a);)
                 this.removeInput("key" + a), this.removeInput("func" + a), a++
 
+        }
+    };
+
+    Blockly.Blocks['destroy'] = {
+        init: function () {
+            this.appendDummyInput()
+                .appendField("destroy")
+            this.appendValueInput('id')
+                .appendField('id')
+            this.setColour(blockColor.control)
+            this.setInputsInline(true);
+            this.setPreviousStatement(true, null);
+            this.setNextStatement(true, null);
         }
     };
 

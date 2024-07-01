@@ -276,6 +276,13 @@
                 </value>
             </block>
             <block type="lists_sort"></block>
+            <block type="shuffle_list">
+                <value name="LIST">
+                    <block type="variables_get">
+                        <field name="VAR">{listVariable}</field>
+                    </block>
+                </value>
+            </block>
         </category>
         <sep></sep>
         <!--Object-->
@@ -1158,6 +1165,7 @@
         <!--计时-->
         <category name="Time" :colour="color.time">
             <block type="record"></block>
+            <block type="cancel"></block>
             <block type="getContinueValue">
                 <value name="id">
                     <block type="variables_get">
@@ -1195,6 +1203,11 @@
             </block>
 
             <block type="await_keypress">
+                <value name="id">
+                    <block type="text">
+                        <field name="TEXT">keypressId</field>
+                    </block>
+                </value>
                 <value name="isDestroy">
                     <block type="logic_boolean">
                         <field name="BOOL">flase</field>
@@ -1204,12 +1217,25 @@
             </block>
 
             <block type="keypress">
+                <value name="id">
+                    <block type="text">
+                        <field name="TEXT">keypressId</field>
+                    </block>
+                </value>
                 <value name="isDestroy">
                     <block type="logic_boolean">
                         <field name="BOOL">flase</field>
                     </block>
                 </value>
                 <mutation items="1"></mutation>
+            </block>
+
+            <block type="destroy">
+                <value name="id">
+                    <block type="text">
+                        <field name="TEXT">keypressId</field>
+                    </block>
+                </value>
             </block>
 
         </category>

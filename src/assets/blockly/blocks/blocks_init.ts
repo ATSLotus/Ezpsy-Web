@@ -16,6 +16,7 @@ import object from "./object"
 import systemInformation from "./systemInformation"
 import time from "./time"
 import table from "./table"
+import lists from "./lists"
 
 const blocksInit = async (Blockly: typeof BLK) => {
     action(Blockly)
@@ -31,6 +32,7 @@ const blocksInit = async (Blockly: typeof BLK) => {
     general(Blockly)
     graph(Blockly)
     guide(Blockly)
+    lists(Blockly)
     module(Blockly)
     object(Blockly)
     systemInformation(Blockly)

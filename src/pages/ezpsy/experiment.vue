@@ -1,18 +1,17 @@
 <script setup lang="ts">
     import { decrypt, encrypt } from '@/assets/utils/crypto';
     import log from '@/assets/utils/log'
-    import { onBeforeUnmount, onMounted, reactive } from 'vue';
+    import { onBeforeMount, onBeforeUnmount, onMounted, reactive } from 'vue';
     import { useRoute } from 'vue-router';
     import ezpsy from "ezpsy"
     import agc from '@/assets/agc/agc';
     import uuid from '@/assets/utils/uuid';
-    import { showMsg } from '@/assets/utils/popup';
+    import { hideloading, setContainer, showMsg, showloading } from '@/assets/utils/popup';
     import formatJavaScriptCode from '@/assets/utils/formatJS';
     import Swal from 'sweetalert2';
     import { base64tostring } from '@/assets/utils/utils';
 
     const route = useRoute()
-    const code = `(async function(){\n${decrypt(route.query.code as string)}\n}())`
     const _window = window as any
 
     const randerCode = async (str: string, isString: boolean = true): Promise<HTMLScriptElement> => {
@@ -39,8 +38,7 @@
 
     const storage = agc.storage
     
-    onMounted(async () => {
-
+    onBeforeMount(async () => {
         data.scripts.push(await randerCode("static/blockly/src/requestAnimationFrame.js", false))
         data.scripts.push(await randerCode("static/blockly/src/graph-func.js", false))
         data.scripts.push(await randerCode("static/blockly/src/systemInformation-func.js", false))
@@ -59,7 +57,8 @@
         })
         const dlg = ezpsy.DlgInit()
         const time = new ezpsy.Time();
-        const keypress = ezpsy.KeypressInit('keydown')
+        // const keypress = ezpsy.KeypressInit('keydown')
+        const keypress = new ezpsy.keypress("keydown")
         _window.ezpsy = ezpsy
         _window.ez = ez
         _window.dlg = dlg
@@ -106,7 +105,25 @@
                     return data.toString()
             }
         }
-        data.scripts.push(await randerCode(code))
+        if(route.query.path) {
+            const path = decrypt(route.query.path as string)
+            setContainer("fullscreen")
+            showloading(2, 2)
+            const resp = await storage.getFileData(path)
+            if(resp.isSuccess) {
+                hideloading()
+                const fileData = JSON.parse(decrypt(resp.data.data))
+                const code = `(async function(){\n${fileData.code}\n}())`
+                const dom = await randerCode(code)
+                data.scripts.push(dom)
+            }
+        } 
+        if(route.query.code) {
+            const code = `(async function(){\n${decrypt(route.query.code as string)}\n}())`
+            data.scripts.push(await randerCode(code)) 
+        }
+        
+        // data.scripts.push(await randerCode(code))
     })
 
     onBeforeUnmount(async () => {

@@ -152,10 +152,12 @@
             text: "测试",
             style: "green",
             func: async (item: LIST) => {
+                console.log(decrypt(item.path))
                 const routeData = router.resolve({
                     path: "/ezpsy/experiment",
                     query: {
-                        code: encrypt(item.js),
+                        // code: encrypt(item.js),
+                        path: item.path,
                         experiment: item.title
                     }
                 })
