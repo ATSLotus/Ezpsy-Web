@@ -293,7 +293,7 @@
                 }
             }
         ]
-        storage.setInsertFunc("reload", getFileList)
+        // storage.setInsertFunc("reload", getFileList)
         data.isStorage = !!(data.storage.title)
     })
 
