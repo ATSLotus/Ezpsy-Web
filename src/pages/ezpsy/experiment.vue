@@ -96,7 +96,7 @@
             console.log(data, typeof data)
             switch(typeof data) {
                 case "object":
-                    return JSON.stringify(data, null, 4)
+                    return JSON.stringify(data)
                 case "number":
                     return `${data}`
                 case "undefined":
