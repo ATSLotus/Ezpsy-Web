@@ -1166,6 +1166,7 @@
         <category name="Time" :colour="color.time">
             <block type="record"></block>
             <block type="cancel"></block>
+            <block type="clear"></block>
             <block type="getContinueValue">
                 <value name="id">
                     <block type="variables_get">

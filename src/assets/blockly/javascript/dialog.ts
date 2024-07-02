@@ -105,11 +105,10 @@ const dialog = (Blockly: typeof BLK) => {
     var code = `
             await dlg.questDlg({
               title: ${value_title},
-              input: ${value_text}
+              content: ${value_text}
             }).then(e=>{
               console.log(e)
-              if(e)
-                ${value_result} = e;
+              ${value_result} = e;
             });
         `;
     return code;
