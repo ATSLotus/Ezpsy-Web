@@ -15,7 +15,7 @@ const dialog = (Blockly: typeof BLK) => {
               input: ${value_text}
             }).then(e=>{
               if(e)
-                ${value_result} = e;
+                ${value_result} = e[0].data;
             })
         `;
     return code;

@@ -38,7 +38,7 @@
 
     const storage = agc.storage
     
-    onBeforeMount(async () => {
+    onMounted(async () => {
         data.scripts.push(await randerCode("static/blockly/src/requestAnimationFrame.js", false))
         data.scripts.push(await randerCode("static/blockly/src/graph-func.js", false))
         data.scripts.push(await randerCode("static/blockly/src/systemInformation-func.js", false))
@@ -96,7 +96,7 @@
             console.log(data, typeof data)
             switch(typeof data) {
                 case "object":
-                    return JSON.stringify(data)
+                    return JSON.stringify(data, null, 4)
                 case "number":
                     return `${data}`
                 case "undefined":
