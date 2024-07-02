@@ -1,13 +1,15 @@
 // @ts-nocheck
+import uuid from "@/assets/utils/uuid";
 import BLK from "blockly"
 
 const control = (Blockly: typeof BLK) => {
     Blockly.JavaScript['randomfunc'] = function (a) {
+        const random = uuid.getUuid()
         let randomValue = Blockly.JavaScript.valueToCode(a, 'randomValue', Blockly.JavaScript.ORDER_ATOMIC)
         for (var b = Array(a.itemCount_), d = Array(a.itemCount_), c = 0; c < a.itemCount_; c++) {
             d[c] = Blockly.JavaScript.statementToCode(a, "func" + c) || "null";
         }
-        let object = `switch(x){\n`;
+        let object = `switch(${random}){\n`;
         for (let i = 0; i < c; i++) {
             object += `case ${i}: \n${d[i]}\nbreak;\n`
         }
@@ -15,9 +17,9 @@ const control = (Blockly: typeof BLK) => {
           console.dir('error');
         }\n`
         let code = `
-          let x = Math.floor(Math.random() * ${c});
+          let ${random} = Math.floor(Math.random() * ${c});
           ${object};
-          ${randomValue} = x;\n
+          ${randomValue} = ${random};\n
         `
         return code
 

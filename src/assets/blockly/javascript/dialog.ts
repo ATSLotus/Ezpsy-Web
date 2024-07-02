@@ -107,6 +107,7 @@ const dialog = (Blockly: typeof BLK) => {
               title: ${value_title},
               input: ${value_text}
             }).then(e=>{
+              console.log(e)
               if(e)
                 ${value_result} = e;
             });
@@ -121,7 +122,8 @@ const dialog = (Blockly: typeof BLK) => {
     var code = `
           await dlg.warnDlg({
               title: ${value_title},
-              content: ${value_text}
+              content: ${value_text},
+              confirm: "开始"
           });
         `;
     return code;
