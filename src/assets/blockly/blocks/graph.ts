@@ -184,9 +184,9 @@ const graph = (Blockly: typeof BLK) => {
             this.appendValueInput("animateCycle")
                 .setCheck(null)
                 .appendField("timeFrequency");
-            this.appendValueInput("time")
-                .setCheck(null)
-                .appendField("time");
+            // this.appendValueInput("time")
+            //     .setCheck(null)
+            //     .appendField("time");
             this.setOutput(true, null)
             this.setInputsInline(true);
             this.setColour(blockColor.graph);
@@ -467,6 +467,23 @@ const graph = (Blockly: typeof BLK) => {
             this.setHelpUrl("");
         }
     };
+
+    Blockly.Blocks['drawGrating'] = {
+        init: function() {
+            this.appendValueInput('id')
+                .setCheck("String")
+                .appendField('drawGrating')
+            this.appendValueInput("time")
+                .setCheck(null)
+                .appendField("time");
+            this.setInputsInline(true);
+            this.setPreviousStatement(true, null);
+            this.setNextStatement(true, null);
+            this.setColour(blockColor.graph);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    }
     // 10.随机点
     Blockly.Blocks['randomDot'] = {
         init: function () {

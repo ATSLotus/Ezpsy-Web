@@ -62,8 +62,9 @@ let graph = (Blockly: typeof BLK) => {
         let value_phase = Blockly.JavaScript.valueToCode(block, 'phase', Blockly.JavaScript.ORDER_ATOMIC);
         let value_noiseLevel = Blockly.JavaScript.valueToCode(block, 'noiseLevel', Blockly.JavaScript.ORDER_ATOMIC);
         let value_animateCycle = Blockly.JavaScript.valueToCode(block, 'animateCycle', Blockly.JavaScript.ORDER_ATOMIC);
-        let value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
-        return [`${value_phase},${value_noiseLevel},${value_animateCycle},${value_time}`, Blockly.JavaScript.ORDER_ATOMIC]
+        // let value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
+        // return [`${value_phase},${value_noiseLevel},${value_animateCycle},${value_time}`, Blockly.JavaScript.ORDER_ATOMIC]
+        return [`${value_phase},${value_noiseLevel},${value_animateCycle}`, Blockly.JavaScript.ORDER_ATOMIC]
     }
     Blockly.JavaScript["random_dot_attributes"] = function (block: BLK.BlockSvg) {
         let value_maskBand = Blockly.JavaScript.valueToCode(block, 'maskBand', Blockly.JavaScript.ORDER_ATOMIC);
@@ -157,8 +158,22 @@ let graph = (Blockly: typeof BLK) => {
         let attributes1 = Blockly.JavaScript.valueToCode(block, 'grat_attributes_1', Blockly.JavaScript.ORDER_ATOMIC);
         let attributes2 = Blockly.JavaScript.valueToCode(block, 'grat_attributes_2', Blockly.JavaScript.ORDER_ATOMIC);
         
+        
+
         let code = `
-            ${value_id} = makeGrating(${points_0}, ${attributes1}, ${attributes2});\n
+            \nnew Promise(() => {
+                ${value_id} = makeGrating(${points_0}, ${attributes1}, ${attributes2});\n
+            });\n
+        `;
+        return code;
+    };
+
+    Blockly.JavaScript['drawGrating'] = function (block: BLK.BlockSvg) {
+        let value_id = Blockly.JavaScript.valueToCode(block, 'id', Blockly.JavaScript.ORDER_ATOMIC);
+        let value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
+
+        let code = `
+            await ${value_id}.draw(${value_time})\n
         `;
         return code;
     };

@@ -157,18 +157,68 @@ let drawImage = (img)=>{
 // let ctx = [[@{/}]];
 
 //光栅
-let makeGrating = function(value_x,value_y,value_r,value_pixelPerDegree,value_spatialFrequency,value_angle,value_contrast,value_phase,value_noiseLevel,value_animateCycle,time){
+// let makeGrating = function(value_x,value_y,value_r,value_pixelPerDegree,value_spatialFrequency,value_angle,value_contrast,value_phase,value_noiseLevel,value_animateCycle,time){
+//   let f = false
+//   if(value_noiseLevel !== 0)
+//     f = true
+//   let grat = new ezpsy.sinGrating({
+//     wasm : './static/pkg/singrat_bg.wasm',
+//     shape: {
+//       x: value_x,                 
+//       y: value_y,                 
+//       r: value_r,    
+//       pixelsPerDegree: value_pixelPerDegree, 
+//       spatialFrequency: value_spatialFrequency,
+//       angle: value_angle, 
+//       contrast: value_contrast, 
+//       phase: value_phase,
+//       level: value_noiseLevel,
+//       gamma: 1
+//     },
+//     isNoise: f
+//   })
+//   if(!time)
+//     time = 1000;
+//   ez.add(grat);
+//   if(value_animateCycle){
+//     grat.play(value_animateCycle,time) 
+//   }
+//   else{
+//     (async ()=>{
+//       grat.draw()
+//       await delay_frame(Math.ceil(time/1000*60));
+//       grat.remove()
+//     })()
+//   }
+//   let canvas = grat.ctx.canvas
+//   // console.dir(canvas)
+//   canvas.style.background = '#808080'
+//   return grat
+// }
+let makeGrating = function(
+  value_x,
+  value_y,
+  value_r,
+  value_pixelPerDegree,
+  value_spatialFrequency,
+  value_angle,
+  value_contrast,
+  value_phase,
+  value_noiseLevel,
+  value_timeFrequency,
+  // time
+) {
   let f = false
   if(value_noiseLevel !== 0)
     f = true
   let grat = new ezpsy.sinGrating({
-    wasm : './static/pkg/singrat_bg.wasm',
     shape: {
       x: value_x,                 
       y: value_y,                 
       r: value_r,    
       pixelsPerDegree: value_pixelPerDegree, 
       spatialFrequency: value_spatialFrequency,
+      timeFrequency: value_timeFrequency,
       angle: value_angle, 
       contrast: value_contrast, 
       phase: value_phase,
@@ -177,22 +227,7 @@ let makeGrating = function(value_x,value_y,value_r,value_pixelPerDegree,value_sp
     },
     isNoise: f
   })
-  if(!time)
-    time = 1000;
-  ez.add(grat);
-  if(value_animateCycle){
-    grat.play(value_animateCycle,time) 
-  }
-  else{
-    (async ()=>{
-      grat.draw()
-      await delay_frame(Math.ceil(time/1000*60));
-      grat.remove()
-    })()
-  }
-  let canvas = grat.ctx.canvas
-  // console.dir(canvas)
-  canvas.style.background = '#808080'
+  ez.add(grat)
   return grat
 }
 

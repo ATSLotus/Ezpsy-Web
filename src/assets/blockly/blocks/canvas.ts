@@ -24,7 +24,7 @@ const canvas = (Blockly: typeof BLK) => {
     Blockly.Blocks['canvasColor'] = {
         init: function () {
             this.appendDummyInput()
-                .appendField("canvasSize");
+                .appendField("canvasColor");
             this.appendValueInput("color")
                 .setCheck(null)
                 .appendField("color");

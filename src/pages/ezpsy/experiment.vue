@@ -119,7 +119,7 @@
             }
         } 
         if(route.query.code) {
-            const code = `(async function(){\n${decrypt(route.query.code as string)}\n}())`
+            const code = `(async () => {${decrypt(route.query.code as string)}\n})()`
             data.scripts.push(await randerCode(code)) 
         }
         

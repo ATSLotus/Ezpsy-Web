@@ -770,11 +770,23 @@
                                 <field name="NUM">0</field>
                             </block>
                         </value>
-                        <value name="time">
+                        <!-- <value name="time">
                             <block type="math_number">
                                 <field name="NUM">1000</field>
                             </block>
-                        </value>
+                        </value> -->
+                    </block>
+                </value>
+            </block>
+            <block type="drawGrating">
+                <value name="id">
+                    <block type="variables_get" movable="false" deletable="false">
+                        <field name="VAR">grating</field>
+                    </block>
+                </value>
+                <value name="time">
+                    <block type="math_number">
+                        <field name="NUM">1000</field>
                     </block>
                 </value>
             </block>

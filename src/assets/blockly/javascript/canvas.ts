@@ -18,10 +18,16 @@ const canvas = (Blockly: typeof BLK) => {
     Blockly.JavaScript['canvasColor'] = function (block) {
         var value_color = Blockly.JavaScript.valueToCode(block, 'color', Blockly.JavaScript.ORDER_ATOMIC);
         // TODO: Assemble JavaScript into code variable.
+        // var code = `
+        //   let ezpsy_value_color = ${value_color};
+        //   ez.ctx.canvas.style.backgroundColor = ezpsy_value_color;\n
+        // `;
+        console.log(value_color)
         var code = `
-          let ezpsy_value_color = ${value_color};
-          ez.ctx.canvas.style.backgroundColor = ezpsy_value_color
-        `;
+          ez.setCanvasStyle({
+            backColor: ${value_color}
+          });\n
+        `
         return code;
     };
 }
