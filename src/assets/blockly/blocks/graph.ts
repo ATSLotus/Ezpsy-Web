@@ -184,9 +184,9 @@ const graph = (Blockly: typeof BLK) => {
             this.appendValueInput("animateCycle")
                 .setCheck(null)
                 .appendField("timeFrequency");
-            // this.appendValueInput("time")
-            //     .setCheck(null)
-            //     .appendField("time");
+            this.appendValueInput("gamma")
+                .setCheck(null)
+                .appendField("gamma");
             this.setOutput(true, null)
             this.setInputsInline(true);
             this.setColour(blockColor.graph);

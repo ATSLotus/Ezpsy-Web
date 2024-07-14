@@ -62,9 +62,9 @@ let graph = (Blockly: typeof BLK) => {
         let value_phase = Blockly.JavaScript.valueToCode(block, 'phase', Blockly.JavaScript.ORDER_ATOMIC);
         let value_noiseLevel = Blockly.JavaScript.valueToCode(block, 'noiseLevel', Blockly.JavaScript.ORDER_ATOMIC);
         let value_animateCycle = Blockly.JavaScript.valueToCode(block, 'animateCycle', Blockly.JavaScript.ORDER_ATOMIC);
-        // let value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
+        let value_gamma = Blockly.JavaScript.valueToCode(block, 'gamma', Blockly.JavaScript.ORDER_ATOMIC);
         // return [`${value_phase},${value_noiseLevel},${value_animateCycle},${value_time}`, Blockly.JavaScript.ORDER_ATOMIC]
-        return [`${value_phase},${value_noiseLevel},${value_animateCycle}`, Blockly.JavaScript.ORDER_ATOMIC]
+        return [`${value_phase},${value_noiseLevel},${value_animateCycle},${value_gamma}`, Blockly.JavaScript.ORDER_ATOMIC]
     }
     Blockly.JavaScript["random_dot_attributes"] = function (block: BLK.BlockSvg) {
         let value_maskBand = Blockly.JavaScript.valueToCode(block, 'maskBand', Blockly.JavaScript.ORDER_ATOMIC);

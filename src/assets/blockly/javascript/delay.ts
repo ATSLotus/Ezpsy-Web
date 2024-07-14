@@ -18,10 +18,5 @@ const delay = (Blockly: typeof BLK) => {
         return code;
     };
 
-    // Blockly.JavaScript['await'] = function (block) {
-    //     // TODO: Assemble JavaScript into code variable.
-    //     var code = `await `;
-    //     return code;
-    // };
 }
 export default delay

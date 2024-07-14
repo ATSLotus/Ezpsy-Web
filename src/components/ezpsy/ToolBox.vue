@@ -289,7 +289,12 @@
         <category name="Object" :colour="color.object">
             <block type="objectContent">
                 <value name="key">
-                    <block type="text" movable="false" deletable="false">
+                    <block type="text">
+                        <field name="TEXT">objectKey</field>
+                    </block>
+                </value>
+                <value name="value">
+                    <block type="text">
                         <field name="TEXT">objectKey</field>
                     </block>
                 </value>
@@ -308,6 +313,11 @@
                                 <field name="TEXT">objectKey</field>
                             </block>
                         </value>
+                        <value name="value">
+                            <block type="text">
+                                <field name="TEXT">objectKey</field>
+                            </block>
+                        </value>
                     </block>
                 </value>
             </block>
@@ -320,6 +330,28 @@
                                 <field name="TEXT">objectKey</field>
                             </block>
                         </value>
+                        <value name="value">
+                            <block type="text">
+                                <field name="TEXT">objectKey</field>
+                            </block>
+                        </value>
+                    </block>
+                </value>
+            </block>
+            <block type="objectSet">
+                <value name="id">
+                    <block type="variables_get" movable="false" deletable="false">
+                        <field name="VAR"></field>
+                    </block>
+                </value>
+                <value name="key">
+                    <block type="text">
+                        <field name="TEXT">objectKey</field>
+                    </block>
+                </value>
+                <value name="value">
+                    <block type="text">
+                        <field name="TEXT">objectKey</field>
                     </block>
                 </value>
             </block>
@@ -770,11 +802,11 @@
                                 <field name="NUM">0</field>
                             </block>
                         </value>
-                        <!-- <value name="time">
+                        <value name="gamma">
                             <block type="math_number">
-                                <field name="NUM">1000</field>
+                                <field name="NUM">1</field>
                             </block>
-                        </value> -->
+                        </value>
                     </block>
                 </value>
             </block>
@@ -1080,6 +1112,11 @@
                             <block type="objectContent">
                                 <value name="key">
                                     <block type="text" movable="false" deletable="false">
+                                        <field name="TEXT">objectKey</field>
+                                    </block>
+                                </value>
+                                <value name="value">
+                                    <block type="text">
                                         <field name="TEXT">objectKey</field>
                                     </block>
                                 </value>

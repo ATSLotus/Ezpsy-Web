@@ -22,7 +22,6 @@ const canvas = (Blockly: typeof BLK) => {
         //   let ezpsy_value_color = ${value_color};
         //   ez.ctx.canvas.style.backgroundColor = ezpsy_value_color;\n
         // `;
-        console.log(value_color)
         var code = `
           ez.setCanvasStyle({
             backColor: ${value_color}

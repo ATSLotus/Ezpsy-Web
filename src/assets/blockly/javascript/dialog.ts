@@ -107,7 +107,6 @@ const dialog = (Blockly: typeof BLK) => {
               title: ${value_title},
               content: ${value_text}
             }).then(e=>{
-              console.log(e)
               ${value_result} = e;
             });
         `;
@@ -173,7 +172,8 @@ const dialog = (Blockly: typeof BLK) => {
         confirm: ${value_confirm}
       })
       if(msg_resp) {
-        document.documentElement.requestFullscreen();
+        document.documentElement.requestFullscreen();\n
+        await delay_ms(1000);\n
         ${statements_func}\n
       }
     `;

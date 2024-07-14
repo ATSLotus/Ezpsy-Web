@@ -10,6 +10,9 @@ const object = (Blockly: typeof BLK) => {
             this.appendValueInput('key')
                 .setCheck(null)
                 .appendField('key')
+            this.appendValueInput('value')
+                .setCheck(null)
+                .appendField('value')
             this.setInputsInline(true);
             this.setOutput(true, null);
             // this.setPreviousStatement(true, null);
@@ -157,6 +160,27 @@ const object = (Blockly: typeof BLK) => {
             a++
         }
     };
+
+    Blockly.Blocks['objectSet'] = {
+        init: function(){
+            this.appendValueInput('id')
+                .setCheck("String")
+                .appendField("objectSet")
+            this.appendValueInput('key')
+                .setCheck(null)
+                .appendField('key')
+            this.appendValueInput('value')
+                .setCheck(null)
+                .appendField('value')
+            this.setInputsInline(true);
+            // this.setOutput(true, null);
+            this.setPreviousStatement(true, null);
+            this.setNextStatement(true, null);
+            this.setColour(blockColor.object);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    } 
     
     Blockly.Blocks['objects_create_with_item'] = {
         init:function(){

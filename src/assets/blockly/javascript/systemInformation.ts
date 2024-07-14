@@ -7,7 +7,7 @@ const systemInformation = (Blockly: typeof BLK) => {
         // TODO: Assemble JavaScript into code variable.
         var code = `broswerVersion()`;
         // TODO: Change ORDER_NONE to the correct strength.
-        return [code, Blockly.JavaScript.ORDER_NONE];
+        return [code, Blockly.JavaScript.ORDER_ATOMIC];
     };
     // 2.显示器信息
     Blockly.JavaScript['screeninformation'] = function (block) {
@@ -15,7 +15,7 @@ const systemInformation = (Blockly: typeof BLK) => {
         // TODO: Assemble JavaScript into code variable.
         var code = `screenInformation(${dropdown_information})`;
         // TODO: Change ORDER_NONE to the correct strength.
-        return [code, Blockly.JavaScript.ORDER_NONE];
+        return [code, Blockly.JavaScript.ORDER_ATOMIC];
     };
 }
 export default systemInformation
