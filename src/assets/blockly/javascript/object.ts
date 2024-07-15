@@ -39,5 +39,15 @@ const object = (Blockly: typeof BLK) => {
         `;
         return code;
     };
+
+    Blockly.JavaScript['objectGet'] = function (block: BLK.BlockSvg) {
+        let value_id = Blockly.JavaScript.valueToCode(block, 'id', Blockly.JavaScript.ORDER_ATOMIC);
+        let value_key = Blockly.JavaScript.valueToCode(block, 'key', Blockly.JavaScript.ORDER_ATOMIC);
+
+        let code = `
+            ${value_id}[${value_key}]\n
+        `;
+        return [code, Blockly.JavaScript.ORDER_ATOMIC];
+    };
 }
 export default object

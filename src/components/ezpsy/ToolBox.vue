@@ -283,6 +283,18 @@
                     </block>
                 </value>
             </block>
+            <block type="list_push">
+                <value name="LIST">
+                    <block type="variables_get">
+                        <field name="VAR">{listVariable}</field>
+                    </block>
+                </value>
+                <value name="value">
+                    <block type="text">
+                        <field name="TEXT">value</field>
+                    </block>
+                </value>
+            </block>
         </category>
         <sep></sep>
         <!--Object-->
@@ -350,6 +362,18 @@
                     </block>
                 </value>
                 <value name="value">
+                    <block type="text">
+                        <field name="TEXT">objectKey</field>
+                    </block>
+                </value>
+            </block>
+            <block type="objectGet">
+                <value name="id">
+                    <block type="variables_get" movable="false" deletable="false">
+                        <field name="VAR"></field>
+                    </block>
+                </value>
+                <value name="key">
                     <block type="text">
                         <field name="TEXT">objectKey</field>
                     </block>

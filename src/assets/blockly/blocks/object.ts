@@ -181,6 +181,24 @@ const object = (Blockly: typeof BLK) => {
             this.setHelpUrl("");
         }
     } 
+
+    Blockly.Blocks['objectGet'] = {
+        init: function(){
+            this.appendValueInput('id')
+                .setCheck("String")
+                .appendField("objectGet")
+            this.appendValueInput('key')
+                .setCheck(null)
+                .appendField('key')
+            this.setInputsInline(true);
+            this.setOutput(true, null);
+            // this.setPreviousStatement(true, null);
+            // this.setNextStatement(true, null);
+            this.setColour(blockColor.object);
+            this.setTooltip("");
+            this.setHelpUrl("");
+        }
+    }
     
     Blockly.Blocks['objects_create_with_item'] = {
         init:function(){
