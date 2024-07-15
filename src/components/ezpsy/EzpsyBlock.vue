@@ -909,7 +909,7 @@
                 }
                 .libiraryImage {
                     width: 100%;
-                    min-height: $IMGAEHeight;
+                    max-height: $IMGAEHeight;
                     display: flex;
                     // justify-content: flex-start;
                     flex-wrap: wrap;

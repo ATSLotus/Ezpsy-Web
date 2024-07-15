@@ -173,7 +173,7 @@ let graph = (Blockly: typeof BLK) => {
         let value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
 
         let code = `
-            await ${value_id}.draw(${value_time})\n
+            await ${value_id}.draw(${value_time});\n
         `;
         return code;
     };
