@@ -206,6 +206,7 @@ let makeGrating = function(
   value_phase,
   value_noiseLevel,
   value_timeFrequency,
+  value_gamma
   // time
 ) {
   let f = false
@@ -223,7 +224,7 @@ let makeGrating = function(
       contrast: value_contrast, 
       phase: value_phase,
       level: value_noiseLevel,
-      gamma: 1
+      gamma: value_gamma
     },
     isNoise: f
   })
