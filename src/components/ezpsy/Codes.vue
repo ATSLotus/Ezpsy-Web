@@ -15,6 +15,8 @@
     import { ObjectListSort } from "@/assets/utils/sort";
     import uuid from "@/assets/utils/uuid";
     import { getStorage, setStorage } from "@/assets/utils/storage"
+
+    const baseUrl = window.location.origin
     
     interface LIST {
         path: string
@@ -162,6 +164,19 @@
                     }
                 })
                 window.open(routeData.href, "_blank")
+            }
+        },
+        copy: {
+            text: "复制",
+            style: "blue",
+            func: (item) => {
+                const url = `${baseUrl}/#/ezpsy/experiment?path=${encodeURIComponent(item.path)}&experiment=${encodeURIComponent(item.title)}`
+                navigator.clipboard.writeText(url).then(() => {
+                    tipPopup("success", {
+                        title: url,
+                        timer: 1000
+                    })
+                })
             }
         },
         delete: {

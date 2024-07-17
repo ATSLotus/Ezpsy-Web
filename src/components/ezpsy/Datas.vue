@@ -112,6 +112,18 @@
     }
 
     const operate:OPERATE = {
+        copy: {
+            text: "复制",
+            style: "blue",
+            func: async (item) => {
+                navigator.clipboard.writeText(item.data).then(() => {
+                    tipPopup("success", {
+                        title: "复制成功",
+                        timer: 1000
+                    })
+                })
+            }
+        },
         delete: {
             text: "删除",
             style: "red",
@@ -141,25 +153,25 @@
             type: "link",
             text: "实验名",
             style: {
-                width: "15%"
+                width: "45%"
             },
             sort: true,
             action: async (list: LIST) => {
                 // 暂无
             }
         },
-        data: {
-            type: "code",
-            text: "数据",
-            style: {
-                width: "35%"
-            }
-        },
+        // data: {
+        //     type: "code",
+        //     text: "数据",
+        //     style: {
+        //         width: "35%"
+        //     }
+        // },
         operations: {
             type: "operate",
             text: "操作",
             style: {
-                width: "30%"
+                width: "35%"
             }
         }
     }
