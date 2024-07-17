@@ -116,7 +116,12 @@
             text: "复制",
             style: "blue",
             func: async (item) => {
-                navigator.clipboard.writeText(item.data).then(() => {
+                let d = item.data
+                console.log(d)
+                if(typeof d !== "string") {
+                    d = JSON.stringify(d)
+                }
+                navigator.clipboard.writeText(d).then(() => {
                     tipPopup("success", {
                         title: "复制成功",
                         timer: 1000
