@@ -52,8 +52,10 @@ async function singrat() {
                 console.dir('error');
         };
         position = n1i2tr0jq90;
+        let con = contrast
+        con = toFixed(contrast, spatialFrequency)
         new Promise(() => {                    
-            grating = makeGrating(x_grat, y, 100, 57, spatialFrequency, 90, contrast, 0, 0, 0, 0.5);
+            grating = makeGrating(x_grat, y, 100, 57, spatialFrequency, 90, con, 0, 0, 0, 0.5);
         });
         await delay_frame(6);
         canPress = true;
@@ -64,7 +66,7 @@ async function singrat() {
         if (canPress) {      
             if (index == 0) {        
                 arr =  contrast_list[random];
-                count = contrasts[(random - 1)] * 1.1;
+                count = contrasts[(random - 1)];
                 arr.push(count);
                 contrasts[(random - 1)] = contrasts[(random - 1)] * 1.1;
             } else if (index == 1) {        
@@ -178,8 +180,8 @@ if(msg_resp) {
     height = screenInformation('height');
     x = width / 2;
     y = height / 2;
-    x_left = x - 200;
-    x_right = x + 200;
+    x_left = x - 240;
+    x_right = x + 240;
     left = 90;
     right = 270;
     ez.setCanvasStyle({                
@@ -189,7 +191,7 @@ if(msg_resp) {
     ez.setCanvasStyle({              
         backColor: canvasColor            
     });
-    text = makeText('+', x, y, 100, 'bold', 'normal', '仿宋', 'center', 'middle', '#000000');
+    text = makeText('+', x, y, 80, 'normal', 'normal', '仿宋', 'center', 'middle', '#333333');
     canPress = false;
     strokeCircle = makeCircle(x, y, 50, 0, canvasColor, '#ff6600');
     await delay_frame(120);

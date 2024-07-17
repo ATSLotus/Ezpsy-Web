@@ -75,23 +75,26 @@
             complete: () => {}
         })
         _window.AjaxData = (id: string, data: string) => {
-            if(baseUrl.startsWith("https://agc.ezpsy.net")) {
-                const name = "spatialContrastSensitivity"
-                const json = {
-                    data: encrypt(JSON.stringify({
-                        sourceCode: name,
-                        data
-                    }))
-                }
-                storage.uploadString({
-                    str: JSON.stringify(json),
-                    folder: `private/${id}/ezData`,
-                    name: uuid.getUuid(),
-                    extension: "json"
-                })
-            } else {
-                showMsg("Result", formatJavaScriptCode(data))
+            const name = "spatialContrastSensitivity"
+            const json = {
+                data: encrypt(JSON.stringify({
+                    sourceCode: name,
+                    data
+                }))
             }
+            storage.uploadString({
+                str: JSON.stringify(json),
+                folder: `private/${id}/ezData`,
+                name: uuid.getUuid(),
+                extension: "json"
+            })
+            console.log(data)
+            // if(baseUrl.startsWith("https://agc.ezpsy.net")) {
+                
+            // } else {
+            //     console.log(data)
+            //     // showMsg("Result", formatJavaScriptCode(data))
+            // }
         }
         _window.getString = (data: any) => {
             console.log(data, typeof data)
@@ -105,6 +108,33 @@
                 default:
                     return data.toString()
             }
+        }
+        _window.toFixed = (con: number, spatialFrequency: number) => {
+            switch(spatialFrequency) {
+                case 0.5: 
+                    if(con < 0.0729)
+                        con = con / 1.2
+                    else if(con < 0.0486) 
+                        con = con / 2
+                    else if(con < 0.0243)
+                        con = con / 4
+                    else if(con < 0.0122)
+                        con = con / 8
+                    break
+                case 1: 
+                    break
+                case 2: 
+                    break
+                case 4: 
+                    break
+                case 8: 
+                    break
+                case 16: 
+                    break
+                default:
+                    break
+            }
+            return con
         }
         
         const code = `(async () => {${spatialContrastSensitivity}\n})()`
