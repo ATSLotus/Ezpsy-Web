@@ -68,7 +68,7 @@
                 func: (lists: Array<LIST>) => {
                     const results = new Array()
                     lists.forEach(item => {
-                        const obj = JSON.parse(item.data)
+                        // const obj = JSON.parse(item.data)
                         results.push({
                             name: item.name,
                             origin: item.origin,
