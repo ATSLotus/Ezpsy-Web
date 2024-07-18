@@ -52,10 +52,8 @@ async function singrat() {
                 console.dir('error');
         };
         position = n1i2tr0jq90;
-        let con = contrast
-        con = toFixed(contrast, spatialFrequency)
         new Promise(() => {                    
-            grating = makeGrating(x_grat, y, 100, 57, spatialFrequency, 90, con, 0, 0, 0, 0.5);
+            grating = makeGrating(x_grat, y, 100, 57, spatialFrequency, 90, contrast, 0, 0, 0, 0.5);
         });
         await delay_frame(6);
         canPress = true;

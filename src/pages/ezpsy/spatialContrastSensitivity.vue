@@ -109,33 +109,33 @@
                     return data.toString()
             }
         }
-        _window.toFixed = (con: number, spatialFrequency: number) => {
-            switch(spatialFrequency) {
-                case 0.5: 
-                    if(con < 0.0729)
-                        con = con / 1.2
-                    else if(con < 0.0486) 
-                        con = con / 2
-                    else if(con < 0.0243)
-                        con = con / 4
-                    else if(con < 0.0122)
-                        con = con / 8
-                    break
-                case 1: 
-                    break
-                case 2: 
-                    break
-                case 4: 
-                    break
-                case 8: 
-                    break
-                case 16: 
-                    break
-                default:
-                    break
-            }
-            return con
-        }
+        // _window.toFixed = (con: number, spatialFrequency: number) => {
+        //     switch(spatialFrequency) {
+        //         case 0.5: 
+        //             if(con < 0.0729)
+        //                 con = con / 1.2
+        //             else if(con < 0.0486) 
+        //                 con = con / 2
+        //             else if(con < 0.0243)
+        //                 con = con / 4
+        //             else if(con < 0.0122)
+        //                 con = con / 8
+        //             break
+        //         case 1: 
+        //             break
+        //         case 2: 
+        //             break
+        //         case 4: 
+        //             break
+        //         case 8: 
+        //             break
+        //         case 16: 
+        //             break
+        //         default:
+        //             break
+        //     }
+        //     return con
+        // }
         
         const code = `(async () => {${spatialContrastSensitivity}\n})()`
         data.scripts.push(await randerCode(code)) 
