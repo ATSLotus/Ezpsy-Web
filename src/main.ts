@@ -20,6 +20,7 @@ import {
     faFilePen,
     faFileWord,
 } from '@fortawesome/free-solid-svg-icons';
+import ElementPlus from 'element-plus'
 
 library.add(
     faFileCode, 
@@ -37,6 +38,7 @@ library.add(
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
+app.use(ElementPlus)
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.mount('#app')
 

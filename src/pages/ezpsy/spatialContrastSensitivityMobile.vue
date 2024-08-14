@@ -5,12 +5,14 @@ import Swal from "sweetalert2";
 import agc from "@/assets/agc/agc";
 import { encrypt } from "@/assets/utils/crypto";
 import uuid from "@/assets/utils/uuid";
+import { ElMessageBox } from "element-plus";
+import 'element-plus/dist/index.css'
 
 const storage = agc.storage
 
 agc.storage.setUploadPercent({
-    next: (snapshot) => { },
-    error: (error) => { },
+    next: (snapshot: any) => { },
+    error: (error: any) => { },
     complete: () => { }
 })
 
@@ -243,14 +245,31 @@ onMounted(async () => {
         }
     })
 
-    const msg_resp = await dlg.msgDlg({
-        imgUrl: './src/assets/image/ezpsy/spatialContrastSensitivity.png',        
-        title: "",
-        content: '请仔细阅读用户指引',        
-        imgWidth: 240,        
-        imgHeight: 180,        
-        confirm: '开始实验' 
+    const resp = await ElMessageBox.alert("请根据图像出现的位置判断, 图像出现在左边按左边按键, 图像出现在右边按右边按键。", "实验提示", {
+        confirmButtonText: "确认",
+        showClose: false
     })
+
+    if(resp) {
+
+    }
+
+    const nameResp = await ElMessageBox.prompt("请输入代号", "", {
+        confirmButtonText: "开始实验",
+        showClose: false,
+        showCancelButton: false
+    })
+    console.log(nameResp)
+    const name = nameResp.value
+
+    // const msg_resp = await dlg.msgDlg({
+    //     imgUrl: './src/assets/image/ezpsy/spatialContrastSensitivity.png',        
+    //     title: "",
+    //     content: '请仔细阅读用户指引',        
+    //     imgWidth: 240,        
+    //     imgHeight: 180,        
+    //     confirm: '开始实验' 
+    // })
 
     // if(msg_resp) {
     //     document.documentElement.requestFullscreen();
