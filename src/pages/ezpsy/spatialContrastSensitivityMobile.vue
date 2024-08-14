@@ -66,7 +66,9 @@ const data = reactive({
         contrast: 0,
         SF: 0
     },
-    canClick: false
+    canClick: false,
+    random: 0,
+    index: 0
 })
 
 const contrastList = {
@@ -80,13 +82,13 @@ const contrastList = {
 
 const times = 6;
 const nums = 120;
-const exam_param = [0.5, 1, 2, 4, 8, 16];
+const examParam = [0.5, 1, 2, 4, 8, 16];
 const contrasts = Array.from({ length: times }).map(() => 0.1);
-const exam_list = Array.from({ length: times }).map(() => nums);
+const examList = Array.from({ length: times }).map(() => nums);
 let tips: ezpsy.Texts | null = null
 
 const countTotal = () => {
-    return exam_list.reduce((acc, val) => acc + val, 0)
+    return examList.reduce((acc, val) => acc + val, 0)
 }
 
 const mathRandomInt = (a: number, b: number) => {
@@ -96,6 +98,54 @@ const mathRandomInt = (a: number, b: number) => {
         b = c;
     }  
     return Math.floor(Math.random() * (b - a + 1) + a);
+}
+
+const left = () => {
+    if(data.canClick) {
+        const count = contrasts[data.random - 1]
+        if(data.singrat.direction === -1) {
+            data.index += 1
+            if(data.index === 2) {
+                const random = data.random
+                contrastList[random].push(count)
+                contrasts[random - 1] = 0.9 * count
+                data.index = 0
+            }
+        } else {
+            if(data.index === 0) {
+                contrastList[data.random].push(count)
+                contrasts[data.random - 1] = 0.9 * count
+            } else if(data.index === 1) {
+                contrastList[data.random].push(count)
+            }
+            data.index = 0
+        }
+        data.canClick = false
+    }
+}
+
+const right = () => {
+    if(data.canClick) {
+        const count = contrasts[data.random - 1]
+        if(data.singrat.direction === 1) {
+            data.index += 1
+            if(data.index === 2) {
+                const random = data.random
+                contrastList[random].push(count)
+                contrasts[random - 1] = 0.9 * count
+                data.index = 0
+            }
+        } else {
+            if(data.index === 0) {
+                contrastList[data.random].push(count)
+                contrasts[data.random - 1] = 0.9 * count
+            } else if(data.index === 1) {
+                contrastList[data.random].push(count)
+            }
+            data.index = 0
+        }
+        data.canClick = false
+    }
 }
 
 onMounted(async () => {
@@ -192,11 +242,6 @@ onMounted(async () => {
             fill: "#ff6600"
         }
     })
-    await ez.add(circle)
-    await ezpsy.delay_frame(120)
-    ez.remove(circle)
-    await ezpsy.delay_frame(6)
-    await setTips()
 
     const msg_resp = await dlg.msgDlg({
         imgUrl: './src/assets/image/ezpsy/spatialContrastSensitivity.png',        
@@ -207,20 +252,24 @@ onMounted(async () => {
         confirm: '开始实验' 
     })
 
-    if(msg_resp) {
-        document.documentElement.requestFullscreen();
-    }
-    
-    let index = 0
-    // while(countTotal() > 0) {
-        let random = 1
-        if(index == 0) {
-            random = Math.floor(mathRandomInt(1, times))
-            while(exam_list[random - 1] <= 0) {
-                random = Math.floor(mathRandomInt(1, times))
+    // if(msg_resp) {
+    //     document.documentElement.requestFullscreen();
+    // }
+
+    await ez.add(circle)
+    await ezpsy.delay_frame(120)
+    ez.remove(circle)
+    await ezpsy.delay_frame(6)
+    await setTips()
+
+    while(countTotal() > 0) {
+        if(data.index === 0) {
+            data.random = Math.floor(mathRandomInt(1, times))
+            while(examList[data.random - 1] <= 0) {
+                data.random = Math.floor(mathRandomInt(1, times))
             }
-            data.singrat.contrast = contrasts[(random - 1)];
-            data.singrat.SF = exam_param[(random - 1)];
+            data.singrat.contrast = contrasts[(data.random - 1)];
+            data.singrat.SF = examParam[(data.random - 1)];
         }
 
         switch(Math.floor(Math.random() * 2)) {
@@ -237,12 +286,26 @@ onMounted(async () => {
         const singrat = await drawSingrat()
         data.canClick = true
         await  ezpsy.delay_frame(30)
-        // removeSingrat(singrat)
+        removeSingrat(singrat)
         await ezpsy.delay_frame(60)
-        // if(data.canClick) {
+        if(data.canClick) {
+            const count = contrasts[data.random - 1]
+            if(data.index === 0) {
+                contrastList[data.random].push(count)
+                contrasts[data.random - 1] = 1.1 * count
+            } else if(data.index === 1) {
+                contrastList[data.random].push(count)
+            }
+            data.index = 0
+            data.canClick = false
+        }
+        if(data.index !== 1) {
+            examList[data.random - 1] = examList[data.random - 1] - 1
+            await setTips()
+        }
+    }
 
-        // }
-    // }
+    console.log(contrastList)
 
 })
 </script>
@@ -250,8 +313,8 @@ onMounted(async () => {
 <template>
     <div>
         <div id="toturial"></div>
-        <button class="btn left">左</button>
-        <button class="btn right">右</button>
+        <div class="btn left" @click="left">左</div>
+        <div class="btn right" @click="right">右</div>
     </div>
 </template>
 
@@ -271,8 +334,9 @@ onMounted(async () => {
     color: #fff;
     font-size: 32px;
     border: none;
-    line-height: 80px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .left {
