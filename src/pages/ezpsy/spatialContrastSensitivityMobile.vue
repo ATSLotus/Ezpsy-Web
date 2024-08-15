@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, nextTick } from "vue";
 import ezpsy from "ezpsy"
 import Swal from "sweetalert2";
 import agc from "@/assets/agc/agc";
@@ -17,7 +17,7 @@ agc.storage.setUploadPercent({
 })
 
 const AjaxData = (data: string) => {
-    const name = "spatialContrastSensitivity"
+    const name = "spatialContrastSensitivityMobile"
     const json = {
         data: encrypt(JSON.stringify({
             sourceCode: name,
@@ -46,6 +46,29 @@ const getString = (data: any) => {
     }
 }
 
+const isLandscape = () => {
+    return window.matchMedia("(orientation: landscape)").matches
+}
+
+const fullScreen = async () => {
+    const docElm = document.documentElement;
+    if (docElm.requestFullscreen) {
+        await docElm.requestFullscreen();
+        // @ts-ignore
+    } else if (docElm.mozRequestFullScreen) { // Firefox
+        // @ts-ignore
+        await docElm.mozRequestFullScreen();
+        // @ts-ignore
+    } else if (docElm.webkitRequestFullScreen) { // Chrome, Safari and Opera
+        // @ts-ignore
+        await docElm.webkitRequestFullScreen();
+        // @ts-ignore
+    } else if (docElm.msRequestFullscreen) { // IE/Edge
+        // @ts-ignore
+        await docElm.msRequestFullscreen();
+    }
+}
+
 const data = reactive({
     size: {
         width: 0,
@@ -70,7 +93,8 @@ const data = reactive({
     },
     canClick: false,
     random: 0,
-    index: 0
+    index: 0,
+    isStart: false
 })
 
 const contrastList = {
@@ -98,26 +122,26 @@ const mathRandomInt = (a: number, b: number) => {
         var c = a;
         a = b;
         b = c;
-    }  
+    }
     return Math.floor(Math.random() * (b - a + 1) + a);
 }
 
 const left = () => {
-    if(data.canClick) {
+    if (data.canClick) {
         const count = contrasts[data.random - 1]
-        if(data.singrat.direction === -1) {
+        if (data.singrat.direction === -1) {
             data.index += 1
-            if(data.index === 2) {
+            if (data.index === 2) {
                 const random = data.random
                 contrastList[random].push(count)
                 contrasts[random - 1] = 0.9 * count
                 data.index = 0
             }
         } else {
-            if(data.index === 0) {
+            if (data.index === 0) {
                 contrastList[data.random].push(count)
                 contrasts[data.random - 1] = 0.9 * count
-            } else if(data.index === 1) {
+            } else if (data.index === 1) {
                 contrastList[data.random].push(count)
             }
             data.index = 0
@@ -127,21 +151,21 @@ const left = () => {
 }
 
 const right = () => {
-    if(data.canClick) {
+    if (data.canClick) {
         const count = contrasts[data.random - 1]
-        if(data.singrat.direction === 1) {
+        if (data.singrat.direction === 1) {
             data.index += 1
-            if(data.index === 2) {
+            if (data.index === 2) {
                 const random = data.random
                 contrastList[random].push(count)
                 contrasts[random - 1] = 0.9 * count
                 data.index = 0
             }
         } else {
-            if(data.index === 0) {
+            if (data.index === 0) {
                 contrastList[data.random].push(count)
                 contrasts[data.random - 1] = 0.9 * count
-            } else if(data.index === 1) {
+            } else if (data.index === 1) {
                 contrastList[data.random].push(count)
             }
             data.index = 0
@@ -150,13 +174,12 @@ const right = () => {
     }
 }
 
-onMounted(async () => {
-
+const singrat = async () => {
     data.size.width = window.innerWidth
     data.size.height = window.innerHeight
     data.center.x = window.innerWidth / 2
     data.center.y = window.innerHeight / 2
-    
+
     const ez = await ezpsy.init({
         el: document.getElementById("toturial") as HTMLElement,
         style: {
@@ -250,8 +273,8 @@ onMounted(async () => {
         showClose: false
     })
 
-    if(resp) {
-
+    if (resp) {
+        await fullScreen()
     }
 
     const nameResp = await ElMessageBox.prompt("请输入代号", "", {
@@ -262,37 +285,24 @@ onMounted(async () => {
     console.log(nameResp)
     const name = nameResp.value
 
-    // const msg_resp = await dlg.msgDlg({
-    //     imgUrl: './src/assets/image/ezpsy/spatialContrastSensitivity.png',        
-    //     title: "",
-    //     content: '请仔细阅读用户指引',        
-    //     imgWidth: 240,        
-    //     imgHeight: 180,        
-    //     confirm: '开始实验' 
-    // })
-
-    // if(msg_resp) {
-    //     document.documentElement.requestFullscreen();
-    // }
-
     await ez.add(circle)
     await ezpsy.delay_frame(120)
     ez.remove(circle)
     await ezpsy.delay_frame(6)
     await setTips()
 
-    while(countTotal() > 0) {
-        if(data.index === 0) {
+    while (countTotal() > 0) {
+        if (data.index === 0) {
             data.random = Math.floor(mathRandomInt(1, times))
-            while(examList[data.random - 1] <= 0) {
+            while (examList[data.random - 1] <= 0) {
                 data.random = Math.floor(mathRandomInt(1, times))
             }
             data.singrat.contrast = contrasts[(data.random - 1)];
             data.singrat.SF = examParam[(data.random - 1)];
         }
 
-        switch(Math.floor(Math.random() * 2)) {
-            case 0: 
+        switch (Math.floor(Math.random() * 2)) {
+            case 0:
                 data.singrat.direction = -1
                 break
             case 1:
@@ -304,21 +314,21 @@ onMounted(async () => {
 
         const singrat = await drawSingrat()
         data.canClick = true
-        await  ezpsy.delay_frame(30)
+        await ezpsy.delay_frame(30)
         removeSingrat(singrat)
         await ezpsy.delay_frame(60)
-        if(data.canClick) {
+        if (data.canClick) {
             const count = contrasts[data.random - 1]
-            if(data.index === 0) {
+            if (data.index === 0) {
                 contrastList[data.random].push(count)
                 contrasts[data.random - 1] = 1.1 * count
-            } else if(data.index === 1) {
+            } else if (data.index === 1) {
                 contrastList[data.random].push(count)
             }
             data.index = 0
             data.canClick = false
         }
-        if(data.index !== 1) {
+        if (data.index !== 1) {
             examList[data.random - 1] = examList[data.random - 1] - 1
             await setTips()
         }
@@ -326,6 +336,45 @@ onMounted(async () => {
 
     console.log(contrastList)
 
+    AjaxData(getString({"name2": name,"contrast_list": contrastList}))
+    await ezpsy.delay_frame(120)
+    ElMessageBox.confirm("感谢参与本次实验", "试验结束", {
+        showClose: false,
+        showCancelButton: false,
+        confirmButtonText: "确认",
+        closeOnClickModal: false
+    })
+}
+
+const judgeIsLandscape = async () => {
+    location.reload()
+    if(isLandscape()) {
+        data.isStart = true
+    } else {
+        data.isStart = false
+    }
+}
+
+const judge = async () => {
+    if(!isLandscape()) {
+        let landscapeTip = await ElMessageBox.confirm("手机请横屏", "", {
+            showClose: false,
+            showCancelButton: false,
+            confirmButtonText: "确认",
+            closeOnClickModal: false
+        })
+        if(landscapeTip) {
+            await judge()
+        }
+    } else {
+        data.isStart = true
+    }
+}
+
+onMounted(async () => {
+    window.addEventListener("orientationchange", judgeIsLandscape)
+    await judge()
+    await singrat()
 })
 </script>
 
