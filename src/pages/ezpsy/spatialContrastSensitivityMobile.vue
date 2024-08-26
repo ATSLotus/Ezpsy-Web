@@ -87,7 +87,6 @@ const data = reactive({
         phase: 0,
         level: 0,
         gamma: 0.5,
-
         contrast: 0,
         SF: 0
     },
@@ -175,29 +174,42 @@ const right = () => {
 }
 
 const singrat = async () => {
-    data.size.width = window.innerWidth
-    data.size.height = window.innerHeight
-    data.center.x = window.innerWidth / 2
-    data.center.y = window.innerHeight / 2
 
     const ez = await ezpsy.init({
-        el: document.getElementById("toturial") as HTMLElement,
-        style: {
-            width: data.size.width,
-            height: data.size.height
-        }
+        el: document.getElementById("toturial") as HTMLElement
     })
+    const canvas = ez.canvas
+    const physicalWidth = canvas.width;
+    const physicalHeight = canvas.height;
+    data.center.x = physicalWidth / 2
+    data.center.y = physicalHeight / 2
+    data.size.width = physicalWidth
+    data.size.height = physicalHeight
+    const dpr = ez.dpr || 1;
+    const fixationSize = 80
+    const min = Math.min(physicalWidth, physicalHeight)
+    const max = Math.max(physicalWidth, physicalHeight)
+    const radio = 0.75
+    if(max > radio * 2 * min) {
+        data.singrat.r = Math.floor(radio * min / 3)
+    } else {
+        data.singrat.r = Math.floor(radio * max / 2 / 3)
+    }
+    const imageSize = 3 * data.singrat.r + 1
+    console.log(imageSize)
+    data.singrat.offset = Math.floor(radio * (max / 2 - imageSize) / 4)
+
     const dlg = ezpsy.DlgInit()
     const time = new ezpsy.Time();
 
     const drawSingrat = async () => {
         const singrat = new ezpsy.sinGrating1({
             shape: {
-                x: data.center.x + data.singrat.direction * data.singrat.offset,
+                x: (data.singrat.direction > 0 ? 3 : 1) * data.center.x / 2 + data.singrat.direction * data.singrat.offset,
                 y: data.center.y,
                 r: data.singrat.r,
                 pixelsPerDegree: data.singrat.ppd,
-                spatialFrequency: data.singrat.SF,
+                spatialFrequency: data.singrat.SF / dpr,
                 angle: data.singrat.angle,
                 contrast: data.singrat.contrast,
                 phase: data.singrat.phase,
@@ -207,7 +219,7 @@ const singrat = async () => {
             isNoise: false
         })
         await ez.add(singrat)
-        await ezpsy.delay_frame(10)
+        await ezpsy.delay_frame(30)
         singrat.draw()
         return singrat
     }
@@ -219,7 +231,7 @@ const singrat = async () => {
         tips = new ezpsy.Texts({
             shape: {
                 x: data.center.x,
-                y: data.center.y - 150,
+                y: data.center.y - 400,
                 text: countTotal().toString()
             },
             style: {
@@ -248,7 +260,7 @@ const singrat = async () => {
         },
         style: {
             fill: "#333333",
-            fontSize: 80
+            fontSize: fixationSize
         },
         textLine: {
             textA: "center",
@@ -259,8 +271,8 @@ const singrat = async () => {
 
     let circle = new ezpsy.Circle({
         shape: {
-            x: data.center.x,
-            y: data.center.y,
+            x: data.center.x / dpr,
+            y: data.center.y / dpr,
             r: 40
         },
         style: {
@@ -273,9 +285,9 @@ const singrat = async () => {
         showClose: false
     })
 
-    if (resp) {
-        await fullScreen()
-    }
+    // if (resp) {
+    //     await fullScreen()
+    // }
 
     const nameResp = await ElMessageBox.prompt("请输入代号", "", {
         confirmButtonText: "开始实验",
@@ -338,7 +350,7 @@ const singrat = async () => {
 
     AjaxData(getString({"name2": name,"contrast_list": contrastList}))
     await ezpsy.delay_frame(120)
-    ElMessageBox.confirm("感谢参与本次实验", "试验结束", {
+    ElMessageBox.confirm("感谢参与本次实验", "实验结束", {
         showClose: false,
         showCancelButton: false,
         confirmButtonText: "确认",
