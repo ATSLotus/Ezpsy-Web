@@ -417,6 +417,10 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none; /* 禁止用户选择文本 */
+    -webkit-user-select: none; /* 针对Safari */
+    -moz-user-select: none; /* 针对旧版Firefox */
+    -ms-user-select: none; /* 针对IE/Edge */
 }
 
 .left {
