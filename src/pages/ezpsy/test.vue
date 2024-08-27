@@ -333,9 +333,7 @@ const singrat = async () => {
             const count = contrasts[data.random - 1]
             if (data.index === 0) {
                 contrastList[data.random].push(count)
-                // contrasts[data.random - 1] = 1.1 * count
-                
-                contrasts[data.random - 1] = 0.1 + count
+                contrasts[data.random - 1] = 1.1 * count
             } else if (data.index === 1) {
                 contrastList[data.random].push(count)
             }
