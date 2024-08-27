@@ -219,7 +219,7 @@ const singrat = async () => {
             isNoise: false
         })
         await ez.add(singrat)
-        await ezpsy.delay_frame(30)
+        // await ezpsy.delay_frame(30)
         singrat.draw()
         return singrat
     }
