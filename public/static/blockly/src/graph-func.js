@@ -212,7 +212,7 @@ let makeGrating = function(
   let f = false
   if(value_noiseLevel !== 0)
     f = true
-  let grat = new ezpsy.sinGrating({
+  let grat = new ezpsy.sinGrating2({
     shape: {
       x: value_x,                 
       y: value_y,                 

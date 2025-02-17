@@ -13,7 +13,7 @@
 
     interface AUTHMENU {
         text: string,
-        func: Function
+        func: ((payload: MouseEvent) => void) | undefined
     }
 
     const arrow = {

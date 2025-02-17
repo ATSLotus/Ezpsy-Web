@@ -45,7 +45,7 @@
             }
         },
         {
-            title: "手机号找回密码",
+            title: "手机号重置密码",
             tips: `若您的手机号 ${addMosaic(msg.phone)} 现在可以收到短信, 请点击获取验证码。`,
             validate: (step: number = 1): boolean => {
                 const verifyDom = verify.value
@@ -252,7 +252,7 @@
                 <div class="back" @click="back"> 
                     <font-awesome-icon icon="angles-left" /> 返回 
                 </div>
-                <div class="Title"> 找回密码 </div> 
+                <div class="Title"> 重置密码 </div> 
             </div>
             <div class="box">
                 <div class="title">{{ data.steps[data.step].title }}</div>

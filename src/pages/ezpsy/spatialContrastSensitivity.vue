@@ -49,7 +49,7 @@
         data.scripts.push(await randerCode("static/blockly/src/animate-func.js", false))
         data.scripts.push(await randerCode("static/blockly/src/table-func.js", false))
         // data.scripts.push(await randerCode("static/blockly/src/dataExport-func.js", false))
-        const ez = ezpsy.init({
+        const ez = await ezpsy.init({
             el: document.getElementById("toturial") as HTMLElement,
             style: {
                 width: window.innerWidth,

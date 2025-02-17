@@ -25,7 +25,7 @@
 
     interface AUTHMENU {
         text: string,
-        func: Function
+        func: ((payload: MouseEvent) => void) | undefined
     }
 
     const route = useRoute()
@@ -163,10 +163,10 @@
 
     const menus = shallowRef([
         { key: "production", component: Production, icon: 'file-code',title: '个人项目', isSelected: true },
-        { key: "table", component: Table, icon: "file-word", title: "实验量表", isSelected: false },
+        // { key: "table", component: Table, icon: "file-word", title: "实验量表", isSelected: false },
         { key: "image", component: Image, icon: 'image', title: '图床图片', isSelected: false }, 
         { key: "ezpsy-block", component: EzpsyBlock, icon: "puzzle-piece", title: '实验设计', isSelected: false },
-        { key: "custom-table", component: CustomTable, icon: "file-pen", title: "表格设计", isSelected: false },
+        // { key: "custom-table", component: CustomTable, icon: "file-pen", title: "表格设计", isSelected: false },
         { key: "codes", component: Codes, icon: 'list', title: '实验列表', isSelected: false },
         { key: "datas", component: Datas, icon: 'file-excel', title: '实验数据', isSelected: false }
     ])

@@ -4,6 +4,7 @@
     import { onBeforeMount, onBeforeUnmount, onMounted, reactive } from 'vue';
     import { useRoute } from 'vue-router';
     import ezpsy from "ezpsy"
+    // import ezpsyWasm from "ezpsy-wasm"
     import agc from '@/assets/agc/agc';
     import uuid from '@/assets/utils/uuid';
     import { hideloading, setContainer, showMsg, showloading } from '@/assets/utils/popup';
@@ -48,7 +49,10 @@
         data.scripts.push(await randerCode("static/blockly/src/animate-func.js", false))
         data.scripts.push(await randerCode("static/blockly/src/table-func.js", false))
         // data.scripts.push(await randerCode("static/blockly/src/dataExport-func.js", false))
-        const ez = ezpsy.init({
+        // const ezWasm = ezpsyWasm.init({
+        //     id: "toturial"
+        // })
+        const ez = await ezpsy.init({
             el: document.getElementById("toturial") as HTMLElement,
             style: {
                 width: window.innerWidth,
@@ -61,6 +65,7 @@
         const keypress = new ezpsy.keypress("keydown")
         _window.ezpsy = ezpsy
         _window.ez = ez
+        // _window.ezWasm = ezWasm
         _window.dlg = dlg
         _window.time = time
         _window.keypress = keypress
@@ -119,7 +124,7 @@
             }
         } 
         if(route.query.code) {
-            const code = `(async () => {${decrypt(route.query.code as string)}\n})()`
+            const code = `(async () => {${decrypt(route.query.code as string)} console.log('AAA')\n})()`
             data.scripts.push(await randerCode(code)) 
         }
         

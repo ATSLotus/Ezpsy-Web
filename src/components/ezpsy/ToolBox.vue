@@ -202,7 +202,7 @@
                     </shadow>
                 </value>
             </block>
-            <block type="text_print">
+            <!-- <block type="text_print">
                 <value name="TEXT">
                     <shadow type="text">
                         <field name="TEXT">abc</field>
@@ -222,7 +222,7 @@
                         <field name="TEXT">abc</field>
                     </shadow>
                 </value>
-            </block>
+            </block> -->
         </category>
         <sep></sep>
         <!--代码块-Lists区域-->
@@ -547,7 +547,7 @@
                 </value>
             </block>
             <!-- 三角形 -->
-            <block type="graph_triangle">
+            <!-- <block type="graph_triangle">
                 <value name="id">
                     <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">triangle</field>
@@ -612,7 +612,7 @@
                         </value>
                     </block>
                 </value>
-            </block>
+            </block> -->
             <!-- 圆 -->
             <block type="graph_circle">
                 <value name="id">
@@ -658,7 +658,7 @@
                 </value>
             </block>
             <!-- 文本 -->
-            <block type="graph_text">
+            <!-- <block type="graph_text">
                 <value name="id">
                     <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">text</field>
@@ -708,9 +708,9 @@
                         </value>
                     </block>
                 </value>
-            </block>
+            </block> -->
             <!-- 图片 -->
-            <block type="image">
+            <!-- <block type="image">
                 <value name="id">
                     <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">image1</field>
@@ -751,14 +751,14 @@
                         </value>
                     </block>
                 </value>
-            </block>
-            <block type="drawImg">
+            </block> -->
+            <!-- <block type="drawImg">
                 <value name="id">
                     <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">image1</field>
                     </block>
                 </value>
-            </block>
+            </block> -->
             <!-- -光栅- -->
             <block type="grating">
                 <value name="id">
@@ -834,7 +834,7 @@
                     </block>
                 </value>
             </block>
-            <block type="drawGrating">
+            <!-- <block type="drawGrating">
                 <value name="id">
                     <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">grating</field>
@@ -845,9 +845,9 @@
                         <field name="NUM">1000</field>
                     </block>
                 </value>
-            </block>
+            </block> -->
             <!-- -随机点- -->
-            <block type="randomDot">
+            <!-- <block type="randomDot">
                 <value name="id">
                     <block type="variables_get" movable="false" deletable="false">
                         <field name="VAR">randomDot</field>
@@ -896,132 +896,7 @@
                         </value>
                     </block>
                 </value>
-            </block>
-        </category>
-        <sep></sep>
-        <!-- 基础动作 -->
-        <category name="Action" :colour="color.action">
-            <!-- 设置填充色 -->
-            <block type="setFillColor">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-                <value name="color">
-                    <block type="colour_picker"></block>
-                </value>
-            </block>
-            <!-- 设置边框色 -->
-            <block type="setStrokeColor">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-                <value name="color">
-                    <block type="colour_picker"></block>
-                </value>
-            </block>
-            <!-- 设置边框线宽 -->
-            <block type="setBorderWidth">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-                <value name="border_width">
-                    <block type="math_number">
-                        <field name="NUM">5</field>
-                    </block>
-                </value>
-            </block>
-            <!-- 位移 -->
-            <block type="translate">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-                <value name="x">
-                    <block type="math_number">
-                        <field name="NUM">40</field>
-                    </block>
-                </value>
-                <value name="y">
-                    <block type="math_number">
-                        <field name="NUM">40</field>
-                    </block>
-                </value>
-            </block>
-            <!-- 缩放 -->
-            <block type="scale">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-                <value name="width">
-                    <block type="math_number">
-                        <field name="NUM">1.2</field>
-                    </block>
-                </value>
-                <value name="height">
-                    <block type="math_number">
-                        <field name="NUM">1.2</field>
-                    </block>
-                </value>
-            </block>
-            <!-- 旋转 -->
-            <block type="rotate">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-                <value name="rotate">
-                    <block type="math_number">
-                        <field name="NUM">90</field>
-                    </block>
-                </value>
-            </block>
-        </category>
-        <sep></sep>
-        <!-- 动画 -->
-        <category name="Animate" :colour="color.animate">
-            <block type="refresh">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-            </block>
-            <block type="animate">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-                <value name="delay">
-                    <block type="math_number">
-                        <field name="NUM">6</field>
-                    </block>
-                </value>
-            </block>
-            <block type="play">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-            </block>
-            <block type="pause">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">el</field>
-                    </block>
-                </value>
-            </block>
+            </block> -->
         </category>
         <sep></sep>
         <!-- 清除 -->
@@ -1036,18 +911,6 @@
                         <field name="VAR">el</field>
                     </block>
                 </value>
-            </block>
-        </category>
-        <sep></sep>
-        <!-- 量表 -->
-        <category name="Table" :colour="color.table">
-            <block type="referenceTable">
-                <!-- <value name="name">
-                    <block type="text">
-                        <field name="TEXT">文本</field>
-                    </block>
-                </value> -->
-                <field name="Table"></field>
             </block>
         </category>
         <sep></sep>
@@ -1238,8 +1101,8 @@
         <!--计时-->
         <category name="Time" :colour="color.time">
             <block type="record"></block>
-            <block type="cancel"></block>
-            <block type="clear"></block>
+            <!-- <block type="cancel"></block> -->
+            <!-- <block type="clear"></block> -->
             <block type="getContinueValue">
                 <value name="id">
                     <block type="variables_get">
@@ -1290,7 +1153,7 @@
                 <mutation items="1"></mutation>
             </block>
 
-            <block type="keypress">
+            <!-- <block type="keypress">
                 <value name="id">
                     <block type="text">
                         <field name="TEXT">keypressId</field>
@@ -1302,7 +1165,7 @@
                     </block>
                 </value>
                 <mutation items="1"></mutation>
-            </block>
+            </block> -->
 
             <block type="destroy">
                 <value name="id">
@@ -1339,113 +1202,6 @@
             </block>
         </category>
         <sep></sep>
-        <!-- 模块 -->
-        <!-- <category name="Module" :colour="#8AC2D4">
-            <block type="First-orderGratingMotion">
-            </block>
-            <block type="GratingTrain">
-            </block>
-            <block type="module_text">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">text</field>
-                    </block>
-                </value>
-                <value name="content">
-                    <block type="text">
-                        <field name="TEXT">shoring</field>
-                    </block>
-                </value>
-            </block>
-            <block type="module0_text">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">text</field>
-                    </block>
-                </value>
-                <value name="content">
-                    <block type="text">
-                        <field name="TEXT">shoring</field>
-                    </block>
-                </value>
-                <value name="color">
-                    <block type="colour_rgb">
-                        <value name="RED">
-                            <shadow type="math_number">
-                                <field name="NUM">100</field>
-                            </shadow>
-                        </value>
-                        <value name="GREEN">
-                            <shadow type="math_number">
-                                <field name="NUM">50</field>
-                            </shadow>
-                        </value>
-                        <value name="BLUE">
-                            <shadow type="math_number">
-                                <field name="NUM">0</field>
-                            </shadow>
-                        </value>
-                    </block>
-                </value>
-            </block>
-            <block type="module_listDlg">
-                <value name="titleText">
-                    <block type="text">
-                        <field name="TEXT">title</field>
-                    </block>
-                </value>
-                <value name="result">
-                    <block type="variables_get">
-                        <field name="VAR">result</field>
-                    </block>
-                </value>
-                <value name="objectList">
-                    <block type="DlgObjectsCreate">
-                        <mutation items="0"></mutation>
-                    </block>
-                </value>
-            </block>
-            <block type="module_msgDlg">
-                <value name="image">
-                    <block type="text">
-                        <field name="TEXT">https://unsplash.it/400/200</field>
-                    </block>
-                </value>
-            </block>
-            <block type="module_grating">
-                <value name="id">
-                    <block type="variables_get">
-                        <field name="VAR">grating</field>
-                    </block>
-                </value>
-                <value name="x">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
-                    </block>
-                </value>
-                <value name="y">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
-                    </block>
-                </value>
-                <value name="r">
-                    <block type="math_number">
-                        <field name="NUM">120</field>
-                    </block>
-                </value>
-                <value name="noiseLevel">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="animateCycle">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-        </category> -->
-        <!-- <sep></sep> -->
     </xml>
 </template>
 
