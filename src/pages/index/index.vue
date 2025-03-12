@@ -32,7 +32,7 @@
             if(avatar !== "default" && !!(avatar)) {
                 const avatarResp = await storage.getFileData(`/private/${u.getUid()}/ezImage/avatar.json`)
                 if(avatarResp.isSuccess) {
-                    data.auth.logo = getBlob(getBase64(avatarResp.data))
+                    data.auth.logo = getBlob(getBase64(avatarResp.data as string))
                 }
             }
         } else if(resp.isAnonymous) {

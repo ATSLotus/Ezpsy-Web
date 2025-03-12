@@ -9,6 +9,7 @@ declare interface OPERATE {
 declare interface OPTS_HEADER {
     type: string
     text: string
+    path: string
     style: Record<string, string>
     sort?: DIRECTION | boolean
     align?: "center" | "start" | "end"
@@ -36,3 +37,10 @@ declare interface POSITION {
     x: number
     y: number
 }
+
+interface LIST {
+    path: string
+    title: string
+    data: Record<string, any>
+    operations: OPERATE
+} 

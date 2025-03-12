@@ -1,30 +1,16 @@
 <script setup lang="ts">
-    import List from "@/components/ezpsy/List.vue"
     import log from '@/assets/utils/log'
     import { nextTick, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref } from "vue";
-    import { getCurrentUser } from "@/assets/index/auth";
     import { UserStore } from "@/store/store";
     import agc from "@/assets/agc/agc";
-    import { decrypt, encrypt } from "@/assets/utils/crypto";
+    import { encrypt } from "@/assets/utils/crypto";
     import { formatDate } from "@/assets/utils/utils";
     import { closePopup, hideloading, inputPopup, showloading, tipPopup } from "@/assets/utils/popup";
     import router from "@/router/router";
     import { useRoute } from "vue-router";
-    import { getReg, deepClone } from "@/assets/utils/utils"
     import { DIRECTION } from "@/assets/utils/config"
-    import { ObjectListSort } from "@/assets/utils/sort";
     import uuid from "@/assets/utils/uuid";
-    import { getStorage, setStorage } from "@/assets/utils/storage";
-    
-    interface LIST {
-        path: string
-        title: string
-        description: string
-        modifyTime: string
-        xml: string
-        js: string
-        operations: OPERATE
-    } 
+    import ListV2 from "./ListV2.vue";
 
     const route = useRoute()
     const storage = agc.storage
@@ -41,24 +27,29 @@
         type: "",
         searchOpts: {},
         headers: {} as Record<string, OPTS_HEADER>,
-        lists: new Array<LIST>()
+        list: new Array<LIST>(),
+        opts: {
+            set: ({
+                file,
+                metadata
+            }: {
+                file: any
+                metadata: any
+            }) => {
+                return {
+                    description: file.description,
+                    modifyTime: formatDate(metadata.mtime),
+                    xml: file.xml,
+                    js: file.code
+                }
+            }
+        } as Record<string, Function>
     });
 
     data.searchOpts = {
         search: {
             title: "搜索: ",
-            placeholder: "通过标题查询",
-            func: (value: string, origin: Array<any>) => {
-                const reg = getReg(value)
-                const target = origin.filter(item => {
-                    if(reg.test(item.title)) {
-                        return deepClone(item)
-                    } else {
-                        return false
-                    }
-                })
-                return target
-            }
+            placeholder: "通过标题查询"
         },
         reload: {
             func: () => {
@@ -103,7 +94,7 @@
                     if(lists.length > 0) {
                         await Promise.all(
                             lists.map(async (list) => {
-                                await storage.deleteFile(decrypt(list.path))
+                                await storage.deleteFile(list.path)
                             })
                         )
                         getFileList()
@@ -126,6 +117,7 @@
         title: {
             type: "text",
             text: "标题",
+            path: "title",
             style: {
                 width: "15%",
             },
@@ -135,6 +127,7 @@
         description: {
             type: "long-text",
             text: "描述",
+            path: "data.description",
             style: {
                 width: "35%"
             }
@@ -142,6 +135,7 @@
         modifyTime: {
             type: "text",
             text: "修改时间",
+            path: "data.modifyTime",
             style: {
                 width: "20%",
             },
@@ -150,6 +144,7 @@
         operations: {
             type: "operate",
             text: "操作",
+            path: "operations",
             style: {
                 width: "30%"
             },
@@ -193,7 +188,7 @@
                             props: {
                                 title: "描述",
                                 placeholder: "请输入",
-                                default: item.description
+                                default: item.data.description
                             }
                         }
                     ],
@@ -210,11 +205,11 @@
                     if(result.isConfirmed) {
                         closePopup()
                         const value = result.value
-                        if(value.title === item.title && value.description === item.description) {
+                        if(value.title === item.title && value.description === item.data.description) {
                             return
                         } else {
                             if(value.title !== item.title) {
-                                storage.deleteFile(decrypt(item.path))
+                                storage.deleteFile(item.path)
                             }
                             const json = {
                                 data: encrypt(JSON.stringify({
@@ -225,8 +220,8 @@
                                         avatar: user.photoUrl
                                     },
                                     description: value?.description ? value.description : "",
-                                    xml: item.xml,
-                                    code: item.js
+                                    xml: item.data.xml,
+                                    code: item.data.js
                                 }))
                             }
                             storage.uploadString({
@@ -292,7 +287,7 @@
                                     name: item.title
                                 },
                                 description: value?.description ? value.description : "",
-                                code: item.js
+                                code: item.data.js
                             }))
                         }
                         storage.uploadString({
@@ -313,7 +308,7 @@
                 const link_route = router.resolve({
                     query: {
                         menu: "ezpsy-block",
-                        xml: encrypt(item.xml)
+                        xml: encrypt(item.data.xml)
                     }
                 })
                 const link = `${location.host}/${link_route.href}`
@@ -329,7 +324,7 @@
         download: {
             text: "下载",
             func: async (item: LIST) => {
-                let blob = new Blob([item.xml], {
+                let blob = new Blob([item.data.xml], {
                     type: "text/xml;charset=utf-8"
                 });
                 let reader = new FileReader();
@@ -360,9 +355,9 @@
                             // @ts-ignore
                             avatar: user.photoUrl
                         },
-                        description: item.description,
-                        xml: item.xml,
-                        code: item.js
+                        description: item.data.description,
+                        xml: item.data.xml,
+                        code: item.data.js
                     }))
                 }
                 storage.uploadString({
@@ -377,7 +372,7 @@
         delete: {
             text: "删除",
             func: async (item: LIST) => {
-                const res = await storage.deleteFile(decrypt(item.path))
+                const res = await storage.deleteFile(item.path)
                 if(res.isSuccess) {
                     await getFileList()
                 }
@@ -390,59 +385,22 @@
         showloading(1, 2)
         const listsRes = await storage.getFileListAll(data.type)
         if(listsRes.isSuccess){
-            const cacheStr = getStorage("EZPSY_PRODUCTION")
-            const hasCache = !!(cacheStr)
-            let cache: Record<string, any> = {}
-            if(hasCache) 
-                cache = JSON.parse(cacheStr)
-            let newCache: Record<string, any> = {}
-            data.lists = []
-            const lists = listsRes.data.fileList
-            Promise.all(
-                lists.map(async (list: any) => {
-                    const title = list.name.split('.')[0]
-                    const metadata = await list.getFileMetadata()
-                    if(
-                        title in cache && 
-                        formatDate(metadata.mtime) === cache[title].modifyTime
-                    ) {
-                        const li = Object.assign(cache[title], {
-                            operations: operate
-                        })
-                        data.lists.push(li)
-                    } else {
-                        const fileRes = await storage.getFileData(list.path)
-                        if(fileRes.isSuccess) {
-                            const json = fileRes.data
-                            json.data = JSON.parse(decrypt(json.data))
-                            const li = {
-                                path: encrypt(list.path),
-                                title: title,
-                                description: json.data.description,
-                                // modifyTime: formatDate(json.mtime),
-                                modifyTime: formatDate(metadata.mtime),
-                                xml: json.data.xml,
-                                js: json.data.code
-                            }
-                            data.lists.push(Object.assign(li, { operations: operate }))
-                        }
-                    }
-                })
-            ).then(() => {
-                const newLists = ObjectListSort<LIST>({
-                    list: data.lists,
-                    method: DIRECTION.FORWARD,
-                    key: "modifyTime"
-                })
-                data.lists = []
-                newLists.forEach((list: any) => {
-                    data.lists.push(deepClone(list))
-                    delete list["operations"]
-                    newCache[list.title] = list
-                })
-                setStorage("EZPSY_PRODUCTION", JSON.stringify(newCache))
-                reload()
-            }) 
+            const list = listsRes.data.fileList
+            data.list = list.map(item => {
+                return {
+                    title: item.name.split('.')[0],
+                    path: item.path,
+                    data: {
+                        description: "",
+                        modifyTime: "",
+                        xml: "",
+                        js: ""
+                    },
+                    operations: operate
+                }
+            })
+            console.log(data.list)
+            reload()
         }
         hideloading()
     }
@@ -463,12 +421,13 @@
 
 <template>
     <div>
-        <List 
+        <ListV2 
             v-if="!isReload" 
             :searchOpts="data.searchOpts"
             :headers="data.headers" 
-            :lists="data.lists"
-        ></List>
+            :list="data.list"
+            :opts="data.opts"
+        ></ListV2>
     </div>
 </template>
 

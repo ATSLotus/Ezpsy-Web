@@ -134,7 +134,7 @@ const tipPopup = (type: TYPE, opts?: POPUP) => {
 type THEME = 0 | 1 | 2 
 type SPEED = THEME | "slow" | "middle" | "fast"
 
-const showloading = (theme: THEME = 0, speed: SPEED = 0) => {
+const showloading = (theme: THEME = 0, speed: SPEED = 0, contain: string = container) => {
     let time = 0
     switch(speed) {
         case 0:
@@ -167,7 +167,7 @@ const showloading = (theme: THEME = 0, speed: SPEED = 0) => {
             </div>
         `,
         customClass: {
-            container: container,
+            container: contain,
             popup: "ats-loader-popup",
             htmlContainer: "ats-loader-htmlContainer"
         },
